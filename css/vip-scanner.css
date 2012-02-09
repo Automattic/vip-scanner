@@ -1,0 +1,57 @@
+.scan-results-table {
+	margin: 12px 0;
+}
+	.scan-results-table th,
+	.scan-results-table td {
+		padding: 3px 5px;
+		text-align: left;
+		border-bottom: #ECECEC 1px solid;
+	}
+	.scan-results-table td {
+		text-align: right;
+	}
+	.scan-results-table .pass {
+		color: #fff;
+		background-color: #7DA300;
+	}
+	.scan-results-table .fail {
+		color: #fff;
+		background-color: #C80030;
+	}
+
+.scan-results-list {
+}
+	.scan-results-list li {
+		border-bottom: 1px solid #DFDFDF;
+		padding: 5px 0;
+	}
+		.scan-level {
+			font-weight: bold;
+			color: #fff;
+			padding: 0 10px;
+		}
+			.scan-result-note .scan-level {
+				background-color: #A3C3D1;
+			}
+			.scan-result-warning .scan-level {
+				background-color: #FFE926;
+			}
+			.scan-result-blocker .scan-level {
+				background-color: #C80030;
+			}
+		.scan-file {
+			float: right;
+			font-family: courier new, monospace;
+		}
+		.scan-lines {
+			clear: both;
+		} 
+		.scan-line .syntaxhighlighter {
+			padding: .5em 0;
+			background-color: #F7F9FE !important;
+		}
+			.scan-line .syntaxhighlighter .line,
+			.scan-line .syntaxhighlighter .line.alt1,
+			.scan-line .syntaxhighlighter .line.alt2 {
+				background-color: #F7F9FE !important;
+			}
