@@ -8,8 +8,7 @@ Version: 0.1
 
 License: GPLv2
 */
-
-require_once( __DIR__ . '/vip-scanner/vip-scanner.php' );
+require_once( plugin_dir_path( __FILE__ ) . 'vip-scanner/vip-scanner.php' );
 
 class VIP_Scanner_UI {
 	const key = 'vip-scanner';
