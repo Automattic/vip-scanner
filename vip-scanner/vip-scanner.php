@@ -3,16 +3,16 @@
  * Go Go VIP Scanner!
  * Scan all sorts of themes and files and things.
  */
+define( 'VIP_SCANNER_DIR', dirname( __FILE__ ) );
+define( 'VIP_SCANNER_CHECKS_DIR', VIP_SCANNER_DIR . '/checks' );
 
-define( 'VIP_SCANNER_CHECKS_DIR', __DIR__ . '/checks' );
-
-require_once( __DIR__ . '/config-vip-scanner.php' );
-require_once( __DIR__ . '/class-base-check.php' );
-require_once( __DIR__ . '/class-base-scanner.php' );
-require_once( __DIR__ . '/class-directory-scanner.php' );
-require_once( __DIR__ . '/class-theme-scanner.php' );
-require_once( __DIR__ . '/class-content-scanner.php' );
-require_once( __DIR__ . '/class-diff-scanner.php' );
+require_once( VIP_SCANNER_DIR . '/config-vip-scanner.php' );
+require_once( VIP_SCANNER_DIR . '/class-base-check.php' );
+require_once( VIP_SCANNER_DIR . '/class-base-scanner.php' );
+require_once( VIP_SCANNER_DIR . '/class-directory-scanner.php' );
+require_once( VIP_SCANNER_DIR . '/class-theme-scanner.php' );
+require_once( VIP_SCANNER_DIR . '/class-content-scanner.php' );
+require_once( VIP_SCANNER_DIR . '/class-diff-scanner.php' );
 
 class VIP_Scanner {
 	private static $instance;
