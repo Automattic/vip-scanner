@@ -22,18 +22,19 @@ class TheamPubIndividualFiles extends BaseCheck {
 						'blocker'
 					);
 				}
+			}
+
+			if ( 'image.php' == $filename ) {
 				$this->increment_check_count();
-				if ( false === strpos( $code, '$themecolors' ) ) {
+				if ( false === strpos( $code, 'the_content(' ) ) {
 					$this->add_error(
-						'functions-file',
-						sprintf( '<var>$themecolors</var> could not be found in %1$s.', esc_html( $filename ) ),
+						'template-image',
+						sprintf( '<var>$content_width</var> could not be found in %1$s. It is often best to set this variable directly in %1$s especially in cases where the sidebar is omited and the image fills the full width of the template.', esc_html( $filename ) ),
 						'blocker'
 					);
 				}
-			}
 
-			// NOT a blocker.
-			if ( 'image.php' == $filename ) {
+				// NOT a blocker.
 				$this->increment_check_count();
 				if ( false === strpos( $code, '$content_width' ) ) {
 					$this->add_error(

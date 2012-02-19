@@ -43,5 +43,6 @@ VIP_Scanner::get_instance()->register_review( 'Undefined Function Check', array(
 VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 	'TheamPubFileCheck',
 	'TheamPubIndividualFiles',
+	'ThemecolorsCheck',
 	#'WordPressCodingStandards', // Coming soon :)
 ) );
