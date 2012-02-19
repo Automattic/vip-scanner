@@ -5,10 +5,13 @@
  */
 class ThemecolorsCheck extends BaseCheck {
 
+	/**
+	 * Merge all php files into on string and search for
+	 * the $themecolors array. Set an error if not found.
+	 */
 	function check( $files ) {
 		$result = true;
 
-		/* combine all the php files into one string to make it easier to search. */
 		$php = $this->merge_files( $files, 'php' );
 
 		$this->increment_check_count();
