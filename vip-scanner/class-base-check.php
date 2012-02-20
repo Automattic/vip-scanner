@@ -146,7 +146,6 @@ abstract class BaseCheck
 
 		$line_index = 0;
 		$preg_lines = array();
-		$preg = trim( $preg );
 
 		foreach( $lines as $line ) {
 			if ( preg_match( $pattern, $line, $matches ) ) {
