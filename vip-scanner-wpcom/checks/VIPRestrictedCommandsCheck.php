@@ -51,7 +51,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"wpcom_uncached_get_post_by_meta" => array( "level" => "Warning", "note" => "Bypassing object cache, please validate" ),
 
 			// Role modifications
-			"get_role" => array( "level" => "Blocker", "note" => "Role modification" ),
+			"get_role" => array( "level" => "Warning", "note" => "Role access" ),
 			"add_role" => array( "level" => "Blocker", "note" => "Role modification" ),
  			"remove_role" => array( "level" => "Blocker", "note" => "Role modification" ),
  			"add_cap" => array( "level" => "Blocker", "note" => "Role modification" ),
