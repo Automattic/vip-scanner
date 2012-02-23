@@ -24,8 +24,10 @@ abstract class BaseCheck
 			'description' => $description
 		);
 
-		if( ! empty( $file ) )
+		$error['file'] = '';
+		if ( ! empty( $file ) )
 			$error['file'] = $file;
+
 		if( ! empty( $lines ) ) {
 			$lines = array_map( 'htmlspecialchars', (array) $lines );
 			$lines = array_map( 'trim', $lines );
