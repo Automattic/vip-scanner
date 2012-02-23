@@ -38,7 +38,25 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"wp_get_schedule" => array( "level" => "Warning", "note" => "WP Cron usage" ),
 	
 			"add_feed" => array( "level" => "Warning", "note" => "Custom feed implementation" ),
-	
+
+			// Uncached functions
+			'get_category_by_slug' => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
+			'get_cat_ID' => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
+			'get_term_by' => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
+			'get_page_by_title' => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
+			'wp_get_object_terms' => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
+
+			// Object cache bypass
+			"wpcom_uncached_get_post_meta" => array( "level" => "Warning", "note" => "Bypassing object cache, please validate" ),
+			"wpcom_uncached_get_post_by_meta" => array( "level" => "Warning", "note" => "Bypassing object cache, please validate" ),
+
+			// Role modifications
+			"get_role" => array( "level" => "Warning", "note" => "Role access" ),
+			"add_role" => array( "level" => "Blocker", "note" => "Role modification" ),
+ 			"remove_role" => array( "level" => "Blocker", "note" => "Role modification" ),
+ 			"add_cap" => array( "level" => "Blocker", "note" => "Role modification" ),
+ 			"remove_cap" => array( "level" => "Blocker", "note" => "Role modification" ),
+
 			// debugging
 			"error_log" => array( "level" => "Blocker", "note" => "Filesystem operation" ),
 			"var_dump" => array( "level" => "Warning", "note" => "Unfiltered variable output" ),
@@ -48,6 +66,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			// other
 			"date_default_timezone_set" => array( "level" => "Blocker", "note" => "Timezone manipulation" ),
 			"error_reporting" => array( "level" => "Blocker", "note" => "Settings alteration" ),
+			'eval' => array( 'level' => 'Blocker', "note" => "Meta programming" ),
 			"ini_set" => array( "level" => "Blocker", "note" => "Settings alteration" ),
 	
 			// filesystem functions
@@ -57,6 +76,10 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"chown" => array( "level" => "Blocker", "note" => "Changes file owner" ),
 			"clearstatcache" => array( "level" => "Blocker", "note" => "Clears file status cache" ),
 			"copy" => array( "level" => "Blocker", "note" => "Copies file" ),
+			"curl_init" => array( "level" => "Blocker", "note" => "cURL used. Should use WP_HTTP class or cached functions instead" ),
+			"curl_setopt" => array( "level" => "Blocker", "note" => "cURL used. Should use WP_HTTP class or cached functions instead" ),
+ 			"curl_exec" => array( "level" => "Blocker", "note" => "cURL used. Should use WP_HTTP class or cached functions instead" ),
+ 			"curl_close" => array( "level" => "Blocker", "note" => "cURL used. Should use WP_HTTP class or cached functions instead" ),
 			"delete" => array( "level" => "Blocker", "note" => "See unlink or unset" ),
 			//"dirname" => array( "level" => "Warning", "note" => "Returns directory name component of path" ),
 			"disk_free_space" => array( "level" => "Warning", "note" => "Returns available space in directory" ),
@@ -122,6 +145,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"rename" => array( "level" => "Blocker", "note" => "Renames a file or directory" ),
 			"rewind" => array( "level" => "Warning", "note" => "Rewind the position of a file pointer" ),
 			"rmdir" => array( "level" => "Blocker", "note" => "Removes directory" ),
+			"session_start" => array( "level" => "Blocker", "note" => "Writes files; unreliable in a multi-server environment." ),
 			"set_file_buffer" => array( "level" => "Warning", "note" => "Alias of stream_set_write_buffer" ),
 			"stat" => array( "level" => "Warning", "note" => "Gives information about a file" ),
 			"symlink" => array( "level" => "Blocker", "note" => "Creates a symbolic link" ),
