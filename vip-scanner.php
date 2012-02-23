@@ -153,13 +153,21 @@ class VIP_Scanner_UI {
 		
 		$level = $error['level'];
 		$description = $error['description'];
-		if( ! empty( $error['file'] ) ) {
+		
+		$file = '';
+		if ( is_array( $error['file'] ) ) {
+			if ( ! empty( $error['file'][0] ) )
+				$file .= $error['file'][0];
+			if ( ! empty( $error['file'][1] ) )
+				$file .= ': ' . $error['file'][1];
+		} else if ( ! empty( $error['file'] ) ) {
 			$file_full_path = $error['file'];
 			$file_theme_path = substr( $file_full_path, strrpos( $file_full_path, sprintf( '/%s/', $theme ) ) );
 			$file = strrchr( $file_full_path, sprintf( '/%s/', $theme ) );
-		} else {
-			$file = '';
+			if ( ! $file && ! empty( $file_theme_path ) )
+				$file = $file_theme_path;
 		}
+		
 		$lines = ! empty( $error['lines'] ) ? $error['lines'] : array();
 		
 		?>
