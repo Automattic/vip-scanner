@@ -166,4 +166,22 @@ abstract class BaseCheck
 	protected function get_filename( $file ) {
 		return pathinfo( $file, PATHINFO_BASENAME );
 	}
+
+	/**
+	 * Scan a file for a given pcre.
+	 *
+	 * Merged files should not use this function.
+	 *
+	 * @uses VIP_PregFile::__construct()
+	 * @uses VIP_PregFile::get()
+	 *
+	 * @param string $needle A Perl compatible regular expression.
+	 * @param string $haystack A file to search through.
+	 * @return array Complete matched lines (string) indexed by the first line number (int).
+	 */
+	protected function preg_file2( $needle, $haystack ) {
+		$scanner = new VIP_PregFile( $needle, $haystack );
+		$results = $scanner->get();
+		return $results;
+	}
 }

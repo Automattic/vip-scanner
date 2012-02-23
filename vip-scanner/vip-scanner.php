@@ -13,6 +13,7 @@ require_once( VIP_SCANNER_DIR . '/class-directory-scanner.php' );
 require_once( VIP_SCANNER_DIR . '/class-theme-scanner.php' );
 require_once( VIP_SCANNER_DIR . '/class-content-scanner.php' );
 require_once( VIP_SCANNER_DIR . '/class-diff-scanner.php' );
+require_once( VIP_SCANNER_DIR . '/class-preg-file.php' );
 
 class VIP_Scanner {
 	private static $instance;
@@ -29,7 +30,7 @@ class VIP_Scanner {
 	function get_review_types() {
 		return array_keys( $this->reviews );
 	}
-	
+
 	function get_review( $name ) {
 		if ( isset( $this->reviews[ $name ] ) )
 			return $this->reviews[ $name ];
