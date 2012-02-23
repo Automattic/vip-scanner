@@ -14,6 +14,20 @@ class EscapingCheck extends BaseCheck {
 				),
 			),
 			array(
+				'pattern' => '/esc_attr[\s]*?\([\s]+print[\s]+/',
+				'message' => sprintf( __( '%1$s is being passed as the first parameter of %2$s.', 'vip-scanner' ),
+					'<code>print</code>',
+					'<code>esc_attr()</code>'
+				),
+			),
+			array(
+				'pattern' => '/esc_attr[\s]*?\([\s]+echo[\s]+/',
+				'message' => sprintf( __( '%1$s is being passed as the first parameter of %2$s.', 'vip-scanner' ),
+					'<code>echo</code>',
+					'<code>esc_attr()</code>'
+				),
+			),
+			array(
 				'pattern' => '/="[\s]*?<\?php[\s]+_e/',
 				'message' => sprintf( __( 'Please use %1$s to echo internationalized text in html attributes.', 'vip-scanner' ),
 					'<code>esc_attr_e()</code>'
