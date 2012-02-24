@@ -110,38 +110,36 @@ class VIP_Scanner_UI {
 			add_action( 'admin_footer', array( &$SyntaxHighlighter, 'maybe_output_scripts' ) );
 		}
 		
-		$errors_whitelist = 'blocker'; // todo: filter
-		
-		$results = $scanner->get_results();
-		$errors = $scanner->get_errors( $errors_whitelist ); // TODO: Need to set level filter at scan funtion. Otherwise you might get 0 blockers but still fail
-		$errors_count = count( $errors );
-		$result = ! $errors_count;
+		$report   = $scanner->get_results();
+		$blockers = $scanner->get_errors( array( 'blocker', 'warning', 'required' ) ); // TODO allow to be filtered.
+		$pass     = ! count( $blockers );
 		?>
 		<h4>Scanning: <?php echo $theme; ?></h4>
 		
 		<table class="scan-results-table">
 			<tr>
-				<th>Scan Result</th>
-				<td class="<?php echo $result ? 'pass' : 'fail'; ?>"><?php echo $result ? 'Pass' : 'Fail'; ?></td>
+				<th><?php _e( 'Scan Result', 'theme-check' ); ?></th>
+				<td class="<?php echo $pass ? 'pass' : 'fail'; ?>"><?php echo $pass ? __( 'Pass', 'theme-check' ) : __( 'Fail', 'theme-check' ); ?></td>
 			</tr>
 			<tr>
-				<th>Total Files</th>
-				<td><?php echo intval( $results['total_files'] ); ?></td>
+				<th><?php _e( 'Total Files', 'theme-check' ); ?></th>
+				<td><?php echo intval( $report['total_files'] ); ?></td>
 			</tr>
 			<tr>
-				<th>Total Checks</th>
-				<td><?php echo intval( $results['total_checks'] ); ?></td>
+				<th><?php _e( 'Total Checks', 'theme-check' ); ?></th>
+				<td><?php echo intval( $report['total_checks'] ); ?></td>
 			</tr>
 			<tr>
-				<th>Total Errors</th>
-				<td><?php echo $errors_count; ?></td>
+				<th><?php _e( 'Total Errors', 'theme-check' ); ?></th>
+				<td><?php echo count( $blockers ); ?></td>
 			</tr>
 		</table>
 		
 		<ol class="scan-results-list">
 			<?php
-			foreach( $errors as $error ) {
-				$this->display_theme_review_result_row( $error, $scanner, $theme );
+			$results = $scanner->get_errors();
+			foreach( $results as $result ) {
+				$this->display_theme_review_result_row( $result, $scanner, $theme );
 			}
 			?>
 		</ol>
