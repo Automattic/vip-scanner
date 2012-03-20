@@ -3,31 +3,28 @@
 }
 .scan-results-table th,
 .scan-results-table td {
+	border-bottom: #ececec 1px solid;
 	padding: 3px 5px;
 	text-align: left;
-	border-bottom: #ECECEC 1px solid;
 }
 .scan-results-table td {
 	text-align: right;
 }
 .scan-results-table .pass {
+	background-color: #7da300;
 	color: #fff;
-	background-color: #7DA300;
 }
 .scan-results-table .fail {
+	background-color: #c80030;
 	color: #fff;
-	background-color: #C80030;
-}
-
-.scan-results-list {
 }
 .scan-results-list li {
-border-bottom: 1px solid #DFDFDF;
-padding: 5px 0;
+	border-bottom: 1px solid #DFDFDF;
+	padding: 5px 0;
 }
 .scan-level {
-	font-weight: bold;
 	color: #fff;
+	font-weight: bold;
 	padding: 0 10px;
 }
 .scan-result-info .scan-level,
@@ -45,17 +42,17 @@ padding: 5px 0;
 }
 .scan-file {
 	float: right;
-	font-family: courier new, monospace;
+	font-family: "Courier New", Courier, monospace;
 }
 .scan-lines {
 	clear: both;
 }
 .scan-line .syntaxhighlighter {
+	background-color: #f7f9fe !important;
 	padding: .5em 0;
-	background-color: #F7F9FE !important;
 }
 .scan-line .syntaxhighlighter .line,
 .scan-line .syntaxhighlighter .line.alt1,
 .scan-line .syntaxhighlighter .line.alt2 {
-	background-color: #F7F9FE !important;
+	background-color: #f7f9fe !important;
 }
