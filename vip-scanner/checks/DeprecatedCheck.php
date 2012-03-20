@@ -3,7 +3,7 @@
 class DeprecatedCheck extends BaseCheck {
 	function check( $files ) {
 		$result = true;
-		
+
 		$checks = array(
 			// start wp-includes deprecated
 			array('get_post_data' => 'get_post()', '1.5.1'),
@@ -138,15 +138,15 @@ class DeprecatedCheck extends BaseCheck {
 			array('print_column_headers WP_list_table' => 'None available','3.1')
 			// end wp-admin
 		);
-			
+
 		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
 			foreach ( $checks as $alt => $check ) {
 				$this->increment_check_count();
-				
+
 				$version = $check;
 				$key = key( $check );
 				$alt = $check[$key];
-				
+
 				if ( preg_match( '/[\s|]' . $key . '\(/m', $file_content, $matches ) ) {
 					$filename = $this->get_filename( $file_path );
 					$error = rtrim( $matches[0], '(' );

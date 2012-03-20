@@ -2,10 +2,10 @@
 
 class ThemeCustomizeCheck extends BaseCheck {
 	function check( $files ) {
-	
+
 		$result = true;
 		$this->increment_check_count();
-		
+
 		$php = $this->merge_files( $files, 'php' );
 
 		if ( strpos( $php, 'add_custom_image_header' ) === false ) {

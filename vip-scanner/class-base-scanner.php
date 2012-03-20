@@ -14,7 +14,7 @@ class BaseScanner {
 		'css' => 'css',
 		'js' => 'js',
 	);
-	
+
 
 	function __construct( $files, $checks ) {
 		// Given a set of files & a set of Checks
@@ -24,22 +24,22 @@ class BaseScanner {
 		$this->files = $this->group_files( $files );
 		$this->checks = $checks;
 	}
-	
+
 	protected function add_error( $slug, $description, $level, $file = '', $lines = array() ) {
 		$error = array(
 			'slug' => $slug,
 			'level' => $level,
 			'description' => $description
 		);
-		
+
 		if( ! empty( $file ) )
 			$error['file'] = $file;
 		if( ! empty( $lines ) )
 			$error['lines'] = $lines;
-		
+
 		$this->errors[] = $error;
 	}
-	
+
 	function get_file_type( $filename ) {
 		$file_extension = array_pop( explode( '.', $filename ) );
 
@@ -67,9 +67,9 @@ class BaseScanner {
 	}
 
 	function group_files( $files ) {
-		
+
 		$grouped_files = array();
-		
+
 		foreach( $files as $filename => $file_contents ) {
 			$file_type = $this->get_file_type( $filename );
 
@@ -83,10 +83,10 @@ class BaseScanner {
 		}
 		return $grouped_files;
 	}
-	
+
 	function scan() {
 		$pass = true;
-		
+
 		if( empty( $this->files ) ) {
 			$this->add_error(
 				'no-files',
@@ -95,7 +95,7 @@ class BaseScanner {
 			);
 			return false;
 		}
-				
+
 		foreach( $this->checks as $check => $check_file ) {
 			if ( is_numeric( $check ) ) { // a bit of a hack, but let's us pass in either associative or indexed or combined array
 				$check = $check_file;
@@ -110,21 +110,21 @@ class BaseScanner {
 
 			$check = new $check;
 			if ( $check instanceof BaseCheck ) {
-				
+
 				$pass = $pass & $check->check( $this->files );
 				$results = $check->get_results();
-				
+
 				if ( ! empty( $results['errors'] ) ) {
 					$this->errors = array_merge( $results['errors'], $this->errors );
 				}
-				
+
 				$this->total_checks += $results['count'];
 			}
 		}
 		$this->result = $pass;
 		return $pass;
 	}
-	
+
 	function get_results() {
 		return array(
 			'result' => $this->result,
@@ -133,31 +133,31 @@ class BaseScanner {
 			'errors' => $this->errors
 		);
 	}
-	
+
 	function get_errors( $levels = array() ) {
 		if( empty( $levels ) )
 			return $this->errors;
-		
+
 		$levels = (array) $levels;
 		$errors = array();
-		
+
 		for( $i = 0; $i < count( $this->errors ); $i++ ) {
 			$error = $this->errors[$i];
 			if( isset( $error['level'] ) && in_array( strtolower( $error['level'] ), $levels ) )
 				$errors[] = $error;
 		}
-		
+
 		return $errors;
 	}
-	
+
 	private function load_check( $check, $file = '' ) {
-		
+
 		if( ! class_exists( $check ) ) {
 			$path =  ! empty( $file ) ? $file : sprintf( '%1$s/%2$s.php', VIP_SCANNER_CHECKS_DIR, $check );
 			if ( file_exists( $path ) )
 				include( $path );
 		}
-		
+
 		return class_exists( $check );
 	}
 }

@@ -2,12 +2,12 @@
 
 class ThemeArtisteerCheck extends BaseCheck {
 	function check( $files ) {
-		
+
 		$result = true;
 		$this->increment_check_count();
-		
+
 		$php = $this->merge_files( $files, 'php' );
-		if ( 		
+		if (
 			strpos( $php, 'art_normalize_widget_style_tokens' ) !== false
 			|| strpos( $php, 'adi_normalize_widget_style_tokens' ) !== false
 			|| strpos( $php, 'm_normalize_widget_style_tokens' ) !== false

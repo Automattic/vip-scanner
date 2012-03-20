@@ -2,11 +2,11 @@
 class WormCheck extends BaseCheck {
 	function check( $files ) {
 		$result = true;
-		
+
 		$checks = array(
 			'/wshell\.php/'=>'<strong>PHP shell was found!</strong>',
 		);
-		
+
 		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
 			foreach ( $checks as $key => $check ) {
 				$this->increment_check_count();

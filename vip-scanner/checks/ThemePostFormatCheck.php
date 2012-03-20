@@ -4,10 +4,10 @@ class ThemePostFormatCheck extends BaseCheck {
 	function check( $files ) {
 		$result = true;
 		$this->increment_check_count();
-		
+
 		$php = $this->merge_files( $files, 'php' );
 		$css = $this->merge_files( $files, 'css' );
-		
+
 		$checks = array(
 			'/add_theme_support\((\s|)("|\')post-formats("|\')/m'
 		);
