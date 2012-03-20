@@ -2,7 +2,7 @@
 class BloginfoDeprecatedCheck extends BaseCheck {
 	function check( $files ) {
 		$result = true;
-		
+
 		$checks = array(
 			'/[\s|]get_bloginfo\((\s|)("|\')url("|\')(\s|)\)/m' => 'home_url()',
 			'/[\s|]get_bloginfo\((\s|)("|\')wpurl("|\')(\s|)\)/m' => 'site_url()',
@@ -19,7 +19,7 @@ class BloginfoDeprecatedCheck extends BaseCheck {
 			'/[\s|]bloginfo\((\s|)("|\')text_direction("|\')(\s|)\)/m' => 'is_rtl()',
 			'/[\s|]bloginfo\((\s|)("|\')feed_url("|\')(\s|)\)/m' => 'get_feed_link( \'feed\' ) (where feed is rss, rss2, atom)',
 		);
-		
+
 		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
 			foreach ( $checks as $key => $check ) {
 				$this->increment_check_count();

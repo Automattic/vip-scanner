@@ -1,12 +1,12 @@
 <?php
 class ThemeFilesCheck extends BaseCheck {
-	
+
 	function check( $files ) {
-		
+
 		$this->increment_check_count();
-		
+
 		$filenames = array();
-		
+
 		foreach ( $this->get_all_files( $files ) as $filename => $file_contents ) {
 			array_push( $filenames, strtolower( basename( $filename ) ) );
 		}
@@ -23,7 +23,7 @@ class ThemeFilesCheck extends BaseCheck {
 				);
 			}
 		}
-		
+
 		foreach( $recommended as $file ) {
 			if ( ! in_array( $file, $filenames ) ) {
 				$this->add_error(
@@ -31,7 +31,7 @@ class ThemeFilesCheck extends BaseCheck {
 					sprintf( 'Could not find the file `%s` in the theme.', $file ),
 					'note'
 				);
-					
+
 				$this->error[] = "<span class='tc-lead tc-recommended'>RECOMMENDED</span>: could not find the file <strong>{$file}</strong> in the theme.";
 			}
 		}

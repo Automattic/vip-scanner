@@ -90,13 +90,13 @@ class VIP_Scanner_UI {
 	function do_theme_review() {
 		if( ! isset( $_POST[ 'vip-scanner-nonce' ] ) || ! wp_verify_nonce( $_POST[ 'vip-scanner-nonce' ], 'vip-scan-theme' ) )
 			return;
-		
+
 		if ( ! isset( $_POST[ 'vip-scanner-theme-name' ] ) )
 			return;
 
 		$theme = sanitize_text_field( $_POST[ 'vip-scanner-theme-name' ] );
 		$review = isset( $_POST[ 'vip-scanner-review-type' ] ) ? sanitize_text_field( $_POST[ 'vip-scanner-review-type' ] ) : $review_types[0]; // TODO: eugh, need better error checking
-		
+
 		$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
 		if ( $scanner )
 			$this->display_theme_review_result( $scanner, $theme );
@@ -109,13 +109,13 @@ class VIP_Scanner_UI {
 		if ( isset( $SyntaxHighlighter ) ) {
 			add_action( 'admin_footer', array( &$SyntaxHighlighter, 'maybe_output_scripts' ) );
 		}
-		
+
 		$report   = $scanner->get_results();
 		$blockers = $scanner->get_errors( array( 'blocker', 'warning', 'required' ) ); // TODO allow to be filtered.
 		$pass     = ! count( $blockers );
 		?>
 		<h4>Scanning: <?php echo $theme; ?></h4>
-		
+
 		<table class="scan-results-table">
 			<tr>
 				<th><?php _e( 'Scan Result', 'theme-check' ); ?></th>
@@ -134,7 +134,7 @@ class VIP_Scanner_UI {
 				<td><?php echo count( $blockers ); ?></td>
 			</tr>
 		</table>
-		
+
 		<ol class="scan-results-list">
 			<?php
 			$results = $scanner->get_errors();
@@ -145,13 +145,13 @@ class VIP_Scanner_UI {
 		</ol>
 		<?php
 	}
-	
+
 	function display_theme_review_result_row( $error, $scanner, $theme ) {
 		global $SyntaxHighlighter;
-		
+
 		$level = $error['level'];
 		$description = $error['description'];
-		
+
 		$file = '';
 		if ( is_array( $error['file'] ) ) {
 			if ( ! empty( $error['file'][0] ) )
@@ -165,20 +165,20 @@ class VIP_Scanner_UI {
 			if ( ! $file && ! empty( $file_theme_path ) )
 				$file = $file_theme_path;
 		}
-		
+
 		$lines = ! empty( $error['lines'] ) ? $error['lines'] : array();
-		
+
 		?>
 		<li class="scan-result-<?php echo strtolower( $level ); ?>">
 			<span class="scan-level"><?php echo $level; ?></span>
 			<span class="scan-description"><?php echo $description; ?></span>
-			
+
 			<?php if( ! empty( $file ) ) : ?>
 				<span class="scan-file">
 					<?php echo $file; ?>
 				</span>
 			<?php endif; ?>
-			
+
 			<?php if( ! empty( $lines ) ) : ?>
 				<div class="scan-lines">
 				<?php foreach( $lines as $line ) : ?>
@@ -196,7 +196,7 @@ class VIP_Scanner_UI {
 				<?php endforeach; ?>
 				</div>
 			<?php endif; ?>
-			
+
 		</li>
 		<?php
 	}

@@ -2,14 +2,14 @@
 
 class DirectoriesCheck extends BaseCheck {
 	function check( $files ) {
-	
+
 		$result = true;
 		$found = false;
-		
+
 		foreach ( $files as $path => $file ) {
 			$this->increment_check_count();
 			if ( strpos( $path, '.git' ) !== false || strpos( $path, '.svn' ) !== false )
-				$found = true;		
+				$found = true;
 		}
 
 		if ( $found ) {

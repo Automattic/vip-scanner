@@ -4,14 +4,14 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 {
 	function check( $files ) {
 		$result = true;
-		
+
 		$checks = array(
 			// wordpress functions
 			"remove_filter" => array( "level" => "Warning", "note" => "Removing filters" ),
 			"remove_action" => array( "level" => "Warning", "note" => "Removing actions" ),
 			"add_filter" => array( "level" => "Note", "note" => "Altering filters" ),
 			"add_action" => array( "level" => "Note", "note" => "Altering actions" ),
-			
+
 			"wp_cache_set" => array( "level" => "Warning", "note" => "Setting Cache Object" ),
 			"wp_cache_get" => array( "level" => "Note", "note" => "Getting Cache Object" ),
 			"wp_cache_add" => array( "level" => "Warning", "note" => "Adding Cache Object" ),
@@ -19,24 +19,24 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"set_transient" => array( "level" => "Warning", "note" => "Setting transient Object" ),
 			"get_transient" => array( "level" => "Note", "note" => "Getting transient Object" ),
 			"delete_transient" => array( "level" => "Warning", "note" => "Deleting transient Object" ),
-			
+
 			"update_post_caches" => array( "level" => "Warning", "note" => "Post cache alteration" ),
-			
+
 			"update_option" => array( "level" => "Warning", "note" => "Updating option" ),
 			"get_option" => array( "level" => "Note", "note" => "Getting option" ),
 			"add_option" => array( "level" => "Warning", "note" => "Adding Option" ),
 			"delete_option" => array( "level" => "Warning", "note" => "Deleting Option" ),
-			
+
 			"wp_remote_get" => array( "level" => "Warning", "note" => "Remote operation" ),
 			"fetch_feed" => array( "level" => "Warning", "note" => "Remote feed operation" ),
-			
+
 			"wp_schedule_event" => array( "level" => "Warning", "note" => "WP Cron usage" ),
 			"wp_schedule_single_event" => array( "level" => "Warning", "note" => "WP Cron usage" ),
 			"wp_clear_scheduled_hook" => array( "level" => "Warning", "note" => "WP Cron usage" ),
 			"wp_next_scheduled" => array( "level" => "Warning", "note" => "WP Cron usage" ),
 			"wp_unschedule_event" => array( "level" => "Warning", "note" => "WP Cron usage" ),
 			"wp_get_schedule" => array( "level" => "Warning", "note" => "WP Cron usage" ),
-	
+
 			"add_feed" => array( "level" => "Warning", "note" => "Custom feed implementation" ),
 
 			// Uncached functions
@@ -62,13 +62,13 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"var_dump" => array( "level" => "Warning", "note" => "Unfiltered variable output" ),
 			"print_r" => array( "level" => "Warning", "note" => "Unfiltered variable output" ),
 			"var_export" => array( "level" => "Warning", "note" => "Unfiltered variable output" ),
-	
+
 			// other
 			"date_default_timezone_set" => array( "level" => "Blocker", "note" => "Timezone manipulation" ),
 			"error_reporting" => array( "level" => "Blocker", "note" => "Settings alteration" ),
 			'eval' => array( 'level' => 'Blocker', "note" => "Meta programming" ),
 			"ini_set" => array( "level" => "Blocker", "note" => "Settings alteration" ),
-	
+
 			// filesystem functions
 			//"basename" => array( "level" => "Note", "note" => "Returns filename component of path" ),
 			"chgrp" => array( "level" => "Blocker", "note" => "Changes file group" ),
@@ -154,7 +154,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"touch" => array( "level" => "Blocker", "note" => "Sets access and modification time of file" ),
 			"umask" => array( "level" => "Blocker", "note" => "Changes the current umask" ),
 			"unlink" => array( "level" => "Blocker", "note" => "Deletes a file" ),
-			
+
 			// process control functions
 			"pcntl_alarm" => array( "level" => "Blocker", "note" => "Set an alarm clock for delivery of a signal" ),
 			"pcntl_exec" => array( "level" => "Blocker", "note" => "Executes specified program in current process space" ),
@@ -175,13 +175,13 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"pcntl_wstopsig" => array( "level" => "Blocker", "note" => "Returns the signal which caused the child to stop" ),
 			"pcntl_wtermsig" => array( "level" => "Blocker", "note" => "Returns the signal which caused the child to terminate" ),
 		);
-		
+
 		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
 			foreach ( $checks as $check => $check_info ) {
 				$pattern = "/\s+($check)+\s?\(+/msiU";
-			
+
 				$this->increment_check_count();
-				
+
 				if ( preg_match( $pattern, $file_content, $matches ) ) {
 					$filename = $this->get_filename( $file_path );
 					$error = rtrim( $matches[0], '(' );//esc_html( rtrim( $matches[0],'(') );
@@ -197,7 +197,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 				}
 			}
 		}
-		
+
 		return $result;
 	}
 }

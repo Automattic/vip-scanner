@@ -3,7 +3,7 @@
 class ThemeStyleOptionalCheck extends BaseCheck {
 	function check( $files ) {
 		$result = true;
-	
+
 		$css = $this->merge_files( $files, 'css' );
 
 		$checks = array(
@@ -21,7 +21,7 @@ class ThemeStyleOptionalCheck extends BaseCheck {
 				);
 			}
 		}
-		
+
 		return $result;
 	}
 }

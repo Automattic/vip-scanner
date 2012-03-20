@@ -41,7 +41,7 @@ class BadThingsCheck extends BaseCheck {
 			'/cx=[0-9]{21}:[a-z0-9]{10}/ms' => 'Google search code detected',
 			'/pub-[0-9]{16}/' => 'Google advertising code detected'
 		);
-		
+
 		$other_files = array_diff( $this->get_all_files( $files ), $php_files );
 
 		foreach ( $other_files as $file_path => $file_content ) {
