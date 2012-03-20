@@ -6,9 +6,9 @@ class ThemeContentWidthCheck extends BaseCheck {
 
 		$result = true;
 		$this->increment_check_count();
-		
+
 		$php = $this->merge_files( $files, 'php' );
-		
+
 		if ( strpos( $php, '$content_width' ) === false && !preg_match( '/add_filter\((\s|)("|\')embed_defaults/', $php ) ) {
 			$this->add_error(
 				'theme-content-width',

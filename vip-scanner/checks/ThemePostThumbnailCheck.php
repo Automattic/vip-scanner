@@ -4,9 +4,9 @@ class ThemePostThumbnailCheck extends BaseCheck {
 	function check( $files ) {
 		$result = true;
 		$this->increment_check_count();
-		
+
 		$php = $this->merge_files( $files, 'php' );
-		
+
 		if ( strpos( $php, 'the_post_thumbnail' ) === false ) {
 			$this->add_error(
 				'the_post_thumbnail',
@@ -14,7 +14,7 @@ class ThemePostThumbnailCheck extends BaseCheck {
 				'recommended'
 			);
 		}
-		
+
 		// TODO: This should check for full function, i.e. add_theme_support( ... )
 		if ( strpos( $php, 'post-thumbnails' ) === false ) {
 			$this->add_error(
@@ -23,7 +23,7 @@ class ThemePostThumbnailCheck extends BaseCheck {
 				'recommended'
 			);
 		}
-		
+
 		return $result;
 	}
 }

@@ -4,9 +4,9 @@
 class ThemeBasicChecks extends BaseCheck {
 	function check( $files ) {
 		$result = true;
-		
+
 		$php = $this->merge_files( $files, 'php' );
-		
+
 		$checks = array(
 			'DOCTYPE' => 'See: <a href="http://codex.wordpress.org/HTML_to_XHTML">http://codex.wordpress.org/HTML_to_XHTML</a><pre>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"<br />"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"?&gt;</pre>',
 			'wp_footer\(' => 'See: <a href="http://codex.wordpress.org/Function_Reference/wp_footer">wp_footer</a><pre> &lt;?php wp_footer(); ?&gt;</pre>',
@@ -33,7 +33,7 @@ class ThemeBasicChecks extends BaseCheck {
 					$key = 'wp_enqueue_script( \'comment-reply\' )';
 				if ( $key === '<body.*body_class\(' )
 					$key = 'body_class call in body tag';
-				
+
 				$key = rtrim( $key,'\(' );
 				$this->add_error(
 					$key,

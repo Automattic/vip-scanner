@@ -1,6 +1,6 @@
 <?php
 
-class ContentScanner extends BaseScanner 
+class ContentScanner extends BaseScanner
 {
 	/**
 	 * @param mixed $content Content of the file

@@ -11,7 +11,7 @@ class HardcodedLinksCheck extends BaseCheck {
 			$url_regex ='([[:alnum:]\-\.])+(\\.)([[:alnum:]]){2,4}([[:blank:][:alnum:]\/\+\=\%\&\_\\\.\~\?\-]*)';
 			$title_regex ='[[:blank:][:alnum:][:punct:]]*';	// 0 or more: any num, letter(upper/lower) or any punc symbol
 			$space_regex ='(\\s*)';
-			
+
 			if ( preg_match_all( "/(<a)(\\s+)(href" . $space_regex . "=" . $space_regex . "\"" . $space_regex . "((http|https|ftp):\\/\\/)?)" . $url_regex . "(\"".$space_regex . $title_regex . $space_regex .">)" . $title_regex . "(<\\/a>)/is", $file_content, $out, PREG_SET_ORDER ) ) {
 				$filename = $this->get_filename( $file_path );
 				foreach( $out as $key ) {
