@@ -41,7 +41,7 @@ class VIP_Scanner_UI {
 		if ( 'tools_page_' . self::key !== $hook )
 			return;
 
-		wp_enqueue_style( 'vip-scanner-css', plugins_url( 'css/vip-scanner.css', __FILE__ ) );
+		wp_enqueue_style( 'vip-scanner-css', plugins_url( 'css/vip-scanner.css', __FILE__ ), array(), '20120320' );
 	}
 
 	function display_admin_page() {
@@ -62,7 +62,7 @@ class VIP_Scanner_UI {
 	}
 
 	function display_vip_scanner_form() {
-		$themes = get_themes();
+		$themes = wp_get_themes();
 		$review_types = VIP_Scanner::get_instance()->get_review_types();
 		$current_theme = isset( $_POST[ 'vip-scanner-theme-name' ] ) ? sanitize_text_field( $_POST[ 'vip-scanner-theme-name' ] ) : get_stylesheet();
 		$current_review = isset( $_POST[ 'vip-scanner-review-type' ] ) ? sanitize_text_field( $_POST[ 'vip-scanner-review-type' ] ) : $review_types[0]; // TODO: eugh, need better error checking
@@ -71,8 +71,7 @@ class VIP_Scanner_UI {
 			<p>Select a theme and the review that you want to run:</p>
 			<select name="vip-scanner-theme-name">
 				<?php foreach ( $themes as $name => $location ) : ?>
-					<?php var_dump( $location, $current_theme ); ?>
-					<option <?php selected( $current_theme, $location['Stylesheet'] ); ?> value="<?php echo esc_attr( $location['Stylesheet'] ); ?>"><?php echo esc_html( $name ); ?></option>
+					<option <?php selected( $current_theme, $location['Stylesheet'] ); ?> value="<?php echo esc_attr( $location['Stylesheet'] ); ?>"><?php echo esc_html( $location['Name'] ); ?></option>
 				<?php endforeach; ?>
 			</select>
 			<select name="vip-scanner-review-type">
