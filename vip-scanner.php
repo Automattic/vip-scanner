@@ -3,8 +3,8 @@
 Plugin Name: VIP Scanner
 Plugin URI: http://vip.wordpress.com
 Description: Easy to use UI for the VIP Scanner.
-Author: Mohammad Jangda (Original code by Pross, Otto42, and Thorsten Ott), Automattic
-Version: 0.1
+Author: Automattic (Original code by Pross, Otto42, and Thorsten Ott)
+Version: 0.2
 
 License: GPLv2
 */

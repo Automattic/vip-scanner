@@ -5,7 +5,7 @@ A WordPress plugin that enables you to scan all sorts of themes and files and th
 
 Contributors: [Mohammad Jangda](http://profiles.wordpress.org/batmoo/), [Automattic](http://profiles.wordpress.org/automattic/), [Thorsten Ott](http://profiles.wordpress.org/tott/), and [Michael Fields](http://profiles.wordpress.org/mfields/)
 
-Requires WordPress version 3.3 or greater.
+Requires WordPress version 3.4 or greater.
 
 
 About
@@ -30,6 +30,13 @@ Install using the Plugin Installer.
 
 Changelog
 ---------
+
+__0.2__
+
+* New checks and scans! VIP_PregFile, EscapingCheck, etc.
+* PHP 5.2 compatibility, props kevinmcgillivray and chrisguitarguy
+* Bump WP version requirement (3.4)
+* Code cleanup, props lance
 
 __0.1__
 

@@ -1,9 +1,9 @@
 === VIP Scanner ===
-Contributors: batmoo, automattic, tott
+Contributors: batmoo, automattic, tott, mfields
 Tags: scanner, scan, files, security, theme check
-Requires at least: 3.3
-Tested up to: 3.3
-Stable tag: 0.1
+Requires at least: 3.4
+Tested up to: 3.4
+Stable tag: 0.2
 
 Scan all sorts of themes and files and things.
 
@@ -34,6 +34,13 @@ To come...
 1. The VIP Scanner has a slick UI. Slicker than your average.
 
 == Changelog ==
+
+= 0.2 =
+
+* New checks and scans! VIP_PregFile, EscapingCheck, etc.
+* PHP 5.2 compatibility, props kevinmcgillivray and chrisguitarguy
+* Bump WP version requirement (3.4)
+* Code cleanup, props lance
 
 = 0.1 =
 
