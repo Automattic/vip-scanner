@@ -24,7 +24,7 @@ class InternationalizedStringCheck extends BaseCheck {
 		$checks = array(
 			array(
 				'pattern' => '/' . $prefix . '[\s]*\([\s]*\)/',
-				'message' => __( 'No parameters we passed to a gettext function.', 'vip-scanner' ),
+				'message' => __( 'No parameters were passed to a gettext function.', 'vip-scanner' ),
 			),
 			array(
 				'pattern' => '/' . $prefix . "[\s]*\([\s]*'[\s]*'/",
@@ -40,7 +40,7 @@ class InternationalizedStringCheck extends BaseCheck {
 			),
 			array(
 				'pattern' => '/' . $prefix . '[\s]*\([\s][a-z_][\w]+/',
-				'message' => __( 'The return value of a function may have been passed as the first parameter to a get text function.', 'vip-scanner' ),
+				'message' => __( 'The return value of a function may have been passed as the first parameter to a gettext function.', 'vip-scanner' ),
 			),
 		);
 
