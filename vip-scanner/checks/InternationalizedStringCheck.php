@@ -27,11 +27,11 @@ class InternationalizedStringCheck extends BaseCheck {
 				'message' => __( 'No parameters we passed to a gettext function.', 'vip-scanner' ),
 			),
 			array(
-				'pattern' => '/' . $prefix . "[\s]*\([\s]*'[\s]*'[\s]*\)/",
+				'pattern' => '/' . $prefix . "[\s]*\([\s]*'[\s]*'/",
 				'message' => __( 'An empty string has been passed to a gettext function.', 'vip-scanner' ),
 			),
 			array(
-				'pattern' => '/' . $prefix . '[\s]*\([\s]*"[\s]*"[\s]*\)/',
+				'pattern' => '/' . $prefix . '[\s]*\([\s]*"[\s]*"/',
 				'message' => __( 'An empty string has been passed to a gettext function.', 'vip-scanner' ),
 			),
 			array(
