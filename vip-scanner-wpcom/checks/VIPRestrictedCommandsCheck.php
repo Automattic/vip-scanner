@@ -54,11 +54,11 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			'wpcom_vip_load_custom_cdn' => array( 'level' => 'Blocker', 'note' => 'This should only be used if you have a CDN already set up.' ),
 
 			// Role modifications
-			"get_role" => array( "level" => "Warning", "note" => "Role access" ),
-			"add_role" => array( "level" => "Blocker", "note" => "Role modification" ),
- 			"remove_role" => array( "level" => "Blocker", "note" => "Role modification" ),
- 			"add_cap" => array( "level" => "Blocker", "note" => "Role modification" ),
- 			"remove_cap" => array( "level" => "Blocker", "note" => "Role modification" ),
+			"get_role" => array( "level" => "Warning", "note" => "Role access; use helper functions http://lobby.vip.wordpress.com/best-practices/custom-user-roles/" ),
+			"add_role" => array( "level" => "Blocker", "note" => "Role modification; use helper functions http://lobby.vip.wordpress.com/best-practices/custom-user-roles/" ),
+ 			"remove_role" => array( "level" => "Blocker", "note" => "Role modification; use helper functions http://lobby.vip.wordpress.com/best-practices/custom-user-roles/" ),
+ 			"add_cap" => array( "level" => "Blocker", "note" => "Role modification; use helper functions http://lobby.vip.wordpress.com/best-practices/custom-user-roles/" ),
+ 			"remove_cap" => array( "level" => "Blocker", "note" => "Role modification; use helper functions http://lobby.vip.wordpress.com/best-practices/custom-user-roles/" ),
 
 			// debugging
 			"error_log" => array( "level" => "Blocker", "note" => "Filesystem operation" ),
