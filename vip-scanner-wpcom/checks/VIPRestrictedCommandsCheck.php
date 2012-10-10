@@ -50,6 +50,9 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"wpcom_uncached_get_post_meta" => array( "level" => "Warning", "note" => "Bypassing object cache, please validate" ),
 			"wpcom_uncached_get_post_by_meta" => array( "level" => "Warning", "note" => "Bypassing object cache, please validate" ),
 
+			// Functions that need to be used with care
+			'wpcom_vip_load_custom_cdn' => array( 'level' => 'Blocker', 'note' => 'This should only be used if you have a CDN already set up.' ),
+
 			// Role modifications
 			"get_role" => array( "level" => "Warning", "note" => "Role access" ),
 			"add_role" => array( "level" => "Blocker", "note" => "Role modification" ),
