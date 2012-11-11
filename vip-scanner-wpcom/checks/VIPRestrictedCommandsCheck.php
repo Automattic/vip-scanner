@@ -39,6 +39,8 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 
 			"add_feed" => array( "level" => "Warning", "note" => "Custom feed implementation" ),
 
+			'query_posts' => array( 'level' => 'Warning', 'note' => 'Rewriting the main loop. WP_Query or get_posts might be better functions: http://developer.wordpress.com/2012/05/14/querying-posts-without-query_posts/' ),
+
 			// Uncached functions
 			'get_category_by_slug' => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
 			'get_cat_ID' => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
