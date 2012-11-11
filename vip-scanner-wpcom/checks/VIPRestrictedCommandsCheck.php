@@ -45,6 +45,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			'get_term_by' => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
 			'get_page_by_title' => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
 			'wp_get_object_terms' => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
+			'wp_get_post_terms' => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
 
 			// Object cache bypass
 			"wpcom_uncached_get_post_meta" => array( "level" => "Warning", "note" => "Bypassing object cache, please validate" ),
