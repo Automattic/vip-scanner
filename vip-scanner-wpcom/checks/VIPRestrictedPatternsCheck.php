@@ -7,12 +7,12 @@ class VIPRestrictedPatternsCheck extends BaseCheck
 
 		$checks = array(
 			"/(kses)+/msiU" => array ( "level" => "Warning", "note" => "Working with kses" ),
-			"/(\\\$wpdb->|mysql_|WP_Query)+.+(ALTER)+\s+/msiU" => array( "level" => "Blocker", "note" => "Possible database table alteration" ),
-			"/(\\\$wpdb->|mysql_|WP_Query)+.+(CREATE)+\s+/msiU" => array( "level" => "Blocker", "note" => "Possible database table creation" ),
-			"/(\\\$wpdb->|mysql_|WP_Query)+.+(DROP)+\s+/msiU" => array( "level" => "Blocker", "note" => "Possible database table deletion" ),
-			"/(\\\$wpdb->|mysql_|WP_Query)+.+(DELETE)+\s+(FROM)+\s+/msiU" => array( "level" => "Note", "note" => "Direct database delete query" ),
-			"/(\\\$wpdb->|mysql_|WP_Query)+.+(SELECT)+\s.+/msiU" => array( "level" => "Note", "note" => "Direct Database select query" ),
-			"/(^GLOBAL)(\\\$wpdb->|mysql_|WP_Query)+/msiU" => array( "level" => "Warning", "note" => "Possible direct database query" ),
+			"/(\\\$wpdb->|mysql_)+.+(ALTER)+\s+/msiU" => array( "level" => "Blocker", "note" => "Possible database table alteration" ),
+			"/(\\\$wpdb->|mysql_)+.+(CREATE)+\s+/msiU" => array( "level" => "Blocker", "note" => "Possible database table creation" ),
+			"/(\\\$wpdb->|mysql_)+.+(DROP)+\s+/msiU" => array( "level" => "Blocker", "note" => "Possible database table deletion" ),
+			"/(\\\$wpdb->|mysql_)+.+(DELETE)+\s+(FROM)+\s+/msiU" => array( "level" => "Note", "note" => "Direct database delete query" ),
+			"/(\\\$wpdb->|mysql_)+.+(SELECT)+\s.+/msiU" => array( "level" => "Note", "note" => "Direct Database select query" ),
+			"/(^GLOBAL)(\\\$wpdb->|mysql_)+/msiU" => array( "level" => "Warning", "note" => "Possible direct database query" ),
 			"/(echo|print|\<\?\=)+.+(\\\$GLOBALS|\\\$_SERVER|\\\$_GET|\\\$_REQUEST|\\\$_POST)+/msiU" => array( "level" => "Warning", "note" => "Possible output of restricted variables" ),
 			"/(echo|print|\<\?\=)+.+(get_search_query)+/msiU" => array( "level" => "Warning", "note" => "Output of search query" ),
 			"/(\\\$GLOBALS|\\\$_SERVER|\\\$_GET|\\\$_REQUEST|\\\$_POST)+/msiU" => array( "level" => "Note", "note" => "Working with superglobals" ),
