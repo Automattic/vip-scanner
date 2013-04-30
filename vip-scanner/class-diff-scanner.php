@@ -27,13 +27,13 @@ class DiffScanner extends BaseScanner
 						$length = 4;
 					break;
 				case preg_match( '/^ (.*)/', $line, $match ):
+					$diff_split[$file_name][$new_start] = $match[1];
 					$old_start++;
 					$new_start++;
-					$diff_split[$file_name][$new_start] = $match[1];
 					break;
 				case preg_match( '/^\+(.*)/', $line, $match ):
-					$new_start++;
 					$diff_split[$file_name][$new_start] = $match[1];
+					$new_start++;
 					break;
 				case preg_match( '/^\-(.*)/', $line, $match ):
 					$old_start++;
