@@ -41,7 +41,10 @@ class BaseScanner {
 	}
 
 	function get_file_type( $filename ) {
-		$file_extension = array_pop( explode( '.', $filename ) );
+		
+		$splosion = explode( '.', $filename );
+
+		$file_extension = array_pop( $splosion );
 
 		foreach( $this->known_extensions as $type => $extensions ) {
 			if( is_array( $extensions ) && in_array( $file_extension, $extensions ) )
