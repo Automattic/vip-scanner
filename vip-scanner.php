@@ -97,10 +97,27 @@ class VIP_Scanner_UI {
 		$review = isset( $_POST[ 'vip-scanner-review-type' ] ) ? sanitize_text_field( $_POST[ 'vip-scanner-review-type' ] ) : $review_types[0]; // TODO: eugh, need better error checking
 
 		$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
-		if ( $scanner )
+		if ( $scanner ):
 			$this->display_theme_review_result( $scanner, $theme );
-		else
+
+			if ( count( $scanner->get_errors() ) ):
+			?>
+
+			<hr>
+
+			<h2>Export Theme for VIP Review</h2>
+			<p><?php _e( 'Since some errors were detected, please provide a clear and concise explanation of the results before submitting the theme for review.', 'theme-check' ); ?></p>
+
+			<form>
+				<textarea name="summary"></textarea>
+				<?php submit_button( __( 'Export', 'theme-check' ) ); ?>
+			</form>
+
+		<?php
+			endif;
+		else:
 			$this->display_scan_error();
+		endif;
 	}
 
 	function display_theme_review_result( $scanner, $theme ) {
