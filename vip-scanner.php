@@ -17,11 +17,17 @@ class VIP_Scanner_UI {
 
 	function __construct() {
 		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'admin_init', array( $this, 'admin_init' ) );
 		do_action( 'vip_scanner_loaded' );
 	}
 
 	function init() {
 		add_action( 'admin_menu', array( $this, 'add_menu_page' ) );
+	}
+
+	function admin_init() {
+		if ( isset( $_GET['page'], $_GET['action'] ) && $_GET['page'] == self::key && $_GET['action'] == 'export' )
+			$this->export();
 	}
 
 	static function get_instance() {
@@ -80,6 +86,22 @@ class VIP_Scanner_UI {
 				<?php endforeach; ?>
 			</select>
 			<?php submit_button( 'Check it!', 'primary', 'submit', false ); ?>
+			<?php
+				// Prepare the link to download a set of rules
+				// Link is contingent on the current filter state
+				$args = array(
+					'action' => 'export',
+					'_wpnonce' => wp_create_nonce( 'export' ),
+					'theme' => urlencode( $current_theme ),
+					'review' => urlencode( $current_review ),
+				);
+
+				$download_url = add_query_arg( $args, menu_page_url( self::key, false ) );
+			?>
+			<?php if ( isset( $_POST['vip-scanner-theme-name'], $_POST['vip-scanner-review-type'] ) ): ?>
+				<a title="<?php _e( 'Export the current review' ); ?>" class="button-secondary" href="<?php echo esc_url( $download_url ); ?>"><?php _e( 'Export' ); ?></a>
+			<?php endif; ?>
+
 			<?php wp_nonce_field( 'vip-scan-theme', 'vip-scanner-nonce' ); ?>
 			<input type="hidden" name="page" value="<?php echo self::key; ?>" />
 		</form>
@@ -234,6 +256,32 @@ class VIP_Scanner_UI {
 
 	function display_scan_error() {
 		echo 'Uh oh! Looks like something went wrong :(';
+	}
+
+	function export() {
+
+		// Check nonce and permissions
+		check_admin_referer( 'export' );
+
+		if ( ! isset( $_GET['theme'] ) )
+			return;
+
+		if ( ! isset( $_GET['review'] ) )
+			return;
+
+		$theme = sanitize_text_field( $_GET[ 'theme' ] );
+		$review = sanitize_text_field( $_GET[ 'review' ] );
+		$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
+
+		if ( $scanner ) {
+			$filename = date( 'Ymd' ) . '.' . $theme . '.' . $review . '.VIP-Scanner.html';
+			header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+
+			$this->display_theme_review_result( $scanner, $theme );
+			exit;
+		}
+
+		// redirect with error message
 	}
 }
 
