@@ -1,58 +1,99 @@
-.scan-results-table {
-	margin: 12px 0;
+/* Scan info */
+.scan-info {
+	float: right;
+	margin-top: 8px;
+	font-size: 18px;
 }
-.scan-results-table th,
-.scan-results-table td {
-	border-bottom: #ececec 1px solid;
-	padding: 3px 5px;
-	text-align: left;
-}
-.scan-results-table td {
-	text-align: right;
-}
-.scan-results-table .pass {
-	background-color: #7da300;
+	.scan-info .theme-name {
+		font-weight: bold;
+	}
+
+/* Scan Results */
+.scan-results {
+	display: inline-block;
+	padding: 8px 10px;
 	color: #fff;
-}
-.scan-results-table .fail {
-	background-color: #c80030;
-	color: #fff;
-}
-.scan-results-list li {
-	border-bottom: 1px solid #DFDFDF;
-	padding: 5px 0;
-}
-.scan-level {
-	color: #fff;
+	font-size: 18px;
 	font-weight: bold;
-	padding: 0 10px;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
 }
-.scan-result-info .scan-level,
-.scan-result-note .scan-level,
-.scan-result-recommended .scan-level {
-	background-color: #a3c3d1;
+	.result-pass {
+		background: #27ae60;
+	}
+	.result-fail {
+		background: #e74c3c;
+	}
+	
+/* Results Table */
+.scan-results-table {
+	margin: 6px 0;
+	color: #666;
 }
-.scan-result-warning .scan-level {
-	background-color: #ffe926;
+	.scan-results-table th,
+	.scan-results-table td {
+		padding: 3px 5px;
+		text-align: left;
+	}
+		.scan-results-table th {
+			font-weight: normal;
+		}
+		.scan-results-table td {
+			text-align: right;
+		}
+
+/* Results List */
+.scan-results-list {
+	list-style: none;
+	margin: 1em 0;
 }
-.scan-result-blocker .scan-level,
-.scan-result-required .scan-level,
-.scan-result-warning .scan-level {
-	background-color: #c80030;
-}
+	.scan-results-list li {
+		padding: 10px;
+		background: #fbfbfb;
+		border-left: 4px solid #eee;
+		box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
+	}
+		.scan-results-list li.scan-result-blocker {
+			border-left-color: #e74c3c;
+		}
+		.scan-results-list li.scan-result-required {
+			border-left-color: #e67e22;
+		}
+		.scan-results-list li.scan-result-warning {
+			border-left-color: #f1c40f;
+		}
+		.scan-results-list li.scan-result-recommended {
+			border-left-color: #7f8c8d;
+		}
+		.scan-results-list li.scan-result-note {
+			border-left-color: #bdc3c7;
+		}
+		.scan-results-list li.scan-result-info {
+			border-left-color: #95a5a6;
+		}
+	
 .scan-file {
 	float: right;
 	font-family: "Courier New", Courier, monospace;
 }
 .scan-lines {
 	clear: both;
+	margin-top: .65em;
+	color: #666;
 }
-.scan-line .syntaxhighlighter {
-	background-color: #f7f9fe !important;
-	padding: .5em 0;
-}
-.scan-line .syntaxhighlighter .line,
-.scan-line .syntaxhighlighter .line.alt1,
-.scan-line .syntaxhighlighter .line.alt2 {
-	background-color: #f7f9fe !important;
-}
+	.scan-line {
+		margin-bottom: .25em;
+	}
+	.scan-line .syntaxhighlighter {
+		background-color: #f7f9fe !important;
+		padding: .5em 0;
+	}
+	.scan-line .syntaxhighlighter .line,
+	.scan-line .syntaxhighlighter .line.alt1,
+	.scan-line .syntaxhighlighter .line.alt2 {
+		background-color: #f7f9fe !important;
+	}
+	.scan-line pre {
+		margin: 0;
+	}

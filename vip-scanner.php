@@ -112,14 +112,19 @@ class VIP_Scanner_UI {
 		$report   = $scanner->get_results();
 		$blockers = $scanner->get_errors( array( 'blocker', 'warning', 'required' ) ); // TODO allow to be filtered.
 		$pass     = ! count( $blockers );
+		
+		// Note: Added a couple more parameters to count the errors & notes
+		$errors   = count($blockers);
+		$notes    = count($scanner->get_errors()) - $errors;
+		
 		?>
-		<h4>Scanning: <?php echo $theme; ?></h4>
-
+		<div class="scan-info">
+			Scanned Theme: <span class="theme-name"><?php echo $theme; ?></span>
+		</div>
+		
+		<div class="scan-results result-<?php echo $pass ? 'pass' : 'fail'; ?>"><?php echo $pass ? __( 'Passed the Scan with no errors!', 'theme-check' ) : __( 'Failed to pass Scan', 'theme-check' ); ?></div>
+		
 		<table class="scan-results-table">
-			<tr>
-				<th><?php _e( 'Scan Result', 'theme-check' ); ?></th>
-				<td class="<?php echo $pass ? 'pass' : 'fail'; ?>"><?php echo $pass ? __( 'Pass', 'theme-check' ) : __( 'Fail', 'theme-check' ); ?></td>
-			</tr>
 			<tr>
 				<th><?php _e( 'Total Files', 'theme-check' ); ?></th>
 				<td><?php echo intval( $report['total_files'] ); ?></td>
@@ -128,12 +133,14 @@ class VIP_Scanner_UI {
 				<th><?php _e( 'Total Checks', 'theme-check' ); ?></th>
 				<td><?php echo intval( $report['total_checks'] ); ?></td>
 			</tr>
-			<tr>
-				<th><?php _e( 'Total Errors', 'theme-check' ); ?></th>
-				<td><?php echo count( $blockers ); ?></td>
-			</tr>
 		</table>
+		
+		<h2 class="nav-tab-wrapper"><?php // Note: These are static tabs ?>
+			<a href="#" class="nav-tab nav-tab-active"><?php echo $errors; ?> <?php echo __( 'Errors', 'theme-check' ); ?></a>
+			<a href="#" class="nav-tab"><?php echo $notes; ?> <?php echo __( 'Notes', 'theme-check' ); ?></a>
+		</h2>
 
+		<h3><?php echo __( 'Blockers', 'theme-check' ); // Note: this is the heading for each category ?></h3>
 		<ol class="scan-results-list">
 			<?php
 			$results = $scanner->get_errors();
@@ -169,7 +176,6 @@ class VIP_Scanner_UI {
 
 		?>
 		<li class="scan-result-<?php echo strtolower( $level ); ?>">
-			<span class="scan-level"><?php echo $level; ?></span>
 			<span class="scan-description"><?php echo $description; ?></span>
 
 			<?php if( ! empty( $file ) ) : ?>
