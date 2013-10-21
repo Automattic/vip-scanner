@@ -109,11 +109,14 @@ class VIP_Scanner_UI {
 			add_action( 'admin_footer', array( &$SyntaxHighlighter, 'maybe_output_scripts' ) );
 		}
 
+		$blocker_types = apply_filters( 'vip_scanner_blocker_types', array(
+			'blocker'  => __( 'Blockers', 'theme-check' ),
+			'warning'  => __( 'Warnings', 'theme-check' ),
+			'required' => __( 'Required', 'theme-check' ),
+		) );
 		$report   = $scanner->get_results();
-		$blockers = $scanner->get_errors( array( 'blocker', 'warning', 'required' ) ); // TODO allow to be filtered.
+		$blockers = $scanner->get_errors( array_keys( $blocker_types ) );
 		$pass     = ! count( $blockers );
-		
-		// Note: Added a couple more parameters to count the errors & notes
 		$errors   = count($blockers);
 		$notes    = count($scanner->get_errors()) - $errors;
 		
@@ -140,15 +143,21 @@ class VIP_Scanner_UI {
 			<a href="#" class="nav-tab"><?php echo $notes; ?> <?php echo __( 'Notes', 'theme-check' ); ?></a>
 		</h2>
 
-		<h3><?php echo __( 'Blockers', 'theme-check' ); // Note: this is the heading for each category ?></h3>
-		<ol class="scan-results-list">
-			<?php
-			$results = $scanner->get_errors();
-			foreach( $results as $result ) {
-				$this->display_theme_review_result_row( $result, $scanner, $theme );
-			}
+		<?php foreach( $blocker_types as $type => $title ):
+			$errors = $scanner->get_errors( array( $type ) );
+
+			if ( ! count( $errors ) )
+				continue;
 			?>
-		</ol>
+			<h3><?php echo esc_html( $title ); ?></h3>
+			<ol class="scan-results-list">
+				<?php
+				foreach( $errors as $result ) {
+					$this->display_theme_review_result_row( $result, $scanner, $theme );
+				}
+				?>
+			</ol>
+		<?php endforeach; ?>
 		<?php
 	}
 
