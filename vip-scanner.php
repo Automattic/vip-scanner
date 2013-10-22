@@ -68,7 +68,6 @@ class VIP_Scanner_UI {
 		<div id="vip-scanner" class="wrap">
 			<?php screen_icon( 'themes' ); ?>
 			<h2><?php echo esc_html( $title ); ?></h2>
-			<?php $this->display_vip_scanner_form(); ?>
 			<?php $this->do_theme_review(); ?>
 		</div>
 		<?php
@@ -77,37 +76,25 @@ class VIP_Scanner_UI {
 	function display_vip_scanner_form() {
 		$themes = wp_get_themes();
 		$review_types = VIP_Scanner::get_instance()->get_review_types();
-		$current_theme = isset( $_POST[ 'vip-scanner-theme-name' ] ) ? sanitize_text_field( $_POST[ 'vip-scanner-theme-name' ] ) : get_stylesheet();
-		$current_review = isset( $_POST[ 'vip-scanner-review-type' ] ) ? sanitize_text_field( $_POST[ 'vip-scanner-review-type' ] ) : $review_types[0]; // TODO: eugh, need better error checking
+		$current_theme = isset( $_GET[ 'vip-scanner-theme-name' ] ) ? sanitize_text_field( $_GET[ 'vip-scanner-theme-name' ] ) : get_stylesheet();
+		$current_review = isset( $_GET[ 'vip-scanner-review-type' ] ) ? sanitize_text_field( $_GET[ 'vip-scanner-review-type' ] ) : $review_types[0]; // TODO: eugh, need better error checking
 		?>
-		<form method="POST">
-			<p>Select a theme and the review that you want to run:</p>
-			<select name="vip-scanner-theme-name">
-				<?php foreach ( $themes as $name => $location ) : ?>
-					<option <?php selected( $current_theme, $location['Stylesheet'] ); ?> value="<?php echo esc_attr( $location['Stylesheet'] ); ?>"><?php echo esc_html( $location['Name'] ); ?></option>
-				<?php endforeach; ?>
-			</select>
+		<form method="GET">
+			<input type="hidden" name="page" value="<?php echo self::key; ?>" />
 			<select name="vip-scanner-review-type">
 				<?php foreach ( $review_types as $review_type ) : ?>
 					<option <?php selected( $current_review, $review_type ); ?> value="<?php echo esc_attr( $review_type ); ?>"><?php echo esc_html( $review_type ); ?></option>
 				<?php endforeach; ?>
 			</select>
-			<?php submit_button( 'Check it!', 'primary', 'submit', false ); ?>
-			<?php wp_nonce_field( 'vip-scan-theme', 'vip-scanner-nonce' ); ?>
-			<input type="hidden" name="page" value="<?php echo self::key; ?>" />
+			<?php submit_button( 'Check it!', 'primary', false, false ); ?>
 		</form>
 		<?php
 	}
 
 	function do_theme_review() {
-		if( ! isset( $_POST[ 'vip-scanner-nonce' ] ) || ! wp_verify_nonce( $_POST[ 'vip-scanner-nonce' ], 'vip-scan-theme' ) )
-			return;
-
-		if ( ! isset( $_POST[ 'vip-scanner-theme-name' ] ) )
-			return;
-
-		$theme = sanitize_text_field( $_POST[ 'vip-scanner-theme-name' ] );
-		$review = isset( $_POST[ 'vip-scanner-review-type' ] ) ? sanitize_text_field( $_POST[ 'vip-scanner-review-type' ] ) : $review_types[0]; // TODO: eugh, need better error checking
+		$theme = get_stylesheet();
+		$review_types = VIP_Scanner::get_instance()->get_review_types();
+		$review = isset( $_GET[ 'vip-scanner-review-type' ] ) ? sanitize_text_field( $_GET[ 'vip-scanner-review-type' ] ) : $review_types[0]; // TODO: eugh, need better error checking
 
 		$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
 		if ( $scanner ):
@@ -126,7 +113,6 @@ class VIP_Scanner_UI {
 				<?php submit_button( __( 'Export', 'theme-check' ) ); ?>
 				<?php wp_nonce_field( 'export' ); ?>
 				<input type="hidden" name="action" value="export">
-				<input type="hidden" name="theme" value="<?php echo esc_attr( $theme ) ?>">
 				<input type="hidden" name="review" value="<?php echo esc_attr( $review ) ?>">
 				<input type="hidden" name="page" value="<?php echo self::key; ?>">
 			</form>
@@ -153,6 +139,7 @@ class VIP_Scanner_UI {
 		?>
 		<div class="scan-info">
 			Scanned Theme: <span class="theme-name"><?php echo $theme; ?></span>
+			<?php $this->display_vip_scanner_form(); ?>
 		</div>
 		
 		<div class="scan-results result-<?php echo $pass ? 'pass' : 'fail'; ?>"><?php echo $pass ? __( 'Passed the Scan with no errors!', 'theme-check' ) : __( 'Failed to pass Scan', 'theme-check' ); ?></div>
@@ -274,13 +261,10 @@ class VIP_Scanner_UI {
 		// Check nonce and permissions
 		check_admin_referer( 'export' );
 
-		if ( ! isset( $_POST['theme'] ) )
-			return;
-
 		if ( ! isset( $_POST['review'] ) )
 			return;
 
-		$theme = sanitize_text_field( $_POST[ 'theme' ] );
+		$theme = get_stylesheet();
 		$review = sanitize_text_field( $_POST[ 'review' ] );
 		$summary = $_POST['summary'];
 		$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
