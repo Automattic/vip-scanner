@@ -291,7 +291,7 @@ class VIP_Scanner_UI {
 
 			$filename = date( 'Ymd' ) . '.' . $theme . '.' . $review . '.VIP-Scanner.txt';
 			header( 'Content-Type: text/plain' );
-			//header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+			header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
 
 			$title = "$theme - $review";
 			echo $title . PHP_EOL;
