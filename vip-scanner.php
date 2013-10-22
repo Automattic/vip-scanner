@@ -232,6 +232,51 @@ class VIP_Scanner_UI {
 		<?php
 	}
 
+	function display_plaintext_theme_review_result( $scanner, $theme, $review ) {
+		$summary = $_POST['summary'];
+
+		$report   = $scanner->get_results();
+		$blockers = count( $scanner->get_errors( array_keys( $this->blocker_types ) ) );	
+		$title = "$theme - $review";
+
+		echo $title . PHP_EOL;
+		echo str_repeat( '=', strlen( $title ) ) . PHP_EOL . PHP_EOL;
+
+		_e( 'Total Files', 'theme-check' );
+		echo ':  ';
+		echo intval( $report['total_files'] );
+		echo PHP_EOL;
+
+		_e( 'Total Checks', 'theme-check' );
+		echo ': ';
+		echo intval( $report['total_checks'] );
+		echo PHP_EOL;
+
+		_e( 'Errors', 'theme-check' );
+		echo ':       ';
+		echo intval( $blockers );
+		echo PHP_EOL;
+
+		echo PHP_EOL;
+
+		foreach( $this->blocker_types as $type => $title ) {
+			$errors = $scanner->get_errors( array( $type ) );
+
+			if ( ! count( $errors ) )
+				continue;
+
+			echo "## " . esc_html( $title ) . PHP_EOL;
+
+			foreach ( $errors as $result )
+				echo wordwrap( $this->get_plaintext_result_row( $result, $theme ), 110 ) . PHP_EOL;
+
+			echo PHP_EOL;
+		}
+
+		echo "## Summary" . PHP_EOL;
+		echo wordwrap( strip_tags( $summary ?: 'No summary given.' ), 110 );
+	}
+
 	function get_plaintext_result_row( $error, $theme ) {
 		$description = $error['description'];
 
@@ -287,54 +332,15 @@ class VIP_Scanner_UI {
 
 		$theme = get_stylesheet();
 		$review = sanitize_text_field( $_POST[ 'review' ] );
-		$summary = $_POST['summary'];
 		$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
 
 		if ( $scanner ) {
-			$report   = $scanner->get_results();
-			$blockers = count( $scanner->get_errors( array_keys( $this->blocker_types ) ) );
-
 			$filename = date( 'Ymd' ) . '.' . $theme . '.' . $review . '.VIP-Scanner.txt';
 			header( 'Content-Type: text/plain' );
 			header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
 
-			$title = "$theme - $review";
-			echo $title . PHP_EOL;
-			echo str_repeat( '=', strlen( $title ) ) . PHP_EOL . PHP_EOL;
+			$this->display_plaintext_theme_review_result( $scanner, $theme, $review );
 
-			_e( 'Total Files', 'theme-check' );
-			echo ':  ';
-			echo intval( $report['total_files'] );
-			echo PHP_EOL;
-
-			_e( 'Total Checks', 'theme-check' );
-			echo ': ';
-			echo intval( $report['total_checks'] );
-			echo PHP_EOL;
-
-			_e( 'Errors', 'theme-check' );
-			echo ':       ';
-			echo intval( $blockers );
-			echo PHP_EOL;
-
-			echo PHP_EOL;
-
-			foreach( $this->blocker_types as $type => $title ) {
-				$errors = $scanner->get_errors( array( $type ) );
-
-				if ( ! count( $errors ) )
-					continue;
-
-				echo "## " . esc_html( $title ) . PHP_EOL;
-
-				foreach ( $errors as $result )
-					echo wordwrap( $this->get_plaintext_result_row( $result, $theme ), 110 ) . PHP_EOL;
-
-				echo PHP_EOL;
-			}
-
-			echo "## Summary" . PHP_EOL;
-			echo wordwrap( strip_tags( $summary ?: 'No summary given.' ), 110 );
 			exit;
 		}
 
