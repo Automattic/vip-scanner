@@ -14,11 +14,18 @@ class VIP_Scanner_UI {
 	const key = 'vip-scanner';
 
 	private static $instance;
+	private $blocker_types;
 
 	function __construct() {
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
 		do_action( 'vip_scanner_loaded' );
+
+		$this->blocker_types = apply_filters( 'vip_scanner_blocker_types', array(
+			'blocker'  => __( 'Blockers', 'theme-check' ),
+			'warning'  => __( 'Warnings', 'theme-check' ),
+			'required' => __( 'Required', 'theme-check' ),
+		) );
 	}
 
 	function init() {
@@ -26,7 +33,7 @@ class VIP_Scanner_UI {
 	}
 
 	function admin_init() {
-		if ( isset( $_GET['page'], $_GET['action'] ) && $_GET['page'] == self::key && $_GET['action'] == 'export' )
+		if ( isset( $_POST['page'], $_POST['action'] ) && $_POST['page'] == self::key && $_POST['action'] == 'export' )
 			$this->export();
 	}
 
@@ -86,22 +93,6 @@ class VIP_Scanner_UI {
 				<?php endforeach; ?>
 			</select>
 			<?php submit_button( 'Check it!', 'primary', 'submit', false ); ?>
-			<?php
-				// Prepare the link to download a set of rules
-				// Link is contingent on the current filter state
-				$args = array(
-					'action' => 'export',
-					'_wpnonce' => wp_create_nonce( 'export' ),
-					'theme' => urlencode( $current_theme ),
-					'review' => urlencode( $current_review ),
-				);
-
-				$download_url = add_query_arg( $args, menu_page_url( self::key, false ) );
-			?>
-			<?php if ( isset( $_POST['vip-scanner-theme-name'], $_POST['vip-scanner-review-type'] ) ): ?>
-				<a title="<?php _e( 'Export the current review' ); ?>" class="button-secondary" href="<?php echo esc_url( $download_url ); ?>"><?php _e( 'Export' ); ?></a>
-			<?php endif; ?>
-
 			<?php wp_nonce_field( 'vip-scan-theme', 'vip-scanner-nonce' ); ?>
 			<input type="hidden" name="page" value="<?php echo self::key; ?>" />
 		</form>
@@ -130,9 +121,14 @@ class VIP_Scanner_UI {
 			<h2>Export Theme for VIP Review</h2>
 			<p><?php _e( 'Since some errors were detected, please provide a clear and concise explanation of the results before submitting the theme for review.', 'theme-check' ); ?></p>
 
-			<form>
+			<form method="POST">
 				<textarea name="summary"></textarea>
 				<?php submit_button( __( 'Export', 'theme-check' ) ); ?>
+				<?php wp_nonce_field( 'export' ); ?>
+				<input type="hidden" name="action" value="export">
+				<input type="hidden" name="theme" value="<?php echo esc_attr( $theme ) ?>">
+				<input type="hidden" name="review" value="<?php echo esc_attr( $review ) ?>">
+				<input type="hidden" name="page" value="<?php echo self::key; ?>">
 			</form>
 
 		<?php
@@ -148,13 +144,8 @@ class VIP_Scanner_UI {
 			add_action( 'admin_footer', array( &$SyntaxHighlighter, 'maybe_output_scripts' ) );
 		}
 
-		$blocker_types = apply_filters( 'vip_scanner_blocker_types', array(
-			'blocker'  => __( 'Blockers', 'theme-check' ),
-			'warning'  => __( 'Warnings', 'theme-check' ),
-			'required' => __( 'Required', 'theme-check' ),
-		) );
 		$report   = $scanner->get_results();
-		$blockers = $scanner->get_errors( array_keys( $blocker_types ) );
+		$blockers = $scanner->get_errors( array_keys( $this->blocker_types ) );
 		$pass     = ! count( $blockers );
 		$errors   = count($blockers);
 		$notes    = count($scanner->get_errors()) - $errors;
@@ -182,7 +173,7 @@ class VIP_Scanner_UI {
 			<a href="#" class="nav-tab"><?php echo $notes; ?> <?php echo __( 'Notes', 'theme-check' ); ?></a>
 		</h2>
 
-		<?php foreach( $blocker_types as $type => $title ):
+		<?php foreach( $this->blocker_types as $type => $title ):
 			$errors = $scanner->get_errors( array( $type ) );
 
 			if ( ! count( $errors ) )
@@ -254,6 +245,26 @@ class VIP_Scanner_UI {
 		<?php
 	}
 
+	function display_plaintext_result_row( $error, $theme ) {
+		$description = $error['description'];
+
+		$file = '';
+		if ( is_array( $error['file'] ) ) {
+			if ( ! empty( $error['file'][0] ) )
+				$file .= $error['file'][0];
+			if ( ! empty( $error['file'][1] ) )
+				$file .= ': ' . $error['file'][1];
+		} else if ( ! empty( $error['file'] ) ) {
+			$file_full_path = $error['file'];
+			$file_theme_path = substr( $file_full_path, strrpos( $file_full_path, sprintf( '/%s/', $theme ) ) );
+			$file = strrchr( $file_full_path, sprintf( '/%s/', $theme ) );
+			if ( ! $file && ! empty( $file_theme_path ) )
+				$file = $file_theme_path;
+		}
+
+		echo "* $file - $description" . PHP_EOL;
+	}
+
 	function display_scan_error() {
 		echo 'Uh oh! Looks like something went wrong :(';
 	}
@@ -263,21 +274,62 @@ class VIP_Scanner_UI {
 		// Check nonce and permissions
 		check_admin_referer( 'export' );
 
-		if ( ! isset( $_GET['theme'] ) )
+		if ( ! isset( $_POST['theme'] ) )
 			return;
 
-		if ( ! isset( $_GET['review'] ) )
+		if ( ! isset( $_POST['review'] ) )
 			return;
 
-		$theme = sanitize_text_field( $_GET[ 'theme' ] );
-		$review = sanitize_text_field( $_GET[ 'review' ] );
+		$theme = sanitize_text_field( $_POST[ 'theme' ] );
+		$review = sanitize_text_field( $_POST[ 'review' ] );
+		$summary = $_POST['summary'];
 		$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
 
 		if ( $scanner ) {
-			$filename = date( 'Ymd' ) . '.' . $theme . '.' . $review . '.VIP-Scanner.html';
-			header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+			$report   = $scanner->get_results();
+			$blockers = count( $scanner->get_errors( array_keys( $this->blocker_types ) ) );
 
-			$this->display_theme_review_result( $scanner, $theme );
+			$filename = date( 'Ymd' ) . '.' . $theme . '.' . $review . '.VIP-Scanner.txt';
+			header( 'Content-Type: text/plain' );
+			//header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+
+			$title = "$theme - $review";
+			echo $title . PHP_EOL;
+			echo str_repeat( '=', strlen( $title ) ) . PHP_EOL . PHP_EOL;
+
+			_e( 'Total Files', 'theme-check' );
+			echo ':  ';
+			echo intval( $report['total_files'] );
+			echo PHP_EOL;
+
+			_e( 'Total Checks', 'theme-check' );
+			echo ': ';
+			echo intval( $report['total_checks'] );
+			echo PHP_EOL;
+
+			_e( 'Errors', 'theme-check' );
+			echo ':       ';
+			echo intval( $blockers );
+			echo PHP_EOL;
+
+			echo PHP_EOL;
+
+			foreach( $this->blocker_types as $type => $title ) {
+				$errors = $scanner->get_errors( array( $type ) );
+
+				if ( ! count( $errors ) )
+					continue;
+
+				echo "## " . esc_html( $title ) . PHP_EOL;
+
+				foreach ( $errors as $result )
+					$this->display_plaintext_result_row( $result, $theme );
+
+				echo PHP_EOL;
+			}
+
+			echo "## Summary" . PHP_EOL;
+			echo strip_tags( $summary ?: 'No summary given.' );
 			exit;
 		}
 
