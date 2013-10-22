@@ -232,7 +232,7 @@ class VIP_Scanner_UI {
 		<?php
 	}
 
-	function display_plaintext_result_row( $error, $theme ) {
+	function get_plaintext_result_row( $error, $theme ) {
 		$description = $error['description'];
 
 		$file = '';
@@ -249,7 +249,28 @@ class VIP_Scanner_UI {
 				$file = $file_theme_path;
 		}
 
-		echo "* $file - $description" . PHP_EOL;
+		$line = "";
+
+		if ( $file )
+			$line .= "$file - ";
+
+		$line .= $description;
+
+		return $this->format_plaintext_row( "* $line" );
+	}
+
+	function format_plaintext_row( $row ) {
+		// Markdown code
+		$row = str_replace( array( '<var>', '</var>', '<code>', '</code>' ), '`', $row );
+
+		// Markdown <em>
+		$row = str_replace( array( '<em>', '</em>', '<i>', '</i>' ), '*', $row );
+
+		// Markdown <strong>
+		$row = str_replace( array( '<strong>', '</strong>', '<b>', '</b>' ), '**', $row );
+
+		$row = strip_tags( $row );
+		return $row;
 	}
 
 	function display_scan_error() {
@@ -307,13 +328,13 @@ class VIP_Scanner_UI {
 				echo "## " . esc_html( $title ) . PHP_EOL;
 
 				foreach ( $errors as $result )
-					$this->display_plaintext_result_row( $result, $theme );
+					echo wordwrap( $this->get_plaintext_result_row( $result, $theme ), 110 ) . PHP_EOL;
 
 				echo PHP_EOL;
 			}
 
 			echo "## Summary" . PHP_EOL;
-			echo strip_tags( $summary ?: 'No summary given.' );
+			echo wordwrap( strip_tags( $summary ?: 'No summary given.' ), 110 );
 			exit;
 		}
 
