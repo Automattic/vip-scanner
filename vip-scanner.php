@@ -344,6 +344,8 @@ class VIP_Scanner_UI {
 		$results .= $standards ? 'Yes' : 'No';
 		$results .= PHP_EOL . PHP_EOL;
 
+		$results .= str_repeat( '-', 25 ) . ' Scanner Results ' . str_repeat( '-', 25 ) . PHP_EOL . PHP_EOL;
+
 		$report   = $scanner->get_results();
 		$blockers = count( $scanner->get_errors( array_keys( $this->blocker_types ) ) );	
 
