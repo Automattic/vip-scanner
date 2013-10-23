@@ -1,4 +1,6 @@
 /* Scan info */
+.export-form textarea { width: 100%; height: 150px; resize: vertical; }
+
 .scan-info {
 	float: right;
 	margin-top: 8px;

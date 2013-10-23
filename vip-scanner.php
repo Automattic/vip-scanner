@@ -33,8 +33,11 @@ class VIP_Scanner_UI {
 	}
 
 	function admin_init() {
-		if ( isset( $_POST['page'], $_POST['action'] ) && $_POST['page'] == self::key && $_POST['action'] == 'export' )
+		if ( isset( $_POST['page'], $_POST['action'] ) && $_POST['page'] == self::key && $_POST['action'] == 'Export' )
 			$this->export();
+
+		if ( isset( $_POST['page'], $_POST['action'] ) && $_POST['page'] == self::key && $_POST['action'] == 'Submit' )
+			$this->submit();
 	}
 
 	static function get_instance() {
@@ -99,26 +102,88 @@ class VIP_Scanner_UI {
 		$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
 		if ( $scanner ):
 			$this->display_theme_review_result( $scanner, $theme );
-
-			if ( count( $scanner->get_errors() ) ):
 			?>
 
-			<hr>
-
 			<h2>Export Theme for VIP Review</h2>
-			<p><?php _e( 'Since some errors were detected, please provide a clear and concise explanation of the results before submitting the theme for review.', 'theme-check' ); ?></p>
 
-			<form method="POST">
-				<textarea name="summary"></textarea>
-				<?php submit_button( __( 'Export', 'theme-check' ) ); ?>
+			<form method="POST" class="export-form">
+				<p>
+					<label>
+						<?php _e( 'Name of theme:', 'theme-check' ); ?><br>
+						<input type=text name="name">
+					</label>
+				</p>
+
+				<p>
+					<label>
+						<?php _e( 'Expected launch date:', 'theme-check' ); ?><br>
+						<input type=date name="launch">
+					</label>
+				</p>
+
+				<p>
+					<label>
+						<?php _e( 'Short description of theme:', 'theme-check' ); ?><br>
+						<textarea name="description"></textarea>
+					</label>
+				</p>
+
+				<p>
+					<label>
+						<?php _e( 'Brief architectural overview:', 'theme-check' ); ?><br>
+						<textarea name="architecture"></textarea>
+					</label>
+				</p>
+
+				<p>
+					<label>
+						<?php _e( 'List of plugins this theme uses:', 'theme-check' ); ?><br>
+						<textarea name="plugins"></textarea>
+					</label>
+				</p>
+
+				<p>
+					<label>
+						<?php _e( 'Is this code based off existing code? If so, give details:', 'theme-check' ); ?><br>
+						<textarea name="derivative"></textarea>
+					</label>
+				</p>
+
+				<p>
+					<label>
+						<?php _e( 'Are there any external services, dependencies, or applications that utilize or rely on the site (e.g. mobile apps)? If so, how do these services interact with the site?', 'theme-check' ); ?><br>
+						<textarea name="external"></textarea>
+					</label>
+				</p>
+
+				<p>
+					<label>
+						<input type=checkbox name="gpl"> <?php _e( 'Code is GPL compatible or custom-code written in-house', 'theme-check' ); ?>
+					</label>
+				</p>
+
+				<p>
+					<label>
+						<input type=checkbox name="standards"> <?php _e( 'Code follows WordPress Coding Standards and properly escapes, santizes, and validates data', 'standards' ); ?>
+					</label>
+				</p>
+				<?php if ( count( $scanner->get_errors( $this->blocker_types ) ) ): ?>
+				<p>
+					<?php _e( 'Since some errors were detected, please provide a clear and concise explanation of the results before submitting the theme for review.', 'theme-check' ); ?><br>
+					<textarea name="summary"></textarea>
+				</p>
+				<?php endif; ?>
+
+				<p>
+					<?php submit_button( __( 'Submit', 'theme-check' ), 'primary', 'action', false ); ?>
+					<?php submit_button( __( 'Export', 'theme-check' ), 'secondary', 'action', false ); ?>
+				</p>
 				<?php wp_nonce_field( 'export' ); ?>
-				<input type="hidden" name="action" value="export">
 				<input type="hidden" name="review" value="<?php echo esc_attr( $review ) ?>">
 				<input type="hidden" name="page" value="<?php echo self::key; ?>">
 			</form>
 
 		<?php
-			endif;
 		else:
 			$this->display_scan_error();
 		endif;
@@ -232,32 +297,72 @@ class VIP_Scanner_UI {
 		<?php
 	}
 
-	function display_plaintext_theme_review_result( $scanner, $theme, $review ) {
-		$summary = $_POST['summary'];
+	function get_plaintext_theme_review_export( $scanner, $theme, $review ) {
+		$results = "";
+
+		$name         = sanitize_text_field( $_POST['name'] );
+		$launch       = sanitize_text_field( $_POST['launch'] );
+		$description  = sanitize_text_field( $_POST['description'] );
+		$architecture = sanitize_text_field( $_POST['architecture'] );
+		$plugins      = sanitize_text_field( $_POST['plugins'] );
+		$derivative   = sanitize_text_field( $_POST['derivative'] );
+		$external     = sanitize_text_field( $_POST['external'] );
+		$gpl          = isset( $_POST['gpl'] );
+		$standards    = isset( $_POST['standards'] );
+
+		$title = "$name - $review";
+
+		$results .= $title . PHP_EOL;
+		$results .= str_repeat( '=', strlen( $title ) ) . PHP_EOL . PHP_EOL;
+
+		$results .= __( 'Name of theme:', 'theme-check' ) . ' ';
+		$results .= $name . PHP_EOL . PHP_EOL;
+
+		$results .= __( 'Expected launch date:', 'theme-check' ) . ' ';
+		$results .= $launch . PHP_EOL . PHP_EOL;
+
+		$results .= __( 'Short description of theme:', 'theme-check' ) . PHP_EOL;
+		$results .= wordwrap( $description, 110 ) . PHP_EOL . PHP_EOL;
+
+		$results .= __( 'Brief architectural overview:', 'theme-check' ) . PHP_EOL;
+		$results .= wordwrap( $architecture, 110 ) . PHP_EOL . PHP_EOL;
+
+		$results .= __( 'List of plugins this theme uses:', 'theme-check' ) . PHP_EOL;
+		$results .= wordwrap( $plugins, 110 ) . PHP_EOL . PHP_EOL;
+
+		$results .= __( 'Is this code based off existing code? If so, give details:', 'theme-check' ) . PHP_EOL;
+		$results .= wordwrap( $derivative, 110 ) . PHP_EOL . PHP_EOL;
+
+		$results .= __( 'Are there any external services, dependencies, or applications that utilize or rely on the site (e.g. mobile apps)? If so, how do these services interact with the site?', 'theme-check' ) . PHP_EOL;
+		$results .= wordwrap( $external, 110 ) . PHP_EOL . PHP_EOL;
+
+		$results .= __( 'Code is GPL compatible or custom-code written in-house', 'theme-check' ) . PHP_EOL;
+		$results .= $gpl ? 'Yes' : 'No';
+		$results .= PHP_EOL . PHP_EOL;
+
+		$results .= __( 'Code follows WordPress Coding Standards and properly escapes, santizes, and validates data', 'theme-check' ) . PHP_EOL;
+		$results .= $standards ? 'Yes' : 'No';
+		$results .= PHP_EOL . PHP_EOL;
 
 		$report   = $scanner->get_results();
 		$blockers = count( $scanner->get_errors( array_keys( $this->blocker_types ) ) );	
-		$title = "$theme - $review";
 
-		echo $title . PHP_EOL;
-		echo str_repeat( '=', strlen( $title ) ) . PHP_EOL . PHP_EOL;
+		$results .= __( 'Total Files', 'theme-check' );
+		$results .= ':  ';
+		$results .= intval( $report['total_files'] );
+		$results .= PHP_EOL;
 
-		_e( 'Total Files', 'theme-check' );
-		echo ':  ';
-		echo intval( $report['total_files'] );
-		echo PHP_EOL;
+		$results .= __( 'Total Checks', 'theme-check' );
+		$results .= ': ';
+		$results .= intval( $report['total_checks'] );
+		$results .= PHP_EOL;
 
-		_e( 'Total Checks', 'theme-check' );
-		echo ': ';
-		echo intval( $report['total_checks'] );
-		echo PHP_EOL;
+		$results .= __( 'Errors', 'theme-check' );
+		$results .= ':       ';
+		$results .= intval( $blockers );
+		$results .= PHP_EOL;
 
-		_e( 'Errors', 'theme-check' );
-		echo ':       ';
-		echo intval( $blockers );
-		echo PHP_EOL;
-
-		echo PHP_EOL;
+		$results .= PHP_EOL;
 
 		foreach( $this->blocker_types as $type => $title ) {
 			$errors = $scanner->get_errors( array( $type ) );
@@ -265,16 +370,20 @@ class VIP_Scanner_UI {
 			if ( ! count( $errors ) )
 				continue;
 
-			echo "## " . esc_html( $title ) . PHP_EOL;
+			$results .= "## " . esc_html( $title ) . PHP_EOL;
 
 			foreach ( $errors as $result )
-				echo wordwrap( $this->get_plaintext_result_row( $result, $theme ), 110 ) . PHP_EOL;
+				$results .= wordwrap( $this->get_plaintext_result_row( $result, $theme ), 110 ) . PHP_EOL;
 
-			echo PHP_EOL;
+			$results .= PHP_EOL;
 		}
 
-		echo "## Summary" . PHP_EOL;
-		echo wordwrap( strip_tags( $summary ?: 'No summary given.' ), 110 );
+		if ( isset( $_POST['summary'] ) ) {
+			$results .= "## Summary" . PHP_EOL;
+			$results .= wordwrap( strip_tags( $_POST['summary'] ?: 'No summary given' ), 110 ) . PHP_EOL;
+		}
+
+		return $results;
 	}
 
 	function get_plaintext_result_row( $error, $theme ) {
@@ -339,12 +448,89 @@ class VIP_Scanner_UI {
 			header( 'Content-Type: text/plain' );
 			header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
 
-			$this->display_plaintext_theme_review_result( $scanner, $theme, $review );
+			echo $this->get_plaintext_theme_review_export( $scanner, $theme, $review );
 
 			exit;
 		}
 
 		// redirect with error message
+	}
+
+	function submit() {
+
+		// Check nonce and permissions
+		check_admin_referer( 'export' );
+
+		if ( ! isset( $_POST['review'] ) )
+			return;
+
+		$theme = get_stylesheet();
+		$review = sanitize_text_field( $_POST[ 'review' ] );
+		$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
+
+		$to = '';
+		$subject = "[Theme Review] $theme";
+
+		if ( $scanner && !empty( $to ) ) {
+			$zip = self::create_zip();
+
+			wp_mail(
+				$to,
+				$subject,
+				$this->get_plaintext_theme_review_export( $scanner, $theme, $review ),
+				'',
+				array( $zip )
+			);
+
+			unlink( $zip );
+		}
+	}
+
+	private static function create_zip( $directory = '', $name = '', $overwrite = false ) {
+		if ( empty( $directory ) )
+			$directory = get_stylesheet_directory();
+
+		if ( empty( $name ) ) {
+			$stylesheet = explode( '/', get_stylesheet() );
+			$stylesheet = $stylesheet[count( $stylesheet ) - 1];
+			$name = $stylesheet . '.' . date( 'Y-m-d' ) . '.zip';
+		}
+
+		$upload_dir = wp_upload_dir();
+		$destination = $upload_dir['basedir'] . '/' . $name;
+
+		if ( ! is_dir( $directory ) )
+			return;
+
+		if ( file_exists( $destination ) && !$overwrite )
+			return false;
+
+		$zip = new ZipArchive();
+
+		if( $zip->open( $destination, $overwrite ? ZIPARCHIVE::OVERWRITE : ZIPARCHIVE::CREATE ) !== true )
+			return false;
+
+		// Iterative BFS algo to add all files to zip
+		$dirs = array( $directory );
+		while ( !empty( $dirs ) ) {
+			$glob = array_shift( $dirs ) . '/*';
+			foreach ( glob( $glob ) as $file ) {
+
+				// Don't add directories to the zip
+				if ( is_dir( $file ) )
+					continue;
+
+				$local_path = ltrim( str_replace( $directory, '', $file ), '/' );
+				$zip->addFile( $file, $local_path );
+			}
+
+			// Find all sub directories
+			$dirs = array_merge( $dirs, glob( $glob, GLOB_ONLYDIR ) );
+		}
+
+		$zip->close();
+
+		return file_exists( $destination ) ? $destination : false;
 	}
 }
 
