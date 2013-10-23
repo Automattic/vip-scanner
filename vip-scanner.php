@@ -101,6 +101,11 @@ class VIP_Scanner_UI {
 		$review = isset( $_GET[ 'vip-scanner-review-type' ] ) ? sanitize_text_field( $_GET[ 'vip-scanner-review-type' ] ) : $review_types[0]; // TODO: eugh, need better error checking
 
 		$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
+
+		$transient_key = 'vip_scanner_' . md5( $theme . $review );
+		if ( $scanner !== get_transient( $transient_key ) )
+			set_transient( $transient_key, $scanner );
+
 		if ( $scanner ):
 			$this->display_theme_review_result( $scanner, $theme );
 			?>
@@ -330,6 +335,17 @@ class VIP_Scanner_UI {
 		echo 'Uh oh! Looks like something went wrong :(';
 	}
 
+	function get_cached_theme_review( $theme, $review ) {
+		$transient_key = 'vip_scanner_' . md5( $theme . $review );
+
+		if ( false === $scanner = get_transient( $transient_key ) ) {
+			$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
+			set_transient( $transient_key, $scanner );
+		}
+
+		return $scanner;
+	}
+
 	function export() {
 
 		// Check nonce and permissions
@@ -340,7 +356,7 @@ class VIP_Scanner_UI {
 
 		$theme = get_stylesheet();
 		$review = sanitize_text_field( $_POST[ 'review' ] );
-		$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
+		$scanner = $this->get_cached_theme_review( $theme, $review );	
 
 		if ( $scanner ) {
 			$filename = date( 'Ymd' ) . '.' . $theme . '.' . $review . '.VIP-Scanner.txt';
@@ -365,7 +381,7 @@ class VIP_Scanner_UI {
 
 		$theme = get_stylesheet();
 		$review = sanitize_text_field( $_POST[ 'review' ] );
-		$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
+		$scanner = $this->get_cached_theme_review( $theme, $review );
 
 		$to = '';
 		$subject = "[Theme Review] $theme";
