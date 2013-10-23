@@ -9,6 +9,7 @@ Version: 0.3
 License: GPLv2
 */
 require_once( dirname( __FILE__ ) . '/vip-scanner/vip-scanner.php' );
+require_once( dirname( __FILE__ ) . '/vip-scanner-wpcom.php' );
 
 class VIP_Scanner_UI {
 	const key = 'vip-scanner';
@@ -107,77 +108,14 @@ class VIP_Scanner_UI {
 			<h2>Export Theme for VIP Review</h2>
 
 			<form method="POST" class="export-form">
-				<p>
-					<label>
-						<?php _e( 'Name of theme:', 'theme-check' ); ?><br>
-						<input type=text name="name">
-					</label>
-				</p>
 
-				<p>
-					<label>
-						<?php _e( 'Expected launch date:', 'theme-check' ); ?><br>
-						<input type=date name="launch">
-					</label>
-				</p>
-
-				<p>
-					<label>
-						<?php _e( 'Short description of theme:', 'theme-check' ); ?><br>
-						<textarea name="description"></textarea>
-					</label>
-				</p>
-
-				<p>
-					<label>
-						<?php _e( 'Brief architectural overview:', 'theme-check' ); ?><br>
-						<textarea name="architecture"></textarea>
-					</label>
-				</p>
-
-				<p>
-					<label>
-						<?php _e( 'List of plugins this theme uses:', 'theme-check' ); ?><br>
-						<textarea name="plugins"></textarea>
-					</label>
-				</p>
-
-				<p>
-					<label>
-						<?php _e( 'Is this code based off existing code? If so, give details:', 'theme-check' ); ?><br>
-						<textarea name="derivative"></textarea>
-					</label>
-				</p>
-
-				<p>
-					<label>
-						<?php _e( 'Are there any external services, dependencies, or applications that utilize or rely on the site (e.g. mobile apps)? If so, how do these services interact with the site?', 'theme-check' ); ?><br>
-						<textarea name="external"></textarea>
-					</label>
-				</p>
-
-				<p>
-					<label>
-						<input type=checkbox name="gpl"> <?php _e( 'Code is GPL compatible or custom-code written in-house', 'theme-check' ); ?>
-					</label>
-				</p>
-
-				<p>
-					<label>
-						<input type=checkbox name="standards"> <?php _e( 'Code follows WordPress Coding Standards and properly escapes, santizes, and validates data', 'standards' ); ?>
-					</label>
-				</p>
-				<?php if ( count( $scanner->get_errors( $this->blocker_types ) ) ): ?>
-				<p>
-					<?php _e( 'Since some errors were detected, please provide a clear and concise explanation of the results before submitting the theme for review.', 'theme-check' ); ?><br>
-					<textarea name="summary"></textarea>
-				</p>
-				<?php endif; ?>
+				<?php do_action( 'vip_scanner_form', $review, count( $scanner->get_errors( array_keys( $this->blocker_types ) ) ) ); ?>
 
 				<p>
 					<?php submit_button( __( 'Submit', 'theme-check' ), 'primary', 'action', false ); ?>
 					<?php submit_button( __( 'Export', 'theme-check' ), 'secondary', 'action', false ); ?>
 				</p>
+
 				<?php wp_nonce_field( 'export' ); ?>
 				<input type="hidden" name="review" value="<?php echo esc_attr( $review ) ?>">
 				<input type="hidden" name="page" value="<?php echo self::key; ?>">
@@ -300,51 +238,15 @@ class VIP_Scanner_UI {
 	function get_plaintext_theme_review_export( $scanner, $theme, $review ) {
 		$results = "";
 
-		$name         = sanitize_text_field( $_POST['name'] );
-		$launch       = sanitize_text_field( $_POST['launch'] );
-		$description  = sanitize_text_field( $_POST['description'] );
-		$architecture = sanitize_text_field( $_POST['architecture'] );
-		$plugins      = sanitize_text_field( $_POST['plugins'] );
-		$derivative   = sanitize_text_field( $_POST['derivative'] );
-		$external     = sanitize_text_field( $_POST['external'] );
-		$gpl          = isset( $_POST['gpl'] );
-		$standards    = isset( $_POST['standards'] );
-
-		$title = "$name - $review";
-
-		$results .= $title . PHP_EOL;
+		$results .= $title = apply_filters( 'vip_scanner_export_title', "$theme - $review", $review ) . PHP_EOL;
 		$results .= str_repeat( '=', strlen( $title ) ) . PHP_EOL . PHP_EOL;
 
-		$results .= __( 'Name of theme:', 'theme-check' ) . ' ';
-		$results .= $name . PHP_EOL . PHP_EOL;
+		$form_results = apply_filters( 'vip_scanner_form_results', '', $review );
 
-		$results .= __( 'Expected launch date:', 'theme-check' ) . ' ';
-		$results .= $launch . PHP_EOL . PHP_EOL;
-
-		$results .= __( 'Short description of theme:', 'theme-check' ) . PHP_EOL;
-		$results .= wordwrap( $description, 110 ) . PHP_EOL . PHP_EOL;
-
-		$results .= __( 'Brief architectural overview:', 'theme-check' ) . PHP_EOL;
-		$results .= wordwrap( $architecture, 110 ) . PHP_EOL . PHP_EOL;
-
-		$results .= __( 'List of plugins this theme uses:', 'theme-check' ) . PHP_EOL;
-		$results .= wordwrap( $plugins, 110 ) . PHP_EOL . PHP_EOL;
-
-		$results .= __( 'Is this code based off existing code? If so, give details:', 'theme-check' ) . PHP_EOL;
-		$results .= wordwrap( $derivative, 110 ) . PHP_EOL . PHP_EOL;
-
-		$results .= __( 'Are there any external services, dependencies, or applications that utilize or rely on the site (e.g. mobile apps)? If so, how do these services interact with the site?', 'theme-check' ) . PHP_EOL;
-		$results .= wordwrap( $external, 110 ) . PHP_EOL . PHP_EOL;
-
-		$results .= __( 'Code is GPL compatible or custom-code written in-house', 'theme-check' ) . PHP_EOL;
-		$results .= $gpl ? 'Yes' : 'No';
-		$results .= PHP_EOL . PHP_EOL;
-
-		$results .= __( 'Code follows WordPress Coding Standards and properly escapes, santizes, and validates data', 'theme-check' ) . PHP_EOL;
-		$results .= $standards ? 'Yes' : 'No';
-		$results .= PHP_EOL . PHP_EOL;
-
-		$results .= str_repeat( '-', 25 ) . ' Scanner Results ' . str_repeat( '-', 25 ) . PHP_EOL . PHP_EOL;
+		if ( !empty( $form_results ) ) {
+			$results .= $form_results;
+			$results .= str_repeat( '-', 25 ) . ' Scanner Results ' . str_repeat( '-', 25 ) . PHP_EOL . PHP_EOL;
+		}
 
 		$report   = $scanner->get_results();
 		$blockers = count( $scanner->get_errors( array_keys( $this->blocker_types ) ) );	
@@ -378,11 +280,6 @@ class VIP_Scanner_UI {
 				$results .= wordwrap( $this->get_plaintext_result_row( $result, $theme ), 110 ) . PHP_EOL;
 
 			$results .= PHP_EOL;
-		}
-
-		if ( isset( $_POST['summary'] ) ) {
-			$results .= "## Summary" . PHP_EOL;
-			$results .= wordwrap( strip_tags( $_POST['summary'] ?: 'No summary given' ), 110 ) . PHP_EOL;
 		}
 
 		return $results;
