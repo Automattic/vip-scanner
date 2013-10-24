@@ -147,7 +147,7 @@ class VIP_Scanner_UI {
 		
 		?>
 		<div class="scan-info">
-			Scanned Theme: <span class="theme-name"><?php echo $theme; ?></span>
+			<span>Scanned Theme: <span class="theme-name"><?php echo $theme; ?></span></span>
 			<?php $this->display_vip_scanner_form(); ?>
 		</div>
 		
