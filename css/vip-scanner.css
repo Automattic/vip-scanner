@@ -95,6 +95,7 @@
 	clear: both;
 	margin-top: .65em;
 	color: #666;
+	overflow: auto;
 }
 	.scan-line {
 		margin-bottom: .25em;
