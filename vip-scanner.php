@@ -163,8 +163,8 @@ class VIP_Scanner_UI {
 		</table>
 		
 		<h2 class="nav-tab-wrapper"><?php // Note: These are static tabs ?>
-			<a href="#" class="nav-tab nav-tab-active"><?php echo $errors; ?> <?php echo __( 'Errors', 'theme-check' ); ?></a>
-			<a href="#" class="nav-tab"><?php echo $notes; ?> <?php echo __( 'Notes', 'theme-check' ); ?></a>
+			<a href="#" class="nav-tab nav-tab-active"><?php echo absint( $errors ); ?> <?php _e( 'Errors', 'theme-check' ); ?></a>
+			<a href="#" class="nav-tab"><?php echo absint( $notes ); ?> <?php _e( 'Notes', 'theme-check' ); ?></a>
 		</h2>
 
 		<?php foreach( $this->blocker_types as $type => $title ):
