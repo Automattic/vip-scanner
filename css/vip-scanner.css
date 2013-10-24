@@ -12,8 +12,14 @@
 	.scan-info .theme-name {
 		font-weight: bold;
 	}
+	.scan-info form {
+		margin-top: 6px;
+	}
 
-/* Scan Results */
+/* Scan Report */
+.scan-report {
+	margin-bottom: 1em;
+}
 .scan-results {
 	display: inline-block;
 	padding: 8px 10px;
@@ -106,3 +112,9 @@
 
 /* Export */
 .export-form textarea { width: 100%; height: 150px; resize: vertical; }
+
+/* MP6 Specifics */
+.mp6 .scan-results,
+.scan-info .theme-name {
+	font-weight: 600;
+}

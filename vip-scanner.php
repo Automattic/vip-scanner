@@ -151,18 +151,20 @@ class VIP_Scanner_UI {
 			<?php $this->display_vip_scanner_form(); ?>
 		</div>
 		
-		<div class="scan-results result-<?php echo $pass ? 'pass' : 'fail'; ?>"><?php echo $pass ? __( 'Passed the Scan with no errors!', 'theme-check' ) : __( 'Failed to pass Scan', 'theme-check' ); ?></div>
+		<div class="scan-report">
+			<div class="scan-results result-<?php echo $pass ? 'pass' : 'fail'; ?>"><?php echo $pass ? __( 'Passed the Scan with no errors!', 'theme-check' ) : __( 'Failed to pass Scan', 'theme-check' ); ?></div>
 		
-		<table class="scan-results-table">
-			<tr>
-				<th><?php _e( 'Total Files', 'theme-check' ); ?></th>
-				<td><?php echo intval( $report['total_files'] ); ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Total Checks', 'theme-check' ); ?></th>
-				<td><?php echo intval( $report['total_checks'] ); ?></td>
-			</tr>
-		</table>
+			<table class="scan-results-table">
+				<tr>
+					<th><?php _e( 'Total Files', 'theme-check' ); ?></th>
+					<td><?php echo intval( $report['total_files'] ); ?></td>
+				</tr>
+				<tr>
+					<th><?php _e( 'Total Checks', 'theme-check' ); ?></th>
+					<td><?php echo intval( $report['total_checks'] ); ?></td>
+				</tr>
+			</table>
+		</div>
 		
 		<h2 class="nav-tab-wrapper"><?php // Note: These are static tabs ?>
 			<a href="#" class="nav-tab nav-tab-active"><?php echo absint( $errors ); ?> <?php _e( 'Errors', 'theme-check' ); ?></a>
