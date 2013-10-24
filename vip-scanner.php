@@ -9,7 +9,6 @@ Version: 0.3
 License: GPLv2
 */
 require_once( dirname( __FILE__ ) . '/vip-scanner/vip-scanner.php' );
-require_once( dirname( __FILE__ ) . '/vip-scanner-wpcom.php' );
 
 class VIP_Scanner_UI {
 	const key = 'vip-scanner';
