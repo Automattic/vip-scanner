@@ -59,10 +59,10 @@
 		.scan-results-list li.scan-result-blocker {
 			border-left-color: #e74c3c;
 		}
-		.scan-results-list li.scan-result-required {
+		.scan-results-list li.scan-result-warning {
 			border-left-color: #e67e22;
 		}
-		.scan-results-list li.scan-result-warning {
+		.scan-results-list li.scan-result-required {
 			border-left-color: #f1c40f;
 		}
 		.scan-results-list li.scan-result-recommended {
