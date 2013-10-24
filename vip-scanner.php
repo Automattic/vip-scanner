@@ -368,7 +368,7 @@ class VIP_Scanner_UI {
 			exit;
 		}
 
-		// redirect with error message
+		// TODO: redirect with error message
 	}
 
 	function submit() {
@@ -389,6 +389,10 @@ class VIP_Scanner_UI {
 		if ( $scanner && !empty( $to ) ) {
 			$zip = self::create_zip();
 
+			if ( !$zip ) {
+				// TODO: redirect with error message to try again
+			}
+
 			wp_mail(
 				$to,
 				$subject,
@@ -401,7 +405,7 @@ class VIP_Scanner_UI {
 		}
 	}
 
-	private static function create_zip( $directory = '', $name = '', $overwrite = false ) {
+	private static function create_zip( $directory = '', $name = '', $overwrite = true ) {
 		if ( empty( $directory ) )
 			$directory = get_stylesheet_directory();
 
