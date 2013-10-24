@@ -91,7 +91,7 @@ class VIP_Scanner_UI {
 					<option <?php selected( $current_review, $review_type ); ?> value="<?php echo esc_attr( $review_type ); ?>"><?php echo esc_html( $review_type ); ?></option>
 				<?php endforeach; ?>
 			</select>
-			<?php submit_button( 'Check it!', 'primary', false, false ); ?>
+			<?php submit_button( 'Scan', 'primary', false, false ); ?>
 		</form>
 		<?php
 	}
