@@ -18,6 +18,10 @@ function vip_scanner_custom_load_rules() {
 	) );
 }
 
+add_filter( 'vip_scanner_default_review', function( $default, $review_types ) {
+	return array_search( 'VIP Theme Review', $review_types );
+}, 10, 2 );
+
 add_filter( 'vip_scanner_email_to', 'vip_scanner_email_to' );
 function vip_scanner_email_to() {
 	return 'vip-support@wordpress.com';
