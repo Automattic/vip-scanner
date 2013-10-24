@@ -1,6 +1,9 @@
-/* Scan info */
-.export-form textarea { width: 100%; height: 150px; resize: vertical; }
+/* Wrapper */
+.scanner-wrapper {
+	margin: 1.5em 0;
+}
 
+/* Scan info */
 .scan-info {
 	float: right;
 	margin-top: 8px;
@@ -99,3 +102,7 @@
 	.scan-line pre {
 		margin: 0;
 	}
+
+
+/* Export */
+.export-form textarea { width: 100%; height: 150px; resize: vertical; }

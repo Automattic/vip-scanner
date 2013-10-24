@@ -71,7 +71,9 @@ class VIP_Scanner_UI {
 		<div id="vip-scanner" class="wrap">
 			<?php screen_icon( 'themes' ); ?>
 			<h2><?php echo esc_html( $title ); ?></h2>
+			<div class="scanner-wrapper">
 			<?php $this->do_theme_review(); ?>
+			</div>
 		</div>
 		<?php
 	}
