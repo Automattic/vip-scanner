@@ -8,12 +8,13 @@
 	float: right;
 	margin-top: 8px;
 	font-size: 18px;
+	text-align: right;
 }
 	.scan-info .theme-name {
 		font-weight: bold;
 	}
 	.scan-info form {
-		margin-top: 6px;
+		margin-top: 12px;
 	}
 
 /* Scan Report */
