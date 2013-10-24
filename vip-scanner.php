@@ -15,6 +15,7 @@ class VIP_Scanner_UI {
 
 	private static $instance;
 	private $blocker_types;
+	private $default_review;
 
 	function __construct() {
 		add_action( 'init', array( $this, 'init' ) );
@@ -26,6 +27,9 @@ class VIP_Scanner_UI {
 			'warning'  => __( 'Warnings', 'theme-check' ),
 			'required' => __( 'Required', 'theme-check' ),
 		) );
+
+		$review_types = VIP_Scanner::get_instance()->get_review_types();
+		$this->default_review = apply_filters( 'vip_scanner_default_review', 0, $review_types );
 	}
 
 	function init() {
@@ -49,12 +53,13 @@ class VIP_Scanner_UI {
 	}
 
 	function add_menu_page() {
-		$hook = add_submenu_page( 'tools.php', 'VIP Scanner', 'VIP Scanner', 'manage_options', self::key, array( $this, 'display_admin_page' ) );
+		$submenu_page = apply_filters( 'vip_scanner_submenu_page', 'tools.php' );
+		$hook = add_submenu_page( $submenu_page, 'VIP Scanner', 'VIP Scanner', 'manage_options', self::key, array( $this, 'display_admin_page' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 	}
 
 	function admin_enqueue_scripts( $hook ) {
-		if ( 'tools_page_' . self::key !== $hook )
+		if ( ! isset( $_GET['page'] ) || 'vip-scanner' != $_GET['page'] )
 			return;
 
 		wp_enqueue_style( 'vip-scanner-css', plugins_url( 'css/vip-scanner.css', __FILE__ ), array(), '20120320' );
@@ -82,7 +87,7 @@ class VIP_Scanner_UI {
 		$themes = wp_get_themes();
 		$review_types = VIP_Scanner::get_instance()->get_review_types();
 		$current_theme = isset( $_GET[ 'vip-scanner-theme-name' ] ) ? sanitize_text_field( $_GET[ 'vip-scanner-theme-name' ] ) : get_stylesheet();
-		$current_review = isset( $_GET[ 'vip-scanner-review-type' ] ) ? sanitize_text_field( $_GET[ 'vip-scanner-review-type' ] ) : $review_types[0]; // TODO: eugh, need better error checking
+		$current_review = isset( $_GET[ 'vip-scanner-review-type' ] ) ? sanitize_text_field( $_GET[ 'vip-scanner-review-type' ] ) : $review_types[ $this->default_review ]; // TODO: eugh, need better error checking
 		?>
 		<form method="GET">
 			<input type="hidden" name="page" value="<?php echo self::key; ?>" />
@@ -99,7 +104,7 @@ class VIP_Scanner_UI {
 	function do_theme_review() {
 		$theme = get_stylesheet();
 		$review_types = VIP_Scanner::get_instance()->get_review_types();
-		$review = isset( $_GET[ 'vip-scanner-review-type' ] ) ? sanitize_text_field( $_GET[ 'vip-scanner-review-type' ] ) : $review_types[0]; // TODO: eugh, need better error checking
+		$review = isset( $_GET[ 'vip-scanner-review-type' ] ) ? sanitize_text_field( $_GET[ 'vip-scanner-review-type' ] ) : $review_types[ $this->default_review ]; // TODO: eugh, need better error checking
 
 		$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
 
