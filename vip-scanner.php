@@ -383,8 +383,8 @@ class VIP_Scanner_UI {
 		$review = sanitize_text_field( $_POST[ 'review' ] );
 		$scanner = $this->get_cached_theme_review( $theme, $review );
 
-		$to = '';
-		$subject = "[Theme Review] $theme";
+		$to = apply_filters( 'vip_scanner_email_to', '' );
+		$subject = apply_filters( 'vip_scanner_email_subject', "[VIP Scanner] $theme - $review", $theme, $review );
 
 		if ( $scanner && !empty( $to ) ) {
 			$zip = self::create_zip();
