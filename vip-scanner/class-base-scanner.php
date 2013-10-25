@@ -153,6 +153,18 @@ class BaseScanner {
 		return $errors;
 	}
 
+	function get_error_levels() {
+		$levels = array();
+
+		foreach ( $this->errors as $error ) {
+			if ( isset( $error['level'] ) && ! in_array( strtolower( $error['level'] ), $levels ) ) {
+				$levels[] = strtolower( $error['level'] );
+			}
+		}
+
+		return $levels;
+	}
+
 	private function load_check( $check, $file = '' ) {
 
 		if( ! class_exists( $check ) ) {
