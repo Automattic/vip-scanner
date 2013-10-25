@@ -49,7 +49,7 @@ function vip_scanner_form_fields( $review, $blockers ) {
 	<p class="<?php $required( empty( $fields['name'] ) ); ?>">
 		<label>
 			<?php _e( 'Name of theme:', 'theme-check' ); ?> <small class="description require-label"><?php _e( '(required)', 'theme-check' ); ?></small><br>
-			<input type=text name="name" value="<?php echo isset( $fields['name'] ) ? $fields['name'] : ''; ?>">
+			<input type=text name="name" value="<?php echo isset( $fields['name'] ) ? esc_attr( $fields['name'] ) : ''; ?>">
 		</label>
 	</p>
 
@@ -57,14 +57,14 @@ function vip_scanner_form_fields( $review, $blockers ) {
 		<label>
 			<?php $current_user = wp_get_current_user(); ?>
 			<?php _e( 'Email:', 'theme-check' ); ?> <small class="require-label"><?php _e( '(required)', 'theme-check' ); ?></small><br>
-			<input type=text name="email" value="<?php echo isset( $fields['email'] ) ? $fields['email'] : $current_user->user_email; ?>">
+			<input type=text name="email" value="<?php echo isset( $fields['email'] ) ? esc_attr( $fields['email'] ) : $current_user->user_email; ?>">
 		</label>
 	</p>
 
 	<p class="<?php $required( empty( $fields['launch'] ) ); ?>">
 		<label>
 			<?php _e( 'Expected launch date:', 'theme-check' ); ?> <small class="require-label"><?php _e( '(required)', 'theme-check' ); ?></small><br>
-			<input type=date name="launch" value="<?php echo isset( $fields['launch'] ) ? $fields['launch'] : ''; ?>">
+			<input type=date name="launch" value="<?php echo isset( $fields['launch'] ) ? esc_attr( $fields['launch'] ) : ''; ?>">
 		</label>
 	</p>
 
