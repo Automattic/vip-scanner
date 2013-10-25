@@ -24,8 +24,7 @@ add_filter( 'vip_scanner_default_review', function( $default, $review_types ) {
 
 add_filter( 'vip_scanner_email_to', 'vip_scanner_email_to' );
 function vip_scanner_email_to() {
-	// return 'vip-support@wordpress.com';
-	return 'j@joshbetz.com';
+	return 'vip-support@wordpress.com';
 }
 
 add_action( 'vip_scanner_form', 'vip_scanner_form_fields', 10, 2 );
@@ -35,16 +34,25 @@ function vip_scanner_form_fields( $review, $blockers ) {
 		return;
 
 	$fields = get_transient( 'vip_scanner_flash_form_fields' );
+	$required = function( $required ) {
+		if ( ! isset( $_GET['message'] ) || 'fill-required-fields' != $_GET['message'] )
+			return;
 
+		if ( !$required )
+			return;
+
+		echo "required";
+	}
 	?>
-	<p class="required">
+
+	<p class="<?php $required( empty( $fields['name'] ) ); ?>">
 		<label>
-			<?php _e( 'Name of theme:', 'theme-check' ); ?> <small class="require-label"><?php _e( '(required)', 'theme-check' ); ?></small><br>
+			<?php _e( 'Name of theme:', 'theme-check' ); ?> <small class="description require-label"><?php _e( '(required)', 'theme-check' ); ?></small><br>
 			<input type=text name="name" value="<?php echo isset( $fields['name'] ) ? $fields['name'] : ''; ?>">
 		</label>
 	</p>
 
-	<p class="required">
+	<p class="<?php $required( empty( $fields['email'] ) ); ?>">
 		<label>
 			<?php $current_user = wp_get_current_user(); ?>
 			<?php _e( 'Email:', 'theme-check' ); ?> <small class="require-label"><?php _e( '(required)', 'theme-check' ); ?></small><br>
@@ -52,21 +60,21 @@ function vip_scanner_form_fields( $review, $blockers ) {
 		</label>
 	</p>
 
-	<p class="required">
+	<p class="<?php $required( empty( $fields['launch'] ) ); ?>">
 		<label>
 			<?php _e( 'Expected launch date:', 'theme-check' ); ?> <small class="require-label"><?php _e( '(required)', 'theme-check' ); ?></small><br>
 			<input type=date name="launch" value="<?php echo isset( $fields['launch'] ) ? $fields['launch'] : ''; ?>">
 		</label>
 	</p>
 
-	<p class="required">
+	<p class="<?php $required( empty( $fields['description'] ) ); ?>">
 		<label>
 			<?php _e( 'Short description of theme:', 'theme-check' ); ?> <small class="require-label"><?php _e( '(required)', 'theme-check' ); ?></small><br>
 			<textarea name="description"><?php echo isset( $fields['description'] ) ? sanitize_text_field( $fields['description'] ) : ''; ?></textarea>
 		</label>
 	</p>
 
-	<p class="required">
+	<p class="<?php $required( empty( $fields['architecture'] ) ); ?>">
 		<label>
 			<?php _e( 'Brief architectural overview:', 'theme-check' ); ?> <small class="require-label"><?php _e( '(required)', 'theme-check' ); ?></small><br>
 			<textarea name="architecture"><?php echo isset( $fields['architecture'] ) ? sanitize_text_field( $fields['architecture'] ) : ''; ?></textarea>
@@ -95,19 +103,19 @@ function vip_scanner_form_fields( $review, $blockers ) {
 	</p>
 
 	<?php if ( $blockers ): ?>
-	<p class="required">
+	<p class="<?php $required( empty( $fields['summary'] ) ); ?>">
 		<?php _e( 'Since some errors were detected, please provide a clear and concise explanation of the results before submitting the theme for review.', 'theme-check' ); ?> <small class="require-label"><?php _e( '(required)', 'theme-check' ); ?></small><br>
 		<textarea name="summary"><?php echo isset( $fields['summary'] ) ? sanitize_text_field( $fields['summary'] ) : ''; ?></textarea>
 	</p>
 	<?php endif; ?>
 
-	<p class="required">
+	<p class="<?php $required( !isset( $fields['gpl'] ) || !$fields['gpl'] ); ?>">
 		<label>
 			<input type=checkbox name="gpl" <?php checked( isset( $fields['gpl'] ) && $fields['gpl'] ); ?>> <?php _e( 'Code is GPL compatible or custom-code written in-house', 'theme-check' ); ?> <small class="require-label"><?php _e( '(required)', 'theme-check' ); ?></small>
 		</label>
 	</p>
 
-	<p class="required">
+	<p class="<?php $required( !isset( $fields['standards'] ) || !$fields['standards'] ); ?>">
 		<label>
 			<input type=checkbox name="standards" <?php checked( isset( $fields['standards'] ) && $fields['standards'] ); ?>> <?php _e( 'Code follows WordPress Coding Standards and properly escapes, santizes, and validates data', 'standards' ); ?> <small class="require-label"><?php _e( '(required)', 'theme-check' ); ?></small>
 		</label>

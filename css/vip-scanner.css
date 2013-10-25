@@ -116,6 +116,8 @@
 
 /* Export */
 .export-form textarea { width: 100%; height: 150px; resize: vertical; }
+.required { padding: 10px; background: #DDD; }
+.require-label { color: #e74c3c; }
 
 /* MP6 Specifics */
 .mp6 .scan-results,
