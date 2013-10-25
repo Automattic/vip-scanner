@@ -104,9 +104,9 @@ function vip_scanner_form_fields( $review, $blockers ) {
 	</p>
 
 	<?php if ( $blockers ): ?>
-	<p class="<?php $required( empty( $fields['summary'] ) ); ?>">
+	<p class="<?php $required( empty( $fields['error_summary'] ) ); ?>">
 		<?php _e( 'Since some errors were detected, please provide a clear and concise explanation of the results before submitting the theme for review.', 'theme-check' ); ?> <small class="require-label"><?php _e( '(required)', 'theme-check' ); ?></small><br>
-		<textarea name="summary"><?php echo isset( $fields['summary'] ) ? sanitize_text_field( $fields['summary'] ) : ''; ?></textarea>
+		<textarea name="error_summary"><?php echo isset( $fields['error_summary'] ) ? sanitize_text_field( $fields['error_summary'] ) : ''; ?></textarea>
 	</p>
 	<?php endif; ?>
 
@@ -137,7 +137,7 @@ function vip_scanner_form_results( $results, $review ) {
 		'architecture',
 		'gpl',
 		'standards',
-		'summary',
+		'error_summary',
 	);
 
 	$fields = array(
@@ -151,7 +151,7 @@ function vip_scanner_form_results( $results, $review ) {
 		'external'     => sanitize_text_field( $_POST['external'] ),
 		'gpl'          => isset( $_POST['gpl'] ),
 		'standards'    => isset( $_POST['standards'] ),
-		'summary'      => isset( $_POST['summary'] ) ? sanitize_text_field( $_POST['summary'] ) : true,
+		'error_summary'=> isset( $_POST['error_summary'] ) ? sanitize_text_field( $_POST['error_summary'] ) : true,
 	);
 
 	foreach ( $required as $r ) {
@@ -214,10 +214,10 @@ function vip_scanner_form_results( $results, $review ) {
 	$results .= $fields['standards'] ? 'Yes' : 'No';
 	$results .= PHP_EOL . PHP_EOL;
 
-	// Summary of remaining issues
-	if ( isset( $_POST['summary'] ) ) {
-		$results .= "## Summary" . PHP_EOL;
-		$results .= $fields['summary'] . PHP_EOL . PHP_EOL;
+	// Error summary of remaining issues
+	if ( isset( $_POST['error_summary'] ) ) {
+		$results .= "## Error Summary" . PHP_EOL;
+		$results .= $fields['error_summary'] . PHP_EOL . PHP_EOL;
 	}
 
 	return $results;
