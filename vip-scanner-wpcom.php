@@ -45,6 +45,14 @@ function vip_scanner_form_fields( $review, $blockers ) {
 
 	<p class="required">
 		<label>
+			<?php $current_user = wp_get_current_user(); ?>
+			<?php _e( 'Email:', 'theme-check' ); ?> <small class="require-label"><?php _e( '(required)', 'theme-check' ); ?></small><br>
+			<input type=text name="email" value="<?php echo isset( $fields['email'] ) ? $fields['email'] : $current_user->user_email; ?>">
+		</label>
+	</p>
+
+	<p class="required">
+		<label>
 			<?php _e( 'Expected launch date:', 'theme-check' ); ?> <small class="require-label"><?php _e( '(required)', 'theme-check' ); ?></small><br>
 			<input type=date name="launch" value="<?php echo isset( $fields['launch'] ) ? $fields['launch'] : ''; ?>">
 		</label>
@@ -113,6 +121,7 @@ function vip_scanner_form_results( $results, $review ) {
 
 	$required = array(
 		'name',
+		'email',
 		'launch',
 		'description',
 		'architecture',
@@ -123,6 +132,7 @@ function vip_scanner_form_results( $results, $review ) {
 
 	$fields = array(
 		'name'         => sanitize_text_field( $_POST['name'] ),
+		'email'        => sanitize_email( $_POST['email'] ),
 		'launch'       => sanitize_text_field( $_POST['launch'] ),
 		'description'  => sanitize_text_field( $_POST['description'] ),
 		'architecture' => sanitize_text_field( $_POST['architecture'] ),
@@ -149,6 +159,12 @@ function vip_scanner_form_results( $results, $review ) {
 	}
 
 	delete_transient( 'vip_scanner_flash_form_fields' );
+
+	$email = $fields['email'];
+	add_filter( 'vip_scanner_email_headers', function( $headers ) use ( $email ) {
+		$headers[] = "Cc: $email";
+		return $headers;
+	} );
 
 	// Name
 	$results .= __( 'Name of theme:', 'theme-check' ) . ' ';

@@ -408,6 +408,7 @@ class VIP_Scanner_UI {
 	}
 
 	function submit() {
+		$mail = false;
 
 		// Check nonce and permissions
 		check_admin_referer( 'export' );
@@ -419,8 +420,10 @@ class VIP_Scanner_UI {
 		$review = sanitize_text_field( $_POST[ 'review' ] );
 		$scanner = $this->get_cached_theme_review( $theme, $review );
 
+		$message = $this->get_plaintext_theme_review_export( $scanner, $theme, $review );
 		$to = apply_filters( 'vip_scanner_email_to', '' );
 		$subject = apply_filters( 'vip_scanner_email_subject', "[VIP Scanner] $theme - $review", $theme, $review );
+		$headers = apply_filters( 'vip_scanner_email_headers', array() );
 
 		if ( $scanner && !empty( $to ) ) {
 			$zip = self::create_zip();
@@ -429,16 +432,18 @@ class VIP_Scanner_UI {
 				// TODO: redirect with error message to try again
 			}
 
-			wp_mail(
+			$mail = wp_mail(
 				$to,
 				$subject,
-				$this->get_plaintext_theme_review_export( $scanner, $theme, $review ),
-				'',
+				$message,
+				$headers,
 				array( $zip )
 			);
 
 			unlink( $zip );
 		}
+
+		// TODO: redirect with success if wp_mail returned true, error if false
 	}
 
 	private static function create_zip( $directory = '', $name = '', $overwrite = true ) {
