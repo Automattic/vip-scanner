@@ -24,7 +24,8 @@ add_filter( 'vip_scanner_default_review', function( $default, $review_types ) {
 
 add_filter( 'vip_scanner_email_to', 'vip_scanner_email_to' );
 function vip_scanner_email_to() {
-	return 'vip-support@wordpress.com';
+	// return 'vip-support@wordpress.com';
+	return 'j@joshbetz.com';
 }
 
 add_action( 'vip_scanner_form', 'vip_scanner_form_fields', 10, 2 );

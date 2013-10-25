@@ -9,6 +9,7 @@ Version: 0.3
 License: GPLv2
 */
 require_once( dirname( __FILE__ ) . '/vip-scanner/vip-scanner.php' );
+require_once( dirname( __FILE__ ) . '/vip-scanner-wpcom.php' );
 
 class VIP_Scanner_UI {
 	const key = 'vip-scanner';
@@ -21,6 +22,7 @@ class VIP_Scanner_UI {
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
 		do_action( 'vip_scanner_loaded' );
+
 
 		$this->blocker_types = apply_filters( 'vip_scanner_blocker_types', array(
 			'blocker'  => __( 'Blockers', 'theme-check' ),
@@ -42,6 +44,20 @@ class VIP_Scanner_UI {
 
 		if ( isset( $_POST['page'], $_POST['action'] ) && $_POST['page'] == self::key && $_POST['action'] == 'Submit' )
 			$this->submit();
+
+		// Handle admin notices
+		if ( isset( $_GET['page'], $_GET['message'] ) && self::key == $_GET['page'] ) {
+
+			switch( $_GET['message'] ) {
+				case 'fail':
+					add_action( 'admin_notices', array( $this, 'admin_notice_fail' ) );
+					break;
+
+				case 'success':
+					add_action( 'admin_notices', array( $this, 'admin_notice_success' ) );
+					break;
+			}
+		}
 	}
 
 	static function get_instance() {
@@ -404,7 +420,15 @@ class VIP_Scanner_UI {
 			exit;
 		}
 
-		// TODO: redirect with error message
+		// redirect with error message
+		$url = add_query_arg( array(
+			'page' => self::key,
+			'message' => 'fail',
+			'vip-scanner-review-type' => urlencode( $review ),
+		) );
+
+		wp_safe_redirect( $url );
+		exit;
 	}
 
 	function submit() {
@@ -421,6 +445,7 @@ class VIP_Scanner_UI {
 		$scanner = $this->get_cached_theme_review( $theme, $review );
 
 		$message = $this->get_plaintext_theme_review_export( $scanner, $theme, $review );
+		// TODO: hide submit button if $to is empty
 		$to = apply_filters( 'vip_scanner_email_to', '' );
 		$subject = apply_filters( 'vip_scanner_email_subject', "[VIP Scanner] $theme - $review", $theme, $review );
 		$headers = apply_filters( 'vip_scanner_email_headers', array() );
@@ -428,9 +453,9 @@ class VIP_Scanner_UI {
 		if ( $scanner && !empty( $to ) ) {
 			$zip = self::create_zip();
 
-			if ( !$zip ) {
-				// TODO: redirect with error message to try again
-			}
+			// redirect with error message
+			if ( !$zip )
+				break;
 
 			$mail = wp_mail(
 				$to,
@@ -443,7 +468,18 @@ class VIP_Scanner_UI {
 			unlink( $zip );
 		}
 
-		// TODO: redirect with success if wp_mail returned true, error if false
+		$args = array(
+			'page' => self::key,
+			'message' => 'success',
+			'vip-scanner-review-type' => urlencode( $review ),	
+		);
+
+		// Error message if the wp_mail didn't work
+		if ( !$mail )
+			$args['message'] = 'fail';
+
+		wp_safe_redirect( add_query_arg( $args ) );
+		exit;
 	}
 
 	private static function create_zip( $directory = '', $name = '', $overwrite = true ) {
@@ -491,6 +527,26 @@ class VIP_Scanner_UI {
 		$zip->close();
 
 		return file_exists( $destination ) ? $destination : false;
+	}
+
+	function admin_notice_fail() {
+		if ( ! isset( $_GET['page'], $_GET['message'] ) || 'vip-scanner' != $_GET['page'] || 'fail' != $_GET['message'] )
+			return;
+	    ?>
+	    <div class="error">
+	        <p><strong><?php _e( 'Fail! Something broke.', 'theme-check' ); ?></strong></p>
+	    </div>
+	    <?php
+	}
+
+	function admin_notice_success() {
+		if ( ! isset( $_GET['page'], $_GET['message'] ) || 'vip-scanner' != $_GET['page'] || 'success' != $_GET['message'] )
+			return;
+	    ?>
+	    <div class="updated">
+	        <p><strong><?php _e( 'Success!', 'theme-check' ); ?></strong></p>
+	    </div>
+	    <?php
 	}
 }
 
