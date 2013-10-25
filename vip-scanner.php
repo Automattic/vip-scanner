@@ -18,6 +18,8 @@ class VIP_Scanner_UI {
 	private $blocker_types;
 	private $default_review;
 
+	private $to;
+
 	function __construct() {
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
@@ -32,6 +34,8 @@ class VIP_Scanner_UI {
 
 		$review_types = VIP_Scanner::get_instance()->get_review_types();
 		$this->default_review = apply_filters( 'vip_scanner_default_review', 0, $review_types );
+
+		$this->to = apply_filters( 'vip_scanner_email_to', '' );
 	}
 
 	function init() {
@@ -140,7 +144,11 @@ class VIP_Scanner_UI {
 				<?php do_action( 'vip_scanner_form', $review, count( $scanner->get_errors( array_keys( $this->blocker_types ) ) ) ); ?>
 
 				<p>
-					<?php submit_button( __( 'Submit', 'theme-check' ), 'primary', 'action', false ); ?>
+					<?php
+						// hide submit button if $to is empty
+						if ( !empty( $this->to ) )
+							submit_button( __( 'Submit', 'theme-check' ), 'primary', 'action', false );
+					?>
 					<?php submit_button( __( 'Export', 'theme-check' ), 'secondary', 'action', false ); ?>
 				</p>
 
@@ -445,12 +453,10 @@ class VIP_Scanner_UI {
 		$scanner = $this->get_cached_theme_review( $theme, $review );
 
 		$message = $this->get_plaintext_theme_review_export( $scanner, $theme, $review );
-		// TODO: hide submit button if $to is empty
-		$to = apply_filters( 'vip_scanner_email_to', '' );
 		$subject = apply_filters( 'vip_scanner_email_subject', "[VIP Scanner] $theme - $review", $theme, $review );
 		$headers = apply_filters( 'vip_scanner_email_headers', array() );
 
-		if ( $scanner && !empty( $to ) ) {
+		if ( $scanner && !empty( $this->to ) ) {
 			$zip = self::create_zip();
 
 			// redirect with error message
@@ -458,7 +464,7 @@ class VIP_Scanner_UI {
 				break;
 
 			$mail = wp_mail(
-				$to,
+				$this->to,
 				$subject,
 				$message,
 				$headers,
