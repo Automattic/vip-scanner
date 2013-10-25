@@ -175,39 +175,39 @@ function vip_scanner_form_results( $results, $review ) {
 	$results .= $fields['launch'] . PHP_EOL . PHP_EOL;
 
 	// Description
-	$results .= __( 'Short description of theme:', 'theme-check' ) . PHP_EOL;
-	$results .= wordwrap( $fields['description'], 110 ) . PHP_EOL . PHP_EOL;
+	$results .= '## ' . __( 'Short description of theme:', 'theme-check' ) . PHP_EOL;
+	$results .= $fields['description'] . PHP_EOL . PHP_EOL;
 
 	// Architectural overview
-	$results .= __( 'Brief architectural overview:', 'theme-check' ) . PHP_EOL;
-	$results .= wordwrap( $fields['architecture'], 110 ) . PHP_EOL . PHP_EOL;
+	$results .= '## ' . __( 'Brief architectural overview:', 'theme-check' ) . PHP_EOL;
+	$results .= $fields['architecture'] . PHP_EOL . PHP_EOL;
 
 	// Plugins
-	$results .= __( 'List of plugins this theme uses:', 'theme-check' ) . PHP_EOL;
-	$results .= wordwrap( $fields['plugins'], 110 ) . PHP_EOL . PHP_EOL;
+	$results .= '## ' . __( 'List of plugins this theme uses:', 'theme-check' ) . PHP_EOL;
+	$results .= $fields['plugins'] . PHP_EOL . PHP_EOL;
 
 	// Based off other code?
-	$results .= __( 'Is this code based off existing code? If so, give details:', 'theme-check' ) . PHP_EOL;
-	$results .= wordwrap( $fields['derivative'], 110 ) . PHP_EOL . PHP_EOL;
+	$results .= '## ' . __( 'Is this code based off existing code? If so, give details:', 'theme-check' ) . PHP_EOL;
+	$results .= $fields['derivative'] . PHP_EOL . PHP_EOL;
 
 	// Dependencies?
-	$results .= __( 'Are there any external services, dependencies, or applications that utilize or rely on the site (e.g. mobile apps)? If so, how do these services interact with the site?', 'theme-check' ) . PHP_EOL;
-	$results .= wordwrap( $fields['external'], 110 ) . PHP_EOL . PHP_EOL;
+	$results .= '## ' . __( 'Are there any external services, dependencies, or applications that utilize or rely on the site (e.g. mobile apps)? If so, how do these services interact with the site?', 'theme-check' ) . PHP_EOL;
+	$results .= $fields['external'] . PHP_EOL . PHP_EOL;
 
 	// GPL?
-	$results .= __( 'Code is GPL compatible or custom-code written in-house', 'theme-check' ) . PHP_EOL;
+	$results .= '## ' . __( 'Code is GPL compatible or custom-code written in-house', 'theme-check' ) . PHP_EOL;
 	$results .= $fields['gpl'] ? 'Yes' : 'No';
 	$results .= PHP_EOL . PHP_EOL;
 
 	// Coding standards?
-	$results .= __( 'Code follows WordPress Coding Standards and properly escapes, santizes, and validates data', 'theme-check' ) . PHP_EOL;
+	$results .= '## ' . __( 'Code follows WordPress Coding Standards and properly escapes, santizes, and validates data', 'theme-check' ) . PHP_EOL;
 	$results .= $fields['standards'] ? 'Yes' : 'No';
 	$results .= PHP_EOL . PHP_EOL;
 
 	// Summary of remaining issues
 	if ( isset( $_POST['summary'] ) ) {
 		$results .= "## Summary" . PHP_EOL;
-		$results .= wordwrap( $fields['summary'], 110 ) . PHP_EOL . PHP_EOL;
+		$results .= $fields['summary'] . PHP_EOL . PHP_EOL;
 	}
 
 	return $results;

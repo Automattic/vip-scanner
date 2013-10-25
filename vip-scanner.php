@@ -318,7 +318,7 @@ class VIP_Scanner_UI {
 			$results .= "## " . esc_html( $title ) . PHP_EOL;
 
 			foreach ( $errors as $result )
-				$results .= wordwrap( $this->get_plaintext_result_row( $result, $theme ), 110 ) . PHP_EOL;
+				$results .= $this->get_plaintext_result_row( $result, $theme ) . PHP_EOL;
 
 			$results .= PHP_EOL;
 		}
