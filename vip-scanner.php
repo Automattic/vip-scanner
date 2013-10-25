@@ -144,11 +144,17 @@ class VIP_Scanner_UI {
 			add_action( 'admin_footer', array( &$SyntaxHighlighter, 'maybe_output_scripts' ) );
 		}
 
-		$report   = $scanner->get_results();
-		$blockers = $scanner->get_errors( array_keys( $this->blocker_types ) );
-		$pass     = ! count( $blockers );
-		$errors   = count($blockers);
-		$notes    = count($scanner->get_errors()) - $errors;
+		$report       = $scanner->get_results();
+
+		$error_levels = $scanner->get_error_levels();
+		$note_types   = array_diff( $error_levels, array_keys( $this->blocker_types ) );
+
+		$blockers     = $scanner->get_errors( array_keys( $this->blocker_types ) );
+		$notes        = count( $note_types ) ? $scanner->get_errors( $note_types ) : array();
+
+		$errors       = count( $blockers );
+		$notes        = count( $notes );;
+		$pass         = !$errors;
 		
 		?>
 		<div class="scan-info">
@@ -176,21 +182,42 @@ class VIP_Scanner_UI {
 			<a href="#" class="nav-tab"><?php echo absint( $notes ); ?> <?php _e( 'Notes', 'theme-check' ); ?></a>
 		</h2>
 
-		<?php foreach( $this->blocker_types as $type => $title ):
-			$errors = $scanner->get_errors( array( $type ) );
+		<div class="errors">
+			<?php foreach( $this->blocker_types as $type => $title ):
+				$errors = $scanner->get_errors( array( $type ) );
 
-			if ( ! count( $errors ) )
-				continue;
-			?>
-			<h3><?php echo esc_html( $title ); ?></h3>
-			<ol class="scan-results-list">
-				<?php
-				foreach( $errors as $result ) {
-					$this->display_theme_review_result_row( $result, $scanner, $theme );
-				}
+				if ( ! count( $errors ) )
+					continue;
 				?>
-			</ol>
-		<?php endforeach; ?>
+				<h3><?php echo esc_html( $title ); ?></h3>
+				<ol class="scan-results-list">
+					<?php
+					foreach( $errors as $result ) {
+						$this->display_theme_review_result_row( $result, $scanner, $theme );
+					}
+					?>
+				</ol>
+			<?php endforeach; ?>
+		</div>
+
+		<div class="notes">
+			<?php foreach( $note_types as $type ):
+				$errors = $scanner->get_errors( array( $type ) );
+				$title = ucfirst( $type . 's' );
+
+				if ( ! count( $errors ) )
+					continue;
+				?>
+				<h3><?php echo esc_html( $title ); ?></h3>
+				<ol class="scan-results-list">
+					<?php
+					foreach( $errors as $result ) {
+						$this->display_theme_review_result_row( $result, $scanner, $theme );
+					}
+					?>
+				</ol>
+			<?php endforeach; ?>
+		</div>
 		<?php
 	}
 
