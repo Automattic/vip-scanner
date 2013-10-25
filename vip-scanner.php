@@ -61,8 +61,9 @@ class VIP_Scanner_UI {
 	function admin_enqueue_scripts( $hook ) {
 		if ( ! isset( $_GET['page'] ) || 'vip-scanner' != $_GET['page'] )
 			return;
-
+			
 		wp_enqueue_style( 'vip-scanner-css', plugins_url( 'css/vip-scanner.css', __FILE__ ), array(), '20120320' );
+		wp_enqueue_script( 'vip-scanner-js', plugins_url( 'js/vip-scanner.js', __FILE__ ), array('jquery'), '20120320' );
 	}
 
 	function display_admin_page() {
@@ -177,12 +178,12 @@ class VIP_Scanner_UI {
 			</table>
 		</div>
 		
-		<h2 class="nav-tab-wrapper"><?php // Note: These are static tabs ?>
-			<a href="#" class="nav-tab nav-tab-active"><?php echo absint( $errors ); ?> <?php _e( 'Errors', 'theme-check' ); ?></a>
-			<a href="#" class="nav-tab"><?php echo absint( $notes ); ?> <?php _e( 'Notes', 'theme-check' ); ?></a>
+		<h2 class="nav-tab-wrapper">
+			<a href="#errors" class="nav-tab"><?php echo absint( $errors ); ?> <?php _e( 'Errors', 'theme-check' ); ?></a>
+			<a href="#notes" class="nav-tab"><?php echo absint( $notes ); ?> <?php _e( 'Notes', 'theme-check' ); ?></a>
 		</h2>
 
-		<div class="errors">
+		<div id="errors">
 			<?php foreach( $this->blocker_types as $type => $title ):
 				$errors = $scanner->get_errors( array( $type ) );
 
@@ -200,7 +201,7 @@ class VIP_Scanner_UI {
 			<?php endforeach; ?>
 		</div>
 
-		<div class="notes">
+		<div id="notes">
 			<?php foreach( $note_types as $type ):
 				$errors = $scanner->get_errors( array( $type ) );
 				$title = ucfirst( $type . 's' );
