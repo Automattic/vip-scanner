@@ -13,9 +13,9 @@ require_once( dirname( __FILE__ ) . '/vip-scanner/vip-scanner.php' );
 class VIP_Scanner_UI {
 	const key = 'vip-scanner';
 
+	public $default_review;
 	private static $instance;
 	private $blocker_types;
-	private $default_review;
 
 	private $to;
 
@@ -556,4 +556,4 @@ class VIP_Scanner_UI {
 }
 
 // Initialize!
-VIP_Scanner_UI::get_instance();
+$vip_scanner = VIP_Scanner_UI::get_instance();
