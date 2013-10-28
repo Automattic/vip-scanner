@@ -4,6 +4,8 @@ class VIP_Scanner_Form {
 
 	static $instance = false;
 
+	const TRANSIENT_KEY = 'vip_scanner_flash_form_field';
+
 	static $fields = array();
 	static $labels = array();
 	static $required = array();
@@ -12,7 +14,8 @@ class VIP_Scanner_Form {
 	static function instance() {
 		add_action( 'vip_scanner_form', array( __CLASS__, 'vip_scanner_form' ) );
 		add_action( 'vip_scanner_form_results', array( __CLASS__, 'vip_scanner_form_results' ) );
-		add_action( 'admin_notices', array( __CLASS__, 'vip_scanner_missing_required_fields' ) );	
+		add_action( 'vip_scanner_form_success', array( __CLASS__, 'delete_transient' ) );
+		add_action( 'admin_notices', array( __CLASS__, 'vip_scanner_missing_required_fields' ) );
 	}
 
 	static function get_instance() {
@@ -21,7 +24,7 @@ class VIP_Scanner_Form {
 
 		self::$instance = true;
 	}
-	
+
 	public static function add_field( $type, $name, $label, $review, $required = false ) {
 		self::get_instance();
 
@@ -36,7 +39,7 @@ class VIP_Scanner_Form {
 	}
 
 	static function vip_scanner_form() {
-		$fields = get_transient( 'vip_scanner_flash_form_fields' ) ?: array();
+		$fields = get_transient( self::TRANSIENT_KEY ) ?: array();
 		foreach ( self::$fields as $name => $type ) {
 			if ( ! self::is_review_type( self::$review[$name] ) )
 				continue;
@@ -55,7 +58,7 @@ class VIP_Scanner_Form {
 								break;
 
 							case 'checkbox':
-								$checked = checked( isset( $fields[$name] ) && $fields[$name] );
+								$checked = checked( isset( $fields[$name] ) && $fields[$name], true, false );
 								echo "<input type='$type' name='$name' $checked> ";
 								echo esc_html( self::$labels[$name] ) . ': ' . $maybe_required ;
 								break;
@@ -84,13 +87,11 @@ class VIP_Scanner_Form {
 					'vip-scanner-review-type' => urlencode( $_REQUEST['review'] ),
 				) );
 
-				set_transient( 'vip_scanner_flash_form_fields', array_intersect_key( $_POST, self::$fields ) );
+				set_transient( self::TRANSIENT_KEY, array_intersect_key( $_POST, self::$fields ) );
 				wp_safe_redirect( $url );
 				exit;
 			}
 		}
-
-		delete_transient( 'vip_scanner_flash_form_fields' );
 
 		foreach( self::$labels as $name => $label ) {
 			if ( ! self::is_review_type( self::$review[$name] ) )
@@ -114,7 +115,7 @@ class VIP_Scanner_Form {
 	}
 
 	private static function required( $name ) {
-		$fields = get_transient( 'vip_scanner_flash_form_fields' ) ?: array();
+		$fields = get_transient( self::TRANSIENT_KEY ) ?: array();
 
 		if ( ! isset( $_GET['message'] ) || 'fill-required-fields' != $_GET['message'] )
 			return;
@@ -130,6 +131,10 @@ class VIP_Scanner_Form {
 		$review_types = VIP_Scanner::get_instance()->get_review_types();
 		$cur = isset( $_REQUEST['vip-scanner-review-type'] ) ? $_REQUEST['vip-scanner-review-type'] : $review_types[$vip_scanner->default_review];
 		return $cur == $type;
+	}
+
+	private static function delete_transient() {
+		delete_transient( self::TRANSIENT_KEY );
 	}
 
 	function __construct() {}

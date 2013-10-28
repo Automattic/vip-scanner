@@ -49,7 +49,7 @@ function vip_scanner_form_fields( $review, $blockers ) {
 	if ( 'VIP Theme Review' != $review )
 		return;
 
-	$fields = get_transient( 'vip_scanner_flash_form_fields' );
+	$fields = get_transient( 'vip_theme_review_flash_form_fields' );
 	$required = function( $required ) {
 		if ( ! isset( $_GET['message'] ) || 'fill-required-fields' != $_GET['message'] )
 			return;
@@ -83,6 +83,8 @@ function vip_scanner_form_results( $results, $review ) {
 		'error_summary'=> isset( $_POST['error_summary'] ) ? sanitize_text_field( $_POST['error_summary'] ) : true,
 	);
 
+	update_transient( 'vip_theme_review_flash_form_fields', $fields );
+
 	foreach ( $required as $r ) {
 		if ( empty( $fields[$r] ) ) {
 			$url = add_query_arg( array(
@@ -111,13 +113,7 @@ function vip_scanner_form_results( $results, $review ) {
 	return $results;
 }
 
-add_action( 'admin_notices', 'vip_scanner_missing_required_fields' );
-function vip_scanner_missing_required_fields() {
-	if ( ! isset( $_GET['page'], $_GET['message'] ) || 'vip-scanner' != $_GET['page'] || 'fill-required-fields' != $_GET['message'] )
-		return;
-    ?>
-    <div class="error">
-        <p><strong><?php _e( 'Warning! Fill the required fields before submitting the form.', 'theme-check' ); ?></strong></p>
-    </div>
-    <?php
+add_action( 'vip_scanner_form_success', 'vip_theme_review_form_success' );
+function vip_theme_review_form_success() {
+	delete_transient( 'vip_theme_review_flash_form_fields' );
 }

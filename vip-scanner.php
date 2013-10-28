@@ -80,7 +80,7 @@ class VIP_Scanner_UI {
 	function admin_enqueue_scripts( $hook ) {
 		if ( ! isset( $_GET['page'] ) || 'vip-scanner' != $_GET['page'] )
 			return;
-			
+
 		wp_enqueue_style( 'vip-scanner-css', plugins_url( 'css/vip-scanner.css', __FILE__ ), array(), '20120320' );
 		wp_enqueue_script( 'vip-scanner-js', plugins_url( 'js/vip-scanner.js', __FILE__ ), array('jquery'), '20120320' );
 	}
@@ -179,16 +179,16 @@ class VIP_Scanner_UI {
 		$errors       = count( $blockers );
 		$notes        = count( $notes );;
 		$pass         = !$errors;
-		
+
 		?>
 		<div class="scan-info">
 			<span>Scanned Theme: <span class="theme-name"><?php echo $theme; ?></span></span>
 			<?php $this->display_vip_scanner_form(); ?>
 		</div>
-		
+
 		<div class="scan-report">
 			<div class="scan-results result-<?php echo $pass ? 'pass' : 'fail'; ?>"><?php echo $pass ? __( 'Passed the Scan with no errors!', 'theme-check' ) : __( 'Failed to pass Scan', 'theme-check' ); ?></div>
-		
+
 			<table class="scan-results-table">
 				<tr>
 					<th><?php _e( 'Total Files', 'theme-check' ); ?></th>
@@ -200,7 +200,7 @@ class VIP_Scanner_UI {
 				</tr>
 			</table>
 		</div>
-		
+
 		<h2 class="nav-tab-wrapper">
 			<a href="#errors" class="nav-tab"><?php echo absint( $errors ); ?> <?php _e( 'Errors', 'theme-check' ); ?></a>
 			<a href="#notes" class="nav-tab"><?php echo absint( $notes ); ?> <?php _e( 'Notes', 'theme-check' ); ?></a>
@@ -313,7 +313,7 @@ class VIP_Scanner_UI {
 		}
 
 		$report   = $scanner->get_results();
-		$blockers = count( $scanner->get_errors( array_keys( $this->blocker_types ) ) );	
+		$blockers = count( $scanner->get_errors( array_keys( $this->blocker_types ) ) );
 
 		$results .= __( 'Total Files', 'theme-check' );
 		$results .= ':  ';
@@ -415,7 +415,7 @@ class VIP_Scanner_UI {
 
 		$theme = get_stylesheet();
 		$review = sanitize_text_field( $_POST[ 'review' ] );
-		$scanner = $this->get_cached_theme_review( $theme, $review );	
+		$scanner = $this->get_cached_theme_review( $theme, $review );
 
 		if ( $scanner ) {
 			$filename = date( 'Ymd' ) . '.' . $theme . '.' . $review . '.VIP-Scanner.txt';
@@ -423,6 +423,8 @@ class VIP_Scanner_UI {
 			header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
 
 			echo $this->get_plaintext_theme_review_export( $scanner, $theme, $review );
+
+			do_action( 'vip_scanner_form_success' );
 
 			exit;
 		}
@@ -476,12 +478,15 @@ class VIP_Scanner_UI {
 		$args = array(
 			'page' => self::key,
 			'message' => 'success',
-			'vip-scanner-review-type' => urlencode( $review ),	
+			'vip-scanner-review-type' => urlencode( $review ),
 		);
 
 		// Error message if the wp_mail didn't work
-		if ( !$mail )
+		if ( !$mail ) {
 			$args['message'] = 'fail';
+		} else {
+			do_action( 'vip_scanner_form_success' );
+		}
 
 		wp_safe_redirect( add_query_arg( $args ) );
 		exit;
