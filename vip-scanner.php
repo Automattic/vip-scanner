@@ -14,14 +14,53 @@ class VIP_Scanner_UI {
 	const key = 'vip-scanner';
 
 	private static $instance;
+	private $blocker_types;
+	private $default_review;
+
+	private $to;
 
 	function __construct() {
 		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'admin_init', array( $this, 'admin_init' ) );
 		do_action( 'vip_scanner_loaded' );
+
+
+		$this->blocker_types = apply_filters( 'vip_scanner_blocker_types', array(
+			'blocker'  => __( 'Blockers', 'theme-check' ),
+			'warning'  => __( 'Warnings', 'theme-check' ),
+			'required' => __( 'Required', 'theme-check' ),
+		) );
+
+		$review_types = VIP_Scanner::get_instance()->get_review_types();
+		$this->default_review = apply_filters( 'vip_scanner_default_review', 0, $review_types );
+
+		$this->to = apply_filters( 'vip_scanner_email_to', '' );
 	}
 
 	function init() {
 		add_action( 'admin_menu', array( $this, 'add_menu_page' ) );
+	}
+
+	function admin_init() {
+		if ( isset( $_POST['page'], $_POST['action'] ) && $_POST['page'] == self::key && $_POST['action'] == 'Export' )
+			$this->export();
+
+		if ( isset( $_POST['page'], $_POST['action'] ) && $_POST['page'] == self::key && $_POST['action'] == 'Submit' )
+			$this->submit();
+
+		// Handle admin notices
+		if ( isset( $_GET['page'], $_GET['message'] ) && self::key == $_GET['page'] ) {
+
+			switch( $_GET['message'] ) {
+				case 'fail':
+					add_action( 'admin_notices', array( $this, 'admin_notice_fail' ) );
+					break;
+
+				case 'success':
+					add_action( 'admin_notices', array( $this, 'admin_notice_success' ) );
+					break;
+			}
+		}
 	}
 
 	static function get_instance() {
@@ -33,15 +72,17 @@ class VIP_Scanner_UI {
 	}
 
 	function add_menu_page() {
-		$hook = add_submenu_page( 'tools.php', 'VIP Scanner', 'VIP Scanner', 'manage_options', self::key, array( $this, 'display_admin_page' ) );
+		$submenu_page = apply_filters( 'vip_scanner_submenu_page', 'tools.php' );
+		$hook = add_submenu_page( $submenu_page, 'VIP Scanner', 'VIP Scanner', 'manage_options', self::key, array( $this, 'display_admin_page' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 	}
 
 	function admin_enqueue_scripts( $hook ) {
-		if ( 'tools_page_' . self::key !== $hook )
+		if ( ! isset( $_GET['page'] ) || 'vip-scanner' != $_GET['page'] )
 			return;
-
+			
 		wp_enqueue_style( 'vip-scanner-css', plugins_url( 'css/vip-scanner.css', __FILE__ ), array(), '20120320' );
+		wp_enqueue_script( 'vip-scanner-js', plugins_url( 'js/vip-scanner.js', __FILE__ ), array('jquery'), '20120320' );
 	}
 
 	function display_admin_page() {
@@ -55,8 +96,9 @@ class VIP_Scanner_UI {
 		<div id="vip-scanner" class="wrap">
 			<?php screen_icon( 'themes' ); ?>
 			<h2><?php echo esc_html( $title ); ?></h2>
-			<?php $this->display_vip_scanner_form(); ?>
+			<div class="scanner-wrapper">
 			<?php $this->do_theme_review(); ?>
+			</div>
 		</div>
 		<?php
 	}
@@ -64,43 +106,60 @@ class VIP_Scanner_UI {
 	function display_vip_scanner_form() {
 		$themes = wp_get_themes();
 		$review_types = VIP_Scanner::get_instance()->get_review_types();
-		$current_theme = isset( $_POST[ 'vip-scanner-theme-name' ] ) ? sanitize_text_field( $_POST[ 'vip-scanner-theme-name' ] ) : get_stylesheet();
-		$current_review = isset( $_POST[ 'vip-scanner-review-type' ] ) ? sanitize_text_field( $_POST[ 'vip-scanner-review-type' ] ) : $review_types[0]; // TODO: eugh, need better error checking
+		$current_theme = isset( $_GET[ 'vip-scanner-theme-name' ] ) ? sanitize_text_field( $_GET[ 'vip-scanner-theme-name' ] ) : get_stylesheet();
+		$current_review = isset( $_GET[ 'vip-scanner-review-type' ] ) ? sanitize_text_field( $_GET[ 'vip-scanner-review-type' ] ) : $review_types[ $this->default_review ]; // TODO: eugh, need better error checking
 		?>
-		<form method="POST">
-			<p>Select a theme and the review that you want to run:</p>
-			<select name="vip-scanner-theme-name">
-				<?php foreach ( $themes as $name => $location ) : ?>
-					<option <?php selected( $current_theme, $location['Stylesheet'] ); ?> value="<?php echo esc_attr( $location['Stylesheet'] ); ?>"><?php echo esc_html( $location['Name'] ); ?></option>
-				<?php endforeach; ?>
-			</select>
+		<form method="GET">
+			<input type="hidden" name="page" value="<?php echo self::key; ?>" />
 			<select name="vip-scanner-review-type">
 				<?php foreach ( $review_types as $review_type ) : ?>
 					<option <?php selected( $current_review, $review_type ); ?> value="<?php echo esc_attr( $review_type ); ?>"><?php echo esc_html( $review_type ); ?></option>
 				<?php endforeach; ?>
 			</select>
-			<?php submit_button( 'Check it!', 'primary', 'submit', false ); ?>
-			<?php wp_nonce_field( 'vip-scan-theme', 'vip-scanner-nonce' ); ?>
-			<input type="hidden" name="page" value="<?php echo self::key; ?>" />
+			<?php submit_button( 'Scan', 'primary', false, false ); ?>
 		</form>
 		<?php
 	}
 
 	function do_theme_review() {
-		if( ! isset( $_POST[ 'vip-scanner-nonce' ] ) || ! wp_verify_nonce( $_POST[ 'vip-scanner-nonce' ], 'vip-scan-theme' ) )
-			return;
-
-		if ( ! isset( $_POST[ 'vip-scanner-theme-name' ] ) )
-			return;
-
-		$theme = sanitize_text_field( $_POST[ 'vip-scanner-theme-name' ] );
-		$review = isset( $_POST[ 'vip-scanner-review-type' ] ) ? sanitize_text_field( $_POST[ 'vip-scanner-review-type' ] ) : $review_types[0]; // TODO: eugh, need better error checking
+		$theme = get_stylesheet();
+		$review_types = VIP_Scanner::get_instance()->get_review_types();
+		$review = isset( $_GET[ 'vip-scanner-review-type' ] ) ? sanitize_text_field( $_GET[ 'vip-scanner-review-type' ] ) : $review_types[ $this->default_review ]; // TODO: eugh, need better error checking
 
 		$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
-		if ( $scanner )
+
+		$transient_key = 'vip_scanner_' . md5( $theme . $review );
+		if ( $scanner !== get_transient( $transient_key ) )
+			set_transient( $transient_key, $scanner );
+
+		if ( $scanner ):
 			$this->display_theme_review_result( $scanner, $theme );
-		else
+			?>
+
+			<h2>Export Theme for VIP Review</h2>
+
+			<form method="POST" class="export-form">
+
+				<?php do_action( 'vip_scanner_form', $review, count( $scanner->get_errors( array_keys( $this->blocker_types ) ) ) ); ?>
+
+				<p>
+					<?php
+						// hide submit button if $to is empty
+						if ( !empty( $this->to ) )
+							submit_button( __( 'Submit', 'theme-check' ), 'primary', 'action', false );
+					?>
+					<?php submit_button( __( 'Export', 'theme-check' ), 'secondary', 'action', false ); ?>
+				</p>
+
+				<?php wp_nonce_field( 'export' ); ?>
+				<input type="hidden" name="review" value="<?php echo esc_attr( $review ) ?>">
+				<input type="hidden" name="page" value="<?php echo self::key; ?>">
+			</form>
+
+		<?php
+		else:
 			$this->display_scan_error();
+		endif;
 	}
 
 	function display_theme_review_result( $scanner, $theme ) {
@@ -109,39 +168,80 @@ class VIP_Scanner_UI {
 			add_action( 'admin_footer', array( &$SyntaxHighlighter, 'maybe_output_scripts' ) );
 		}
 
-		$report   = $scanner->get_results();
-		$blockers = $scanner->get_errors( array( 'blocker', 'warning', 'required' ) ); // TODO allow to be filtered.
-		$pass     = ! count( $blockers );
+		$report       = $scanner->get_results();
+
+		$error_levels = $scanner->get_error_levels();
+		$note_types   = array_diff( $error_levels, array_keys( $this->blocker_types ) );
+
+		$blockers     = $scanner->get_errors( array_keys( $this->blocker_types ) );
+		$notes        = count( $note_types ) ? $scanner->get_errors( $note_types ) : array();
+
+		$errors       = count( $blockers );
+		$notes        = count( $notes );;
+		$pass         = !$errors;
+		
 		?>
-		<h4>Scanning: <?php echo $theme; ?></h4>
+		<div class="scan-info">
+			<span>Scanned Theme: <span class="theme-name"><?php echo $theme; ?></span></span>
+			<?php $this->display_vip_scanner_form(); ?>
+		</div>
+		
+		<div class="scan-report">
+			<div class="scan-results result-<?php echo $pass ? 'pass' : 'fail'; ?>"><?php echo $pass ? __( 'Passed the Scan with no errors!', 'theme-check' ) : __( 'Failed to pass Scan', 'theme-check' ); ?></div>
+		
+			<table class="scan-results-table">
+				<tr>
+					<th><?php _e( 'Total Files', 'theme-check' ); ?></th>
+					<td><?php echo intval( $report['total_files'] ); ?></td>
+				</tr>
+				<tr>
+					<th><?php _e( 'Total Checks', 'theme-check' ); ?></th>
+					<td><?php echo intval( $report['total_checks'] ); ?></td>
+				</tr>
+			</table>
+		</div>
+		
+		<h2 class="nav-tab-wrapper">
+			<a href="#errors" class="nav-tab"><?php echo absint( $errors ); ?> <?php _e( 'Errors', 'theme-check' ); ?></a>
+			<a href="#notes" class="nav-tab"><?php echo absint( $notes ); ?> <?php _e( 'Notes', 'theme-check' ); ?></a>
+		</h2>
 
-		<table class="scan-results-table">
-			<tr>
-				<th><?php _e( 'Scan Result', 'theme-check' ); ?></th>
-				<td class="<?php echo $pass ? 'pass' : 'fail'; ?>"><?php echo $pass ? __( 'Pass', 'theme-check' ) : __( 'Fail', 'theme-check' ); ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Total Files', 'theme-check' ); ?></th>
-				<td><?php echo intval( $report['total_files'] ); ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Total Checks', 'theme-check' ); ?></th>
-				<td><?php echo intval( $report['total_checks'] ); ?></td>
-			</tr>
-			<tr>
-				<th><?php _e( 'Total Errors', 'theme-check' ); ?></th>
-				<td><?php echo count( $blockers ); ?></td>
-			</tr>
-		</table>
+		<div id="errors">
+			<?php foreach( $this->blocker_types as $type => $title ):
+				$errors = $scanner->get_errors( array( $type ) );
 
-		<ol class="scan-results-list">
-			<?php
-			$results = $scanner->get_errors();
-			foreach( $results as $result ) {
-				$this->display_theme_review_result_row( $result, $scanner, $theme );
-			}
-			?>
-		</ol>
+				if ( ! count( $errors ) )
+					continue;
+				?>
+				<h3><?php echo esc_html( $title ); ?></h3>
+				<ol class="scan-results-list">
+					<?php
+					foreach( $errors as $result ) {
+						$this->display_theme_review_result_row( $result, $scanner, $theme );
+					}
+					?>
+				</ol>
+			<?php endforeach; ?>
+		</div>
+
+		<div id="notes">
+			<?php foreach( $note_types as $type ):
+				$errors = $scanner->get_errors( array( $type ) );
+				$title = ucfirst( $type . 's' );
+
+				if ( ! count( $errors ) )
+					continue;
+				?>
+				<h3><?php echo esc_html( $title ); ?></h3>
+				<ol class="scan-results-list">
+					<?php
+					foreach( $errors as $result ) {
+						$this->display_theme_review_result_row( $result, $scanner, $theme );
+					}
+					?>
+				</ol>
+			<?php endforeach; ?>
+		</div>
 		<?php
 	}
 
@@ -169,7 +269,6 @@ class VIP_Scanner_UI {
 
 		?>
 		<li class="scan-result-<?php echo strtolower( $level ); ?>">
-			<span class="scan-level"><?php echo $level; ?></span>
 			<span class="scan-description"><?php echo $description; ?></span>
 
 			<?php if( ! empty( $file ) ) : ?>
@@ -200,8 +299,259 @@ class VIP_Scanner_UI {
 		<?php
 	}
 
+	function get_plaintext_theme_review_export( $scanner, $theme, $review ) {
+		$results = "";
+
+		$results .= $title = apply_filters( 'vip_scanner_export_title', "$theme - $review", $review ) . PHP_EOL;
+		$results .= str_repeat( '=', strlen( $title ) ) . PHP_EOL . PHP_EOL;
+
+		$form_results = apply_filters( 'vip_scanner_form_results', '', $review );
+
+		if ( !empty( $form_results ) ) {
+			$results .= $form_results;
+			$results .= str_repeat( '-', 25 ) . ' Scanner Results ' . str_repeat( '-', 25 ) . PHP_EOL . PHP_EOL;
+		}
+
+		$report   = $scanner->get_results();
+		$blockers = count( $scanner->get_errors( array_keys( $this->blocker_types ) ) );	
+
+		$results .= __( 'Total Files', 'theme-check' );
+		$results .= ':  ';
+		$results .= intval( $report['total_files'] );
+		$results .= PHP_EOL;
+
+		$results .= __( 'Total Checks', 'theme-check' );
+		$results .= ': ';
+		$results .= intval( $report['total_checks'] );
+		$results .= PHP_EOL;
+
+		$results .= __( 'Errors', 'theme-check' );
+		$results .= ':       ';
+		$results .= intval( $blockers );
+		$results .= PHP_EOL;
+
+		$results .= PHP_EOL;
+
+		foreach( $this->blocker_types as $type => $title ) {
+			$errors = $scanner->get_errors( array( $type ) );
+
+			if ( ! count( $errors ) )
+				continue;
+
+			$results .= "## " . esc_html( $title ) . PHP_EOL;
+
+			foreach ( $errors as $result )
+				$results .= $this->get_plaintext_result_row( $result, $theme ) . PHP_EOL;
+
+			$results .= PHP_EOL;
+		}
+
+		return $results;
+	}
+
+	function get_plaintext_result_row( $error, $theme ) {
+		$description = $error['description'];
+
+		$file = '';
+		if ( is_array( $error['file'] ) ) {
+			if ( ! empty( $error['file'][0] ) )
+				$file .= $error['file'][0];
+			if ( ! empty( $error['file'][1] ) )
+				$file .= ': ' . $error['file'][1];
+		} else if ( ! empty( $error['file'] ) ) {
+			$file_full_path = $error['file'];
+			$file_theme_path = substr( $file_full_path, strrpos( $file_full_path, sprintf( '/%s/', $theme ) ) );
+			$file = strrchr( $file_full_path, sprintf( '/%s/', $theme ) );
+			if ( ! $file && ! empty( $file_theme_path ) )
+				$file = $file_theme_path;
+		}
+
+		$line = "";
+
+		if ( $file )
+			$line .= "$file - ";
+
+		$line .= $description;
+
+		return $this->format_plaintext_row( "* $line" );
+	}
+
+	function format_plaintext_row( $row ) {
+		// Markdown code
+		$row = str_replace( array( '<var>', '</var>', '<code>', '</code>' ), '`', $row );
+
+		// Markdown <em>
+		$row = str_replace( array( '<em>', '</em>', '<i>', '</i>' ), '*', $row );
+
+		// Markdown <strong>
+		$row = str_replace( array( '<strong>', '</strong>', '<b>', '</b>' ), '**', $row );
+
+		$row = strip_tags( $row );
+		return $row;
+	}
+
 	function display_scan_error() {
 		echo 'Uh oh! Looks like something went wrong :(';
+	}
+
+	function get_cached_theme_review( $theme, $review ) {
+		$transient_key = 'vip_scanner_' . md5( $theme . $review );
+
+		if ( false === $scanner = get_transient( $transient_key ) ) {
+			$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
+			set_transient( $transient_key, $scanner );
+		}
+
+		return $scanner;
+	}
+
+	function export() {
+
+		// Check nonce and permissions
+		check_admin_referer( 'export' );
+
+		if ( ! isset( $_POST['review'] ) )
+			return;
+
+		$theme = get_stylesheet();
+		$review = sanitize_text_field( $_POST[ 'review' ] );
+		$scanner = $this->get_cached_theme_review( $theme, $review );	
+
+		if ( $scanner ) {
+			$filename = date( 'Ymd' ) . '.' . $theme . '.' . $review . '.VIP-Scanner.txt';
+			header( 'Content-Type: text/plain' );
+			header( 'Content-Disposition: attachment; filename="' . $filename . '"' );
+
+			echo $this->get_plaintext_theme_review_export( $scanner, $theme, $review );
+
+			exit;
+		}
+
+		// redirect with error message
+		$url = add_query_arg( array(
+			'page' => self::key,
+			'message' => 'fail',
+			'vip-scanner-review-type' => urlencode( $review ),
+		) );
+
+		wp_safe_redirect( $url );
+		exit;
+	}
+
+	function submit() {
+		$mail = false;
+
+		// Check nonce and permissions
+		check_admin_referer( 'export' );
+
+		if ( ! isset( $_POST['review'] ) )
+			return;
+
+		$theme = get_stylesheet();
+		$review = sanitize_text_field( $_POST[ 'review' ] );
+		$scanner = $this->get_cached_theme_review( $theme, $review );
+
+		$message = $this->get_plaintext_theme_review_export( $scanner, $theme, $review );
+		$subject = apply_filters( 'vip_scanner_email_subject', "[VIP Scanner] $theme - $review", $theme, $review );
+		$headers = apply_filters( 'vip_scanner_email_headers', array() );
+
+		if ( $scanner && !empty( $this->to ) ) {
+			$zip = self::create_zip();
+
+			// redirect with error message
+			if ( !$zip )
+				break;
+
+			$mail = wp_mail(
+				$this->to,
+				$subject,
+				$message,
+				$headers,
+				array( $zip )
+			);
+
+			unlink( $zip );
+		}
+
+		$args = array(
+			'page' => self::key,
+			'message' => 'success',
+			'vip-scanner-review-type' => urlencode( $review ),	
+		);
+
+		// Error message if the wp_mail didn't work
+		if ( !$mail )
+			$args['message'] = 'fail';
+
+		wp_safe_redirect( add_query_arg( $args ) );
+		exit;
+	}
+
+	private static function create_zip( $directory = '', $name = '', $overwrite = true ) {
+		if ( empty( $directory ) )
+			$directory = get_stylesheet_directory();
+
+		if ( empty( $name ) ) {
+			$stylesheet = explode( '/', get_stylesheet() );
+			$stylesheet = $stylesheet[count( $stylesheet ) - 1];
+			$name = $stylesheet . '.' . date( 'Y-m-d' ) . '.zip';
+		}
+
+		$upload_dir = wp_upload_dir();
+		$destination = $upload_dir['basedir'] . '/' . $name;
+
+		if ( ! is_dir( $directory ) )
+			return;
+
+		if ( file_exists( $destination ) && !$overwrite )
+			return false;
+
+		$zip = new ZipArchive();
+
+		if( $zip->open( $destination, $overwrite ? ZIPARCHIVE::OVERWRITE : ZIPARCHIVE::CREATE ) !== true )
+			return false;
+
+		// Iterative BFS algo to add all files to zip
+		$dirs = array( $directory );
+		while ( !empty( $dirs ) ) {
+			$glob = array_shift( $dirs ) . '/*';
+			foreach ( glob( $glob ) as $file ) {
+
+				// Don't add directories to the zip
+				if ( is_dir( $file ) )
+					continue;
+
+				$local_path = ltrim( str_replace( $directory, '', $file ), '/' );
+				$zip->addFile( $file, $local_path );
+			}
+
+			// Find all sub directories
+			$dirs = array_merge( $dirs, glob( $glob, GLOB_ONLYDIR ) );
+		}
+
+		$zip->close();
+
+		return file_exists( $destination ) ? $destination : false;
+	}
+
+	function admin_notice_fail() {
+		if ( ! isset( $_GET['page'], $_GET['message'] ) || 'vip-scanner' != $_GET['page'] || 'fail' != $_GET['message'] )
+			return;
+	    ?>
+	    <div class="error">
+	        <p><strong><?php _e( 'Fail! Something broke.', 'theme-check' ); ?></strong></p>
+	    </div>
+	    <?php
+	}
+
+	function admin_notice_success() {
+		if ( ! isset( $_GET['page'], $_GET['message'] ) || 'vip-scanner' != $_GET['page'] || 'success' != $_GET['message'] )
+			return;
+	    ?>
+	    <div class="updated">
+	        <p><strong><?php _e( 'Success!', 'theme-check' ); ?></strong></p>
+	    </div>
+	    <?php
 	}
 }
 
