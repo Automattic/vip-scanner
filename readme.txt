@@ -1,9 +1,9 @@
 === VIP Scanner ===
-Contributors: batmoo, automattic, tott, mfields
+Contributors: batmoo, automattic, tott, mfields, keoshi, betzster
 Tags: scanner, scan, files, security, theme check
 Requires at least: 3.4
 Tested up to: 3.4.2
-Stable tag: 0.3
+Stable tag: 0.4
 
 Scan all sorts of themes and files and things.
 
@@ -34,6 +34,11 @@ To come...
 1. The VIP Scanner has a slick UI. Slicker than your average.
 
 == Changelog ==
+
+= 0.4 =
+* UI Refresh
+* Exports
+* Auto scan
 
 = 0.3 = 
 

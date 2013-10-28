@@ -3,7 +3,7 @@
  * Plugin Name: VIP Scanner WordPress.com Rules
  * Description: Custom rules for the VIP Scanner specific to WordPress.com
  * Author: Automattic
- * Version: 0.3
+ * Version: 0.4
  *
  * License: GPLv2
  */
