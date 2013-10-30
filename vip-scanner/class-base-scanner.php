@@ -113,6 +113,7 @@ class BaseScanner {
 
 			$check = new $check;
 			if ( $check instanceof BaseCheck ) {
+				$check->set_scanner( $this );
 
 				$pass = $pass & $check->check( $this->files );
 				$results = $check->get_results();
