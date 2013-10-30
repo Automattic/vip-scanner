@@ -4,6 +4,7 @@ abstract class BaseCheck
 {
 	protected $check_count = 0;
 	protected $errors = array();
+	protected $scanner;
 
 	// Returns true for good/okay/acceptable, false for bad/not-okay/unacceptable
 	abstract public function check( $files );
@@ -185,5 +186,27 @@ abstract class BaseCheck
 		$scanner = new VIP_PregFile( $needle, $haystack );
 		$results = $scanner->get();
 		return $results;
+	}
+
+	/**
+	 * Set the scanner that called this check
+	 * 
+	 * @param 	BaseScanner $scanner The BaseScanner instance responsible for calling this check
+	 * 
+	 * @return 	BaseCheck The check itself
+	 */
+	public function set_scanner( BaseScanner $scanner ) {
+		$this->scanner = $scanner;
+
+		return $this;
+	}
+
+	/**
+	 * Get the BaseScanner associated with this check
+	 * 
+	 * @return BaseScanner The BaseScanner which created this check
+	 */
+	public function get_scanner() {
+		return $this->scanner;
 	}
 }
