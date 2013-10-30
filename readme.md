@@ -31,6 +31,16 @@ Install using the Plugin Installer.
 Changelog
 ---------
 
+__0.4__
+
+* UI Refresh
+* Exports
+* Auto scan
+
+__0.3__
+
+* Various bug fixes, including preventing the annoying upgrade nag between the main VIP Scanner plugin and WP.com Rules.
+
 __0.2__
 
 * New checks and scans! VIP_PregFile, EscapingCheck, etc.
