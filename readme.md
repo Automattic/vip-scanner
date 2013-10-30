@@ -31,6 +31,10 @@ Install using the Plugin Installer.
 Changelog
 ---------
 
+__0.5__
+
+* ClamAV Integration
+
 __0.4__
 
 * UI Refresh

@@ -35,6 +35,9 @@ To come...
 
 == Changelog ==
 
+= 0.5 =
+* ClamAV Integration
+
 = 0.4 =
 * UI Refresh
 * Exports
