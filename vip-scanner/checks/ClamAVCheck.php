@@ -16,7 +16,7 @@ class ClamAVCheck extends BaseCheck {
 
 		$command = escapeshellcmd( self::COMMAND );
 
-		$scan_path = escapeshellarg( $this->get_scanner()->get_path() );
+		$scan_path = escapeshellarg( $this->get_path() );
 
 		// Format the shell arguments
 		$exclude_dir_regex 	= array_map( function( $regex ) { 
