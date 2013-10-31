@@ -8,8 +8,11 @@ class ClamAVCheck extends BaseCheck {
 
 	public function check( $files ) {
 		// We can only actually do a ClamAV scan if it's installed :)
-		if ( ! self::isClamScanAvailable() )
+		if ( ! self::isClamScanAvailable() ) {
+			$this->add_error( 'clamav', 'Antivirus Scan', BaseScanner::LEVEL_WARNING, null, array( 'ClamAV is not present on this system - as such, no antivirus scanning was performed on this theme.') );
+
 			return true;
+		}
 
 		$command = escapeshellcmd( self::COMMAND );
 
