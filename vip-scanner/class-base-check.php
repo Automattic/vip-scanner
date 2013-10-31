@@ -209,4 +209,13 @@ abstract class BaseCheck
 	public function get_scanner() {
 		return $this->scanner;
 	}
+
+	public function get_path() {
+		$scanner = $this->get_scanner();
+
+		if ( ! $scanner instanceof BaseScanner )
+			return null;
+
+		return $scanner->get_path();
+	}
 }
