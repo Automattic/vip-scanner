@@ -38,6 +38,7 @@ To come...
 = 0.5 =
 * ClamAV Integration
 * New checks, including VIPInitCheck
+* WP CLI Support (using vip-scanner command)
 
 = 0.4 =
 * UI Refresh

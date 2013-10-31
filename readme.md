@@ -35,6 +35,7 @@ __0.5__
 
 * ClamAV Integration
 * New checks, including VIPInitCheck
+* WP CLI Support (using vip-scanner command)
 
 __0.4__
 
