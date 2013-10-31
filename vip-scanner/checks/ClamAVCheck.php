@@ -49,7 +49,7 @@ class ClamAVCheck extends BaseCheck {
 
 			list( $file, $virus, $result ) = explode( ' ', $result );
 
-			$file = trim( $file, '://' );
+			$file = $this->get_filename( trim( $file, ':' ) );
 
 			$this->add_error( 'clamav', 'Antivirus Scan', BaseScanner::LEVEL_BLOCKER, $file, array( $virus . ' found' ) );
 		}
