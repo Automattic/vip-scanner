@@ -10,6 +10,9 @@ License: GPLv2
 */
 require_once( dirname( __FILE__ ) . '/vip-scanner/vip-scanner.php' );
 
+if ( defined('WP_CLI') && WP_CLI )
+	require_once( dirname( __FILE__ ) . '/vip-scanner/class-wp-cli.php' );
+
 class VIP_Scanner_UI {
 	const key = 'vip-scanner';
 
