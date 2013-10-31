@@ -34,6 +34,7 @@ Changelog
 __0.5__
 
 * ClamAV Integration
+* New checks, including VIPInitCheck
 
 __0.4__
 
