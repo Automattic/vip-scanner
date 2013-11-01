@@ -7,6 +7,12 @@ class ClamAVCheck extends BaseCheck {
 	protected $exclude_file_regexes = array();
 
 	public function check( $files ) {
+		// If the scan is not a theme scan, skip (for example, diff scan)
+		$scanner = $this->get_scanner();
+
+		if ( ! $scanner instanceof ThemeScanner )
+			return true;
+		
 		// We can only actually do a ClamAV scan if it's installed :)
 		if ( ! self::isClamScanAvailable() ) {
 			$this->add_error( 'clamav', 'Antivirus Scan', BaseScanner::LEVEL_WARNING, null, array( 'ClamAV is not present on this system - as such, no antivirus scanning was performed on this theme.') );
