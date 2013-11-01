@@ -5,6 +5,12 @@
  */
 class VIPInitCheck extends BaseCheck {
 	public function check( $files ) {
+		// If the scan is not a theme scan, skip (for example, diff scan)
+		$scanner = $this->get_scanner();
+
+		if ( ! $scanner instanceof ThemeScanner )
+			return true;
+		
 		$path 	= $this->get_path(); // So we can ensure we only look at the main functions.php
 		$files 	= $this->filter_files( $files, 'php' );
 
