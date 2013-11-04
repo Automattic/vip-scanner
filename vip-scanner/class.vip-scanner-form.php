@@ -54,7 +54,7 @@ class VIP_Scanner_Form {
 						switch ( $type ) {
 							case 'textarea':
 								echo esc_html( self::$labels[$name] ) . ': ' . $maybe_required . '<br>';
-								echo "<textarea name='$name'></textarea>";
+								echo "<textarea name='$name'>" . esc_textarea( $fields[ $name ] ) . "</textarea>";
 								break;
 
 							case 'checkbox':
