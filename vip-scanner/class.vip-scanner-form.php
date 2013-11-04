@@ -40,6 +40,7 @@ class VIP_Scanner_Form {
 
 	static function vip_scanner_form() {
 		$fields = get_transient( self::TRANSIENT_KEY ) ?: array();
+
 		foreach ( self::$fields as $name => $type ) {
 			if ( ! self::is_review_type( self::$review[$name] ) )
 				continue;
@@ -53,8 +54,10 @@ class VIP_Scanner_Form {
 
 						switch ( $type ) {
 							case 'textarea':
+								$value = isset( $fields[ $name ] ) ? $fields[ $name ] : null;
+
 								echo esc_html( self::$labels[$name] ) . ': ' . $maybe_required . '<br>';
-								echo "<textarea name='$name'>" . esc_textarea( $fields[ $name ] ) . "</textarea>";
+								echo "<textarea name='$name'>" . esc_textarea( $value ) . "</textarea>";
 								break;
 
 							case 'checkbox':
