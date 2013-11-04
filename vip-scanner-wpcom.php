@@ -83,7 +83,7 @@ function vip_scanner_form_results( $results, $review ) {
 		'error_summary'=> isset( $_POST['error_summary'] ) ? sanitize_text_field( $_POST['error_summary'] ) : true,
 	);
 
-	update_transient( 'vip_theme_review_flash_form_fields', $fields );
+	set_transient( 'vip_theme_review_flash_form_fields', $fields );
 
 	foreach ( $required as $r ) {
 		if ( empty( $fields[$r] ) ) {
