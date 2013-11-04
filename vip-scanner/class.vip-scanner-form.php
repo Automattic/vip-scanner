@@ -133,7 +133,7 @@ class VIP_Scanner_Form {
 		return $cur == $type;
 	}
 
-	private static function delete_transient() {
+	public static function delete_transient() {
 		delete_transient( self::TRANSIENT_KEY );
 	}
 
