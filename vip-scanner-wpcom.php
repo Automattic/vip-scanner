@@ -44,32 +44,7 @@ VIP_Scanner_Form::add_field( 'textarea', 'derivative', __( 'Is this code based o
 VIP_Scanner_Form::add_field( 'textarea', 'external', __( 'Are there any external services, dependencies, or applications that utilize or rely on the site (e.g. mobile apps)? If so, how do these services interact with the site?', 'theme-check' ), $vip_scanner_theme_review );
 VIP_Scanner_Form::add_field( 'checkbox', 'gpl', __( 'Code is GPL compatible or custom-code written in-house' ), $vip_scanner_theme_review, true );
 VIP_Scanner_Form::add_field( 'checkbox', 'standards', __( 'Code follows WordPress Coding Standards and properly escapes, santizes, and validates data' ), $vip_scanner_theme_review, true );
-
-add_action( 'vip_scanner_form', 'vip_scanner_form_fields', 10, 2 );
-function vip_scanner_form_fields( $review, $blockers ) {
-
-	if ( 'VIP Theme Review' != $review )
-		return;
-
-	$fields = get_transient( 'vip_theme_review_flash_form_fields' );
-	$required = function( $required ) {
-		if ( ! isset( $_GET['message'] ) || 'fill-required-fields' != $_GET['message'] )
-			return;
-
-		if ( !$required )
-			return;
-
-		echo "required";
-	}
-	?>
-
-	<?php if ( $blockers ): ?>
-	<p class="<?php $required( empty( $fields['error_summary'] ) ); ?>">
-		<?php _e( 'Since some errors were detected, please provide a clear and concise explanation of the results before submitting the theme for review.', 'theme-check' ); ?> <small class="require-label"><?php _e( '(required)', 'theme-check' ); ?></small><br>
-		<textarea name="error_summary"><?php echo isset( $fields['error_summary'] ) ? sanitize_text_field( $fields['error_summary'] ) : ''; ?></textarea>
-	</p>
-	<?php endif; ?>
-<?php }
+VIP_Scanner_Form::add_field( 'textarea', 'error_summary', __( 'If errors were detected, please provide a clear and concise explanation of the results before submitting the theme for review' ), $vip_scanner_theme_review);
 
 add_filter( 'vip_scanner_form_results', 'vip_scanner_form_results', 10, 2 );
 function vip_scanner_form_results( $results, $review ) {
@@ -77,40 +52,11 @@ function vip_scanner_form_results( $results, $review ) {
 	if ( 'VIP Theme Review' != $review )
 		return;
 
-	$required = array(
-		'error_summary',
-	);
-
-	$fields = array(
-		'error_summary'=> isset( $_POST['error_summary'] ) ? sanitize_text_field( $_POST['error_summary'] ) : true,
-	);
-
-	set_transient( 'vip_theme_review_flash_form_fields', $fields );
-
-	foreach ( $required as $r ) {
-		if ( empty( $fields[$r] ) ) {
-			$url = add_query_arg( array(
-				'page' => 'vip-scanner',
-				'message' => 'fill-required-fields',
-				'vip-scanner-review-type' => urlencode( $review ),
-			) );
-
-			wp_safe_redirect( $url );
-			exit;
-		}
-	}
-
 	$email = sanitize_email( $_POST['email'] );
 	add_filter( 'vip_scanner_email_headers', function( $headers ) use ( $email ) {
 		$headers[] = "Cc: $email";
 		return $headers;
 	} );
-
-	// Error summary of remaining issues
-	if ( isset( $_POST['error_summary'] ) ) {
-		$results .= "## Error Summary" . PHP_EOL;
-		$results .= $fields['error_summary'] . PHP_EOL . PHP_EOL;
-	}
 
 	return $results;
 }
