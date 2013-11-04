@@ -16,9 +16,9 @@ if ( defined('WP_CLI') && WP_CLI )
 class VIP_Scanner_UI {
 	const key = 'vip-scanner';
 
+	public $default_review;
 	private static $instance;
 	private $blocker_types;
-	private $default_review;
 
 	private $to;
 
@@ -427,6 +427,8 @@ class VIP_Scanner_UI {
 
 			echo $this->get_plaintext_theme_review_export( $scanner, $theme, $review );
 
+			do_action( 'vip_scanner_form_success' );
+
 			exit;
 		}
 
@@ -483,8 +485,11 @@ class VIP_Scanner_UI {
 		);
 
 		// Error message if the wp_mail didn't work
-		if ( !$mail )
+		if ( !$mail ) {
 			$args['message'] = 'fail';
+		} else {
+			do_action( 'vip_scanner_form_success' );
+		}
 
 		wp_safe_redirect( add_query_arg( $args ) );
 		exit;
@@ -559,4 +564,4 @@ class VIP_Scanner_UI {
 }
 
 // Initialize!
-VIP_Scanner_UI::get_instance();
+$vip_scanner = VIP_Scanner_UI::get_instance();
