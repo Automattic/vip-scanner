@@ -34,8 +34,10 @@ Changelog
 __0.5__
 
 * ClamAV Integration
-* New checks, including VIPInitCheck
+* New checks, including VIPInitCheck, filter_input, WP_Widget_Tag_Cloud, and more!
 * WP CLI Support (using vip-scanner command)
+* Reducing false positives
+* Adjusting severity of several checks
 
 __0.4__
 

@@ -37,8 +37,10 @@ To come...
 
 = 0.5 =
 * ClamAV Integration
-* New checks, including VIPInitCheck
+* New checks, including VIPInitCheck, filter_input, WP_Widget_Tag_Cloud, and more!
 * WP CLI Support (using vip-scanner command)
+* Reducing false positives
+* Adjusting severity of several checks
 
 = 0.4 =
 * UI Refresh
