@@ -14,7 +14,7 @@ class VIPWhitelistCheck extends BaseCheck
 			//"/<meta\sname=\"generator\"\scontent=\".*WordPress.*\"([^>]+)/msiU" => array( "level" => "Warning", "note" => "Meta tag generator not set or not wordpress.com" ),
 			"/(wp_head)+\s?\(\)/msiU" => array( "level" => "Blocker", "note" => "wp_head() call missing" ),
 			"/(wp_footer)+\s?\(\)/msiU" => array( "level" => "Blocker", "note" => "wp_footer() call missing" ),
-			"/<a.+href=[\"|']?(http:\/\/en\.wordpress\.com\/vip-hosting\/).[\"|']?([^>]+).+Wordpress\.com\sVIP([^<]+)</msiU" => array( "level" => "Warning", "note" => "Attribution link missing or not well formatted" ),
+			"/(vip_powered_wpcom)+s?\([^\)]*\)/msiU" => array( "level" => "Blocker", "note" => "Attribution link missing, please use vip_powered_wpcom()" ),
 		);
 
 		foreach ( $checks as $check => $check_info ) {
