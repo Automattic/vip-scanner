@@ -1,5 +1,5 @@
 === VIP Scanner ===
-Contributors: batmoo, automattic, tott, mfields, keoshi, betzster
+Contributors: batmoo, automattic, tott, mfields, keoshi, betzster, nickdaugherty
 Tags: scanner, scan, files, security, theme check
 Requires at least: 3.4
 Tested up to: 3.4.2
