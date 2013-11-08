@@ -75,6 +75,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			// other
 			"date_default_timezone_set" => array( "level" => "Blocker", "note" => "Timezone manipulation" ),
 			"error_reporting" => array( "level" => "Blocker", "note" => "Settings alteration" ),
+			"filter_input" => array( "level" => "Warning", "note" => "Using filter_input(), use sanitize_* functions instead" ),
 			'eval' => array( 'level' => 'Blocker', "note" => "Meta programming" ),
 			"ini_set" => array( "level" => "Blocker", "note" => "Settings alteration" ),
 
