@@ -158,7 +158,6 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"rename" => array( "level" => "Blocker", "note" => "Renames a file or directory" ),
 			"rewind" => array( "level" => "Warning", "note" => "Rewind the position of a file pointer" ),
 			"rmdir" => array( "level" => "Blocker", "note" => "Removes directory" ),
-			"session_start" => array( "level" => "Blocker", "note" => "Writes files; unreliable in a multi-server environment." ),
 			"set_file_buffer" => array( "level" => "Warning", "note" => "Alias of stream_set_write_buffer" ),
 			"stat" => array( "level" => "Warning", "note" => "Gives information about a file" ),
 			"symlink" => array( "level" => "Blocker", "note" => "Creates a symbolic link" ),
@@ -187,6 +186,30 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"pcntl_wifstopped" => array( "level" => "Blocker", "note" => "Checks whether the child process is currently stopped" ),
 			"pcntl_wstopsig" => array( "level" => "Blocker", "note" => "Returns the signal which caused the child to stop" ),
 			"pcntl_wtermsig" => array( "level" => "Blocker", "note" => "Returns the signal which caused the child to terminate" ),
+
+			// session functions http://php.net/manual/en/ref.session.php
+			"session_cache_expire" 		=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_cache_limiter" 	=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_commit" 			=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_decode" 			=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_destroy" 			=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_encode" 			=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_get_cookie_params" => array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_id" 				=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"ssession_is_registered" 	=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_module_name" 		=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_name" 				=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_regenerate_id" 	=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_register_shutdown" => array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_register" 			=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_save_path" 		=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_set_cookie_params" => array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_set_save_handler" 	=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_start" 			=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_status" 			=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_unregister" 		=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_unset" 			=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_write_close" 		=> array( "level" => "Blocker", "note" => "Using session function" ),
 		);
 
 		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
