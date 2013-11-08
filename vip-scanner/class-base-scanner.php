@@ -5,18 +5,18 @@ class BaseScanner {
 	const LEVEL_WARNING = 'warning';
 	const LEVEL_NOTE = 'note';
 
-	var $files = array();
-	var $checks = array();
-	var $total_checks = 0;
-	var $errors = array();
-	var $known_extensions = array(
+	public $files = array();
+	public $checks = array();
+	public $total_checks = 0;
+	public $errors = array();
+	public $known_extensions = array(
 		'php' => array( 'php', 'php5', 'inc' ),
 		'css' => 'css',
 		'js' => 'js',
 	);
 
 
-	function __construct( $files, $checks ) {
+	public function __construct( $files, $checks ) {
 		// Given a set of files & a set of Checks
 		// --- Group files by type
 		// --- Run Checks against Files
@@ -40,7 +40,7 @@ class BaseScanner {
 		$this->errors[] = $error;
 	}
 
-	function get_file_type( $filename ) {
+	public function get_file_type( $filename ) {
 		
 		$splosion = explode( '.', $filename );
 
@@ -55,11 +55,11 @@ class BaseScanner {
 		return $file_extension;
 	}
 
-	function is_known_file_type( $filename ) {
+	public function is_known_file_type( $filename ) {
 		return in_array( $this->get_file_type( $filename ), array_keys( $this->known_extensions ) );
 	}
 
-	function get_file_count() {
+	public function get_file_count() {
 		$count = 0;
 		foreach( $this->files as $files_by_filetype ) {
 			foreach ( $files_by_filetype as $filename => $file ) {
@@ -69,7 +69,7 @@ class BaseScanner {
 		return $count;
 	}
 
-	function group_files( $files ) {
+	public function group_files( $files ) {
 
 		$grouped_files = array();
 
@@ -87,7 +87,7 @@ class BaseScanner {
 		return $grouped_files;
 	}
 
-	function scan() {
+	public function scan() {
 		$pass = true;
 
 		if( empty( $this->files ) ) {
@@ -129,7 +129,7 @@ class BaseScanner {
 		return $pass;
 	}
 
-	function get_results() {
+	public function get_results() {
 		return array(
 			'result' => $this->result,
 			'total_files' => $this->get_file_count(),
@@ -138,7 +138,7 @@ class BaseScanner {
 		);
 	}
 
-	function get_errors( $levels = array() ) {
+	public function get_errors( $levels = array() ) {
 		if( empty( $levels ) )
 			return $this->errors;
 
@@ -154,7 +154,7 @@ class BaseScanner {
 		return $errors;
 	}
 
-	function get_error_levels() {
+	public function get_error_levels() {
 		$levels = array();
 
 		foreach ( $this->errors as $error ) {
