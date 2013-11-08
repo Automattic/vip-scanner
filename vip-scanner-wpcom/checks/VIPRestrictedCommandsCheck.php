@@ -78,6 +78,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"filter_input" => array( "level" => "Warning", "note" => "Using filter_input(), use sanitize_* functions instead" ),
 			'eval' => array( 'level' => 'Blocker', "note" => "Meta programming" ),
 			'create_function' => array( 'level' => 'Blocker', "note" => "Using create_function" ),
+			'extract' => array( 'level' => 'Blocker', "note" => "Explicitly define variables rather than using extract()" ),
 			"ini_set" => array( "level" => "Blocker", "note" => "Settings alteration" ),
 
 			// Restricted widgets
