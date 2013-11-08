@@ -79,6 +79,9 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			'eval' => array( 'level' => 'Blocker', "note" => "Meta programming" ),
 			"ini_set" => array( "level" => "Blocker", "note" => "Settings alteration" ),
 
+			// Restricted widgets
+			"WP_Widget_Tag_Cloud" => array( "level" => "Warning", "note" => "Using WP_Widget_Tag_Cloud, use WPCOM_Tag_Cloud_Widget instead" ),
+
 			// filesystem functions
 			//"basename" => array( "level" => "Note", "note" => "Returns filename component of path" ),
 			"chgrp" => array( "level" => "Blocker", "note" => "Changes file group" ),
