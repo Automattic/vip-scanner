@@ -77,7 +77,8 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"error_reporting" => array( "level" => "Blocker", "note" => "Settings alteration" ),
 			'eval' => array( 'level' => 'Blocker', "note" => "Meta programming" ),
 			"ini_set" => array( "level" => "Blocker", "note" => "Settings alteration" ),
-
+			"wp_is_mobile" => array( "level" => "Warning", "note" => "wp_is_mobile() is not batcache-friendly, please use <a href=\"http://vip.wordpress.com/documentation/mobile-theme/#targeting-mobile-visitors\">jetpack_is_mobile()</a>" ),
+			
 			// filesystem functions
 			//"basename" => array( "level" => "Note", "note" => "Returns filename component of path" ),
 			"chgrp" => array( "level" => "Blocker", "note" => "Changes file group" ),
