@@ -154,6 +154,21 @@ class BaseScanner {
 		return $errors;
 	}
 
+	/**
+	 * Determine if the Scanner has flagged a given error
+	 * 
+	 * @param  string  $slug The error slug to check for
+	 * @return boolean       Boolean indicating if the Scanner flagged the error
+	 */
+	public function has_error( $slug ) {
+		foreach( $this->get_errors() as $error ) {
+			if ( $slug == $error['slug'] )
+				return true;
+		}
+
+		return false;
+	}
+
 	public function get_error_levels() {
 		$levels = array();
 
