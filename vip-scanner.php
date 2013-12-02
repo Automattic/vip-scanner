@@ -133,7 +133,7 @@ class VIP_Scanner_UI {
 
 		$transient_key = 'vip_scanner_' . md5( $theme . $review );
 		if ( $scanner !== get_transient( $transient_key ) )
-			set_transient( $transient_key, $scanner );
+			@set_transient( $transient_key, $scanner );
 
 		if ( $scanner ):
 			$this->display_theme_review_result( $scanner, $theme );
@@ -402,7 +402,7 @@ class VIP_Scanner_UI {
 
 		if ( false === $scanner = get_transient( $transient_key ) ) {
 			$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
-			set_transient( $transient_key, $scanner );
+			@set_transient( $transient_key, $scanner );
 		}
 
 		return $scanner;
