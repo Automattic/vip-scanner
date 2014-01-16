@@ -18,7 +18,7 @@ function vip_scanner_custom_load_rules() {
 		'VIPRestrictedPatternsCheck' => dirname( __FILE__ ) . '/vip-scanner-wpcom/checks/VIPRestrictedPatternsCheck.php',
 		'VIPRestrictedCommandsCheck' => dirname( __FILE__ ) . '/vip-scanner-wpcom/checks/VIPRestrictedCommandsCheck.php',
 		'VIPInitCheck' => dirname( __FILE__ ) . '/vip-scanner-wpcom/checks/VIPInitCheck.php',
-		'VIPPhpCodeSnifferCheck' => null,
+		'WordPressCodingStandardsCheck' => null,
 		'ClamAVCheck' => null // Pass null to lookup the check normally
 	) );
 }
