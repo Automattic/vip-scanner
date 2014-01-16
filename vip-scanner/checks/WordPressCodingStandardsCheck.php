@@ -138,10 +138,8 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 	private function report_issues( $issues, $file ) {
 		foreach ( $issues as $issue ) {
 			$level = BaseScanner::LEVEL_NOTE;
-			if ( $issue['level'] === 'WARNING' )
+			if ( $issue['level'] === 'ERROR' )
 				$level = BaseScanner::LEVEL_WARNING;
-			else if ( $issue['level'] === 'ERROR' )
-				$level = BaseScanner::LEVEL_BLOCKER;
 
 			$this->add_error(
 					esc_attr( trim( array_pop( $issue['problem'] ), ' \t\n\r\0\x0B()' ) ),
