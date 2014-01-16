@@ -1,23 +1,23 @@
 <?php
 
 class WordPressCodingStandardsCheck extends BaseCheck {
-	const COMMAND = 'phpcs';
+	const COMMAND  = 'phpcs';
 	const STANDARD = 'WordPress';
 	
 	private $output_parts = array(
 		'file_header'	=> 'FILE: ',
 		'v_splitter'	=> '/^-+$/',
 		'h_splitter'	=> '|',
-		'output_line'	=> '/\s+\S+\s+|\s+\S+\s+|\s+\S+\s*/'
+		'output_line'	=> '/\s+\S+\s+|\s+\S+\s+|\s+\S+\s*/',
 	);
 
 	protected $exclude_dir_regexes 	= array( '\.svn', '\.git' );
 	protected $exclude_file_regexes = array();
-	protected $include_extensions	= array( 'php', 'css' );
+	protected $include_extensions   = array( 'php', 'css' );
 
 	function check( $files ) {
 		// Check for PHP CodeSniffer
-		if ( ! self::isPhpcsAvailable() ) {
+		if ( ! self::is_phpcs_available() ) {
 			$this->add_error(
 					'no_php_code_sniffer',
 					'PHP CodeSniffer not available',
@@ -29,7 +29,7 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 		}
 
 		// Check that PHP CodeSniffer has the WordPress standard installed
-		if ( ! self::isWordPressStandardAvailable() ) {
+		if ( ! self::is_wordpress_standard_available() ) {
 			$this->add_error(
 					'no_php_code_sniffer_wordpress_standard',
 					'The WordPress standard for PHP CodeSniffer is not installed',
@@ -45,13 +45,15 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 		$scan_path = escapeshellarg( $this->get_path() );
 
 		// Format the shell arguments
-		$exclude_dir_regex		= array_map( function( $regex ) {
-			return escapeshellarg( $regex );
-		}, $this->get_exclude_dir_regexes() );
+		$exclude_dir_regex = array_map(
+			function( $regex ) { return escapeshellarg( $regex ); },
+			$this->get_exclude_dir_regexes()
+		);
 
-		$exclude_file_regex 	= array_map( function( $regex ) {
-			return escapeshellarg( $regex );
-		}, $this->get_exclude_file_regexes() );
+		$exclude_file_regex	= array_map(
+			function( $regex ) { return escapeshellarg( $regex ); },
+			$this->get_exclude_file_regexes()
+		);
 
 		$ignore_regex = '--ignore=' . implode( ',', array_merge( $exclude_dir_regex, $exclude_file_regex ) );
 
@@ -66,9 +68,7 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 		if ( ! $result )
 			return true;
 
-		$results = explode( "\n", $result );
-
-		$this->parse_results($results);
+		$this->parse_results( explode( "\n", $result ) );
 
 		return true;
 	}
@@ -83,11 +83,11 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 		$current_file_path = null;
 		$found_issues = array();
 		
-		foreach( $results as $result ) {
+		foreach ( $results as $result ) {
 			// Check for the file header
 			$file_header_pos = strpos( $result, $this->output_parts['file_header'] );
 			if ( $file_header_pos !== false ) {
-				if ( ! is_null($current_file) ) {
+				if ( ! is_null( $current_file ) ) {
 					$this->report_issues( $found_issues, $current_file );
 					$found_issues = array();
 				}
@@ -107,7 +107,7 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 				continue;
 
 			// Split the output line into at mose three parts and trim each one
-			list( $line, $severity, $problem ) = array_map( 'trim', explode( $this->output_parts['h_splitter'], $result, 3) );
+			list( $line, $severity, $problem ) = array_map( 'trim', explode( $this->output_parts['h_splitter'], $result, 3 ) );
 
 			// Check if this is a new issue, or more detail on the same issue
 			if ( ! empty( $line ) ) {
@@ -217,7 +217,7 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 		return $this->exclude_file_regexes;
 	}
 
-	public static function isPhpcsAvailable() {
+	public static function is_phpcs_available() {
 		$command = escapeshellarg( self::COMMAND );
 
 		$result = shell_exec( "which $command" );
@@ -225,7 +225,7 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 		return ( empty( $result ) ? false : true );
 	}
 
-	public static function isWordPressStandardAvailable() {
+	public static function is_wordpress_standard_available() {
 		$command = escapeshellcmd( self::COMMAND );
 
 		$result = shell_exec( "$command -i" );
