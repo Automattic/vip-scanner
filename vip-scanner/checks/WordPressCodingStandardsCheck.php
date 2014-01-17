@@ -13,7 +13,7 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 
 	protected $exclude_dir_regexes 	= array( '\.svn', '\.git' );
 	protected $exclude_file_regexes = array();
-	protected $include_extensions   = array( 'php', 'css' );
+	protected $include_extensions   = array( 'php' );
 
 	protected $output_error_slug = false;
 
