@@ -138,7 +138,7 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 				// Try and open the file that had the problem
 				$issue_file = file_exists( $current_file_path ) ? file( $current_file_path ) : false;
 				$issue = array(
-					'line'		=> array( $issue_file ? "Line $line: " . trim( $this->get_line( intval( $line ), $issue_file ) ) : $line ),
+					'line'		=> array( $issue_file ? "Line $line: " . trim( $this->get_line( intval( $line ), $issue_file ) ) : "Line $line." ),
 					'level'		=> $severity,
 					'problem'	=> array( $problem ),
 				);
