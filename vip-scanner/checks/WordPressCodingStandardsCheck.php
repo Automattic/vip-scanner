@@ -15,6 +15,8 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 	protected $exclude_file_regexes = array();
 	protected $include_extensions   = array( 'php', 'css' );
 
+	protected $output_error_slug = false;
+
 	/*
 	 * The error level for individual checks as reported by code sniffer
 	 */
@@ -91,6 +93,8 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 
 		if ( ! $result )
 			return true;
+
+		$this->output_error_slug = apply_filters( 'vip_scanner_wp_code_standards_check-output_error_slug', $this->output_error_slug );
 
 		$this->parse_results( explode( "\n", $result ) );
 
@@ -187,9 +191,12 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 				$this->check_level[$issue_slug] = $level;
 			}
 
+			if ( ! $this->output_error_slug )
+				$problem = preg_replace( $this->sniffer_slug_regex, '', $problem );
+
 			$this->add_error(
 					esc_attr( $issue_slug ),
-					esc_html( trim( preg_replace( $this->sniffer_slug_regex, '', $problem ) ) ),
+					esc_html( trim( $problem ) ),
 					$level,
 					esc_attr( $file ),
 					array_map( 'esc_html', $issue['line'] )
