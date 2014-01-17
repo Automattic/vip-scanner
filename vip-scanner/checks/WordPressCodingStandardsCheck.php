@@ -21,9 +21,10 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 	 * The error level for individual checks as reported by code sniffer
 	 */
 	protected $check_level = array(
-		'WordPress.Functions.FunctionCallSignature' => BaseScanner::LEVEL_NOTE,
-		'WordPress.Arrays.ArrayDeclaration'			=> BaseScanner::LEVEL_NOTE,
-		'WordPress.Strings.DoubleQuoteUsage'		=> BaseScanner::LEVEL_WARNING,
+		'WordPress.Functions.FunctionCallSignature'  => BaseScanner::LEVEL_NOTE,
+		'WordPress.Arrays.ArrayDeclaration'			 => BaseScanner::LEVEL_NOTE,
+		'WordPress.Strings.DoubleQuoteUsage'		 => BaseScanner::LEVEL_WARNING,
+		'WordPress.WhiteSpace.ScopeIndent.Incorrect' => null,
 	);
 
 	/*
@@ -170,7 +171,7 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 			preg_match( $this->sniffer_slug_regex, $problem, $matches );
 			$issue_slug = trim( $matches['slug'] );
 
-			if ( isset( $this->check_level[$issue_slug] ) ) {
+			if ( array_key_exists( $issue_slug, $this->check_level ) ) {
 				// This issue has a given level
 				$level = $this->check_level[$issue_slug];
 			} else {
@@ -190,6 +191,9 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 				// Save the check level for this slug to speed up future searches
 				$this->check_level[$issue_slug] = $level;
 			}
+
+			if ( is_null( $level ) )
+				continue;
 
 			if ( ! $this->output_error_slug )
 				$problem = preg_replace( $this->sniffer_slug_regex, '', $problem );
