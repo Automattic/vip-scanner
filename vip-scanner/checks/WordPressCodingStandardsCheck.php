@@ -15,6 +15,28 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 	protected $exclude_file_regexes = array();
 	protected $include_extensions   = array( 'php', 'css' );
 
+	/*
+	 * The error level for individual checks as reported by code sniffer
+	 */
+	protected $check_level = array(
+		'WordPress.Functions.FunctionCallSignature' => BaseScanner::LEVEL_NOTE,
+		'WordPress.Arrays.ArrayDeclaration'			=> BaseScanner::LEVEL_NOTE,
+		'WordPress.Strings.DoubleQuoteUsage'		=> BaseScanner::LEVEL_WARNING,
+	);
+
+	/*
+	 * The error level for check classes
+	 */
+	protected $check_class_level = array(
+		'WordPress.WhiteSpace.' => BaseScanner::LEVEL_NOTE,
+		'WordPress.XSS.'		=> BaseScanner::LEVEL_BLOCKER,
+	);
+
+	/*
+	 * Regex for finding the error slug within the error output text
+	 */
+	private $sniffer_slug_regex = '/\((?P<slug>(\w+\.)+\w+)\)/';
+
 	function check( $files ) {
 		// Check for PHP CodeSniffer
 		if ( ! self::is_phpcs_available() ) {
@@ -62,6 +84,8 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 			$include_extensions = '--extensions=' . escapeshellarg( implode( ',', $this->include_extensions ) );
 
 		$command_string = sprintf( '%s -s --standard=%s %s %s %s', $command, escapeshellarg( self::STANDARD ), $ignore_regex, $include_extensions, $scan_path );
+
+		set_time_limit( 120 );
 
 		$result = shell_exec( $command_string );
 
@@ -114,7 +138,7 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 				// Try and open the file that had the problem
 				$issue_file = file_exists( $current_file_path ) ? file( $current_file_path ) : false;
 				$issue = array(
-					'line'		=> $issue_file ? "Line $line: " . trim( $this->get_line( intval( $line ), $issue_file ) ) : $line,
+					'line'		=> array( $issue_file ? "Line $line: " . trim( $this->get_line( intval( $line ), $issue_file ) ) : $line ),
 					'level'		=> $severity,
 					'problem'	=> array( $problem ),
 				);
@@ -137,16 +161,38 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 	 */
 	private function report_issues( $issues, $file ) {
 		foreach ( $issues as $issue ) {
-			$level = BaseScanner::LEVEL_NOTE;
-			if ( $issue['level'] === 'ERROR' )
-				$level = BaseScanner::LEVEL_WARNING;
+			$problem = implode( ' ', $issue['problem'] );
+			$level   = BaseScanner::LEVEL_NOTE;
+			preg_match( $this->sniffer_slug_regex, $problem, $matches );
+			$issue_slug = trim( $matches['slug'] );
+
+			if ( isset( $this->check_level[$issue_slug] ) ) {
+				// This issue has a given level
+				$level = $this->check_level[$issue_slug];
+			} else {
+				// Check for a known issue class
+				$found = false;
+				foreach ( $this->check_class_level as $class => $class_level ) {
+					if ( strpos( $issue_slug, $class ) !== 0 ) continue;
+
+					$found = true;
+					$level = $class_level;
+					break;
+				}
+
+				if ( ! $found && $issue['level'] === 'ERROR' )
+					$level = BaseScanner::LEVEL_WARNING;
+
+				// Save the check level for this slug to speed up future searches
+				$this->check_level[$issue_slug] = $level;
+			}
 
 			$this->add_error(
-					esc_attr( trim( array_pop( $issue['problem'] ), ' \t\n\r\0\x0B()' ) ),
-					esc_html( implode( ' ', $issue['problem'] ) ),
+					esc_attr( $issue_slug ),
+					esc_html( trim( preg_replace( $this->sniffer_slug_regex, '', $problem ) ) ),
 					$level,
 					esc_attr( $file ),
-					array( esc_html( $issue['line'] ) )
+					array_map( 'esc_html', $issue['line'] )
 			);
 		}
 	}
