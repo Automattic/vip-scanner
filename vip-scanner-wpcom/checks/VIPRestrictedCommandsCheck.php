@@ -68,9 +68,9 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 
  			// User meta
 			"add_user_meta" => array( "level" => "Blocker", "note" => "Using user meta" ),
-			"delete_user_meta" => array( "level" => "Warning", "note" => "Using user meta" ),
-			"get_user_meta" => array( "level" => "Warning", "note" => "Using user meta" ),
-			"update_user_meta" => array( "level" => "Warning", "note" => "Using user meta" ),
+			"delete_user_meta" => array( "level" => "Blocker", "note" => "Using user meta" ),
+			"get_user_meta" => array( "level" => "Blocker", "note" => "Using user meta" ),
+			"update_user_meta" => array( "level" => "Blocker", "note" => "Using user meta" ),
 			
 			// debugging
 			"error_log" => array( "level" => "Blocker", "note" => "Filesystem operation" ),
