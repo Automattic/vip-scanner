@@ -46,5 +46,5 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 	'TheamPubFileCheck',
 	'TheamPubIndividualFiles',
 	'ThemecolorsCheck',
-	#'WordPressCodingStandards', // Coming soon :)
+	'WordPressCodingStandardsCheck',
 ) );
