@@ -382,6 +382,9 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"mysqli_free_result" 			=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_embedded_server_end" 	=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_embedded_server_start" 	=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
+
+			// XML Entity Loader mods
+			'libxml_set_external_entity_loader' => array( 'level' => 'Blocker', 'note' => 'Modifying the XML entity loader is disabled for security reasons.' ),
 		);
 
 		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
