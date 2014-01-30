@@ -12,7 +12,7 @@ class VIP_Scanner_Form {
 	static $review = array();
 
 	static function instance() {
-		add_action( 'vip_scanner_form', array( __CLASS__, 'vip_scanner_form' ) );
+		add_action( 'vip_scanner_form', array( __CLASS__, 'form' ) );
 		add_action( 'vip_scanner_form_results', array( __CLASS__, 'vip_scanner_form_results' ) );
 		add_action( 'vip_scanner_form_success', array( __CLASS__, 'delete_transient' ) );
 		add_action( 'admin_notices', array( __CLASS__, 'vip_scanner_missing_required_fields' ) );
@@ -38,7 +38,7 @@ class VIP_Scanner_Form {
 			self::$required[] = $name;
 	}
 
-	static function vip_scanner_form() {
+	static function form() {
 		$fields = get_transient( self::TRANSIENT_KEY ) ?: array();
 
 		foreach ( self::$fields as $name => $type ) {
@@ -139,7 +139,5 @@ class VIP_Scanner_Form {
 	public static function delete_transient() {
 		delete_transient( self::TRANSIENT_KEY );
 	}
-
-	function __construct() {}
 
 }
