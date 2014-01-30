@@ -12,6 +12,9 @@ class VIP_Scanner_Form {
 	static $review = array();
 
 	static function instance() {
+		if ( defined( 'VIP_SCANNER_DISABLE_QUESTIONAIRE' ) && VIP_SCANNER_DISABLE_QUESTIONAIRE )
+			return;
+
 		add_action( 'vip_scanner_form', array( __CLASS__, 'form' ) );
 		add_action( 'vip_scanner_form_results', array( __CLASS__, 'vip_scanner_form_results' ) );
 		add_action( 'vip_scanner_form_success', array( __CLASS__, 'delete_transient' ) );

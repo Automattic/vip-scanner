@@ -53,6 +53,9 @@ function vip_scanner_form_results( $results, $review ) {
 	if ( 'VIP Theme Review' != $review )
 		return;
 
+	if ( ! isset( $_POST['email'] ) )
+		return;
+
 	$email = sanitize_email( $_POST['email'] );
 	add_filter( 'vip_scanner_email_headers', function( $headers ) use ( $email ) {
 		$headers[] = "Cc: $email";
