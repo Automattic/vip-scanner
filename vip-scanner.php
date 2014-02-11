@@ -25,8 +25,10 @@ class VIP_Scanner_UI {
 	function __construct() {
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
-		do_action( 'vip_scanner_loaded' );
+	}
 
+	function init() {
+		add_action( 'admin_menu', array( $this, 'add_menu_page' ) );
 
 		$this->blocker_types = apply_filters( 'vip_scanner_blocker_types', array(
 			'blocker'  => __( 'Blockers', 'theme-check' ),
@@ -34,14 +36,12 @@ class VIP_Scanner_UI {
 			'required' => __( 'Required', 'theme-check' ),
 		) );
 
+		do_action( 'vip_scanner_loaded' );
+
 		$review_types = VIP_Scanner::get_instance()->get_review_types();
 		$this->default_review = apply_filters( 'vip_scanner_default_review', 0, $review_types );
 
 		$this->to = apply_filters( 'vip_scanner_email_to', '' );
-	}
-
-	function init() {
-		add_action( 'admin_menu', array( $this, 'add_menu_page' ) );
 	}
 
 	function admin_init() {
