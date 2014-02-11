@@ -34,7 +34,7 @@ class ClamAVCheck extends BaseCheck {
 		}, $this->get_exclude_file_regexes() );
 
 		$exclude_dir_regex 		= implode( ' ', $exclude_dir_regex );
-		$exclude_file_regiex 	= implode( ' ', $exclude_file_regex );
+		$exclude_file_regex 	= implode( ' ', $exclude_file_regex );
 
 		$command_string = sprintf( '%s -r -i %s %s %s', $command, $exclude_dir_regex, $exclude_file_regex, $scan_path );
 
