@@ -48,7 +48,7 @@ class BadThingsCheck extends BaseCheck {
 			foreach ( $checks as $key => $check ) {
 				$this->increment_check_count();
 				if ( preg_match( $key, $file_content, $matches ) ) {
-					$filename = tc_filename( $file_path );
+					$filename = $this->get_filename( $file_path );
 					$error = rtrim( $matches[0], '(' );
 					$lines = $this->grep_content( $error, $file_content );
 					$this->add_error(
