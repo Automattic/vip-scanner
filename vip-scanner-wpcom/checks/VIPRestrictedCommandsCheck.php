@@ -41,6 +41,12 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 
 			'query_posts' => array( 'level' => 'Blocker', 'note' => 'Rewriting the main loop. WP_Query or get_posts (with suppress_filters => false) might be better functions: http://developer.wordpress.com/2012/05/14/querying-posts-without-query_posts/' ),
 
+			// Restricted multisite functions
+			'switch_to_blog' 		=> array( 'level' => 'Blocker', 'note' => 'Switching blog context' ),
+			'restore_current_blog' 	=> array( 'level' => 'Blocker', 'note' => 'Switching blog context' ),
+			'ms_is_switched' 		=> array( 'level' => 'Blocker', 'note' => 'Querying blog context' ),
+			'wp_get_sites' 			=> array( 'level' => 'Blocker', 'note' => 'Querying network sites' ),
+			
 			// Uncached functions
 			'get_category_by_slug' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
 			'get_cat_ID' 			=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
