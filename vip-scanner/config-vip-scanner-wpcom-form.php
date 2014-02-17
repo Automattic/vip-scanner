@@ -1,39 +1,7 @@
 <?php
-/**
- * Plugin Name: VIP Scanner WordPress.com Rules
- * Description: Custom rules for the VIP Scanner specific to WordPress.com
- * Author: Automattic
- * Version: 0.4
- *
- * License: GPLv2
- */
 
-require_once __DIR__ . '/vip-scanner/class.vip-scanner-form.php';
+require_once __DIR__ . '/class.vip-scanner-form.php';
 
-add_action( 'vip_scanner_loaded', 'vip_scanner_custom_load_rules' );
-
-function vip_scanner_custom_load_rules() {
-	VIP_Scanner::get_instance()->register_review( 'VIP Theme Review', array(
-		'VIPWhitelistCheck' => dirname( __FILE__ ) . '/vip-scanner-wpcom/checks/VIPWhitelistCheck.php',
-		'VIPRestrictedPatternsCheck' => dirname( __FILE__ ) . '/vip-scanner-wpcom/checks/VIPRestrictedPatternsCheck.php',
-		'VIPRestrictedCommandsCheck' => dirname( __FILE__ ) . '/vip-scanner-wpcom/checks/VIPRestrictedCommandsCheck.php',
-		'VIPInitCheck' => dirname( __FILE__ ) . '/vip-scanner-wpcom/checks/VIPInitCheck.php',
-		'WordPressCodingStandardsCheck' => null,
-		'ClamAVCheck' => null // Pass null to lookup the check normally
-	) );
-}
-
-add_filter( 'vip_scanner_default_review', function( $default, $review_types ) {
-	return array_search( 'VIP Theme Review', $review_types );
-}, 10, 2 );
-
-add_filter( 'vip_scanner_email_to', 'vip_scanner_email_to' );
-function vip_scanner_email_to() {
-	// Disabled email submission.
-	// return 'vip-support@wordpress.com';
-}
-
-// VIP_Sanner_Form::add_field( $type, $name, $label, $review, $required = false );
 $vip_scanner_theme_review = 'VIP Theme Review';
 VIP_Scanner_Form::add_field( 'text', 'name', __( 'Name of theme', 'theme-check' ), $vip_scanner_theme_review, true );
 VIP_Scanner_Form::add_field( 'email', 'email', __( 'Email', 'theme-check' ), $vip_scanner_theme_review, true );
