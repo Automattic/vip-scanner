@@ -123,7 +123,8 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 
 				// File header found, set current file
 				$current_file_path = trim( substr( $result, $file_header_pos + strlen( $this->output_parts['file_header'] ) ) );
-				$current_file = end( explode( '/', $current_file_path ) );
+				$exploded_path = explode( '/', $current_file_path );
+				$current_file = end( $exploded_path );
 				$this->increment_check_count();
 				continue;
 			} else if ( is_null( $current_file ) ) {
