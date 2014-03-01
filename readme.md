@@ -1,5 +1,4 @@
-VIP Scanner
-===========
+# VIP Scanner [![Build Status](https://travis-ci.org/Automattic/vip-scanner.png?branch=master)](https://travis-ci.org/Automattic/vip-scanner)
 
 A WordPress plugin that enables you to scan all sorts of themes and files and things.
 
