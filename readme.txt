@@ -1,4 +1,4 @@
-=== VIP Scanner ===
+# VIP Scanner [![Build Status](https://travis-ci.org/Automattic/vip-scanner.png?branch=master)](https://travis-ci.org/Automattic/vip-scanner)
 Contributors: batmoo, automattic, tott, mfields, keoshi, betzster, nickdaugherty
 Tags: scanner, scan, files, security, theme check
 Requires at least: 3.4
