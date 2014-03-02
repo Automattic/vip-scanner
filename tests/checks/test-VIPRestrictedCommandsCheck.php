@@ -48,6 +48,245 @@ class VIPRestrictedCommandsCheckTest extends WP_UnitTestCase {
 		return $command . '();';
 	}
 
+	public function testRestrictedWPCore() {
+		$restricted_commands = array(
+			'remove_filter',
+			'remove_action',
+			'add_filter',
+			'add_action',
+			'wp_cache_set',
+			'wp_cache_get',
+			'wp_cache_add',
+			'wp_cache_delete',
+			'set_transient',
+			'get_transient',
+			'delete_transient',
+			'update_post_caches',
+			'update_option',
+			'get_option',
+			'add_option',
+			'delete_option',
+			'wp_remote_get',
+			'fetch_feed',
+			'wp_schedule_event',
+			'wp_schedule_single_event',
+			'wp_clear_scheduled_hook',
+			'wp_next_scheduled',
+			'wp_unschedule_event',
+			'wp_get_schedule',
+			'add_feed',
+			'query_posts'
+		);
+		
+		$this->checkCommands( $restricted_commands );
+	}
+
+	public function testMultisite() {
+		$restricted_commands = array(
+			'switch_to_blog',
+			'restore_current_blog',
+			'ms_is_switched',
+			'wp_get_sites'
+		);
+		
+		$this->checkCommands( $restricted_commands );
+	}
+
+	public function testUncached() {
+		$restricted_commands = array(
+			'get_category_by_slug',
+			'wp_get_post_categories',
+			'wp_get_post_tags',
+			'get_cat_ID',
+			'get_term_by',
+			'get_page_by_title',
+			'get_page_by_path',
+			'wp_get_object_terms',
+			'wp_get_post_terms',
+			'get_posts',
+			'wp_get_recent_posts',
+			'wpcom_uncached_get_post_meta',
+			'wpcom_uncached_get_post_by_meta'
+		);
+
+		$this->checkCommands( $restricted_commands );
+	}
+
+	public function testNeedingExtraCare() {
+		$restricted_commands = array(
+			'wpcom_vip_load_custom_cdn'
+		);
+
+		$this->checkCommands( $restricted_commands );
+	}
+
+	public function testRoleModifications() {
+		$restricted_commands = array(
+			'get_role',
+			'add_role',
+			'remove_role',
+			'add_cap',
+			'remove_cap'
+		);
+
+		$this->checkCommands( $restricted_commands );
+	}
+
+	public function testUserMeta() {
+		$restricted_commands = array(
+			'add_user_meta',
+			'delete_user_meta',
+			'get_user_meta',
+			'update_user_meta'
+		);
+
+		$this->checkCommands( $restricted_commands );
+	}
+
+	public function testDebugging() {
+		$restricted_commands = array(
+			'error_log',
+			'var_dump',
+			'print_r',
+			'var_export'
+		);
+
+		$this->checkCommands( $restricted_commands );
+	}
+
+	public function testOther() {
+		$restricted_commands = array(
+			'date_default_timezone_set',
+			'error_reporting',
+			'filter_input',
+			'eval',
+			'create_function',
+			'extract',
+			'ini_set',
+			'wp_is_mobile'
+		);
+
+		$this->checkCommands( $restricted_commands );
+	}
+
+	public function testWidgets() {
+		$restricted_commands = array(
+			'WP_Widget_Tag_Cloud'
+		);
+
+		$this->checkCommands( $restricted_commands );
+	}
+
+	public function testFilesystem() {
+		$restricted_commands = array(
+			'chgrp',
+			'chmod',
+			'chown',
+			'clearstatcache',
+			'set_file_buffer',
+			'copy',
+			'curl_init',
+			'curl_setopt',
+			'curl_exec',
+			'curl_close',
+			'delete',
+			'disk_free_space',
+			'disk_total_space',
+			'diskfreespace',
+			'fclose',
+			'feof',
+			'fflush',
+			'fgetc',
+			'fgetcsv',
+			'fgets',
+			'fgetss',
+			'file_get_contents',
+			'file_put_contents',
+			'file',
+			'fileatime',
+			'filectime',
+			'filegroup',
+			'fileinode',
+			'filemtime',
+			'fileowner',
+			'fileperms',
+			'filesize',
+			'filetype',
+			'flock',
+			'fnmatch',
+			'fopen',
+			'fpassthru',
+			'fputcsv',
+			'fputs',
+			'fread',
+			'fscanf',
+			'fseek',
+			'fstat',
+			'ftell',
+			'ftruncate',
+			'fwrite',
+			'glob',
+			'is_dir',
+			'is_file',
+			'is_link',
+			'is_executable',
+			'is_uploaded_file',
+			'move_uploaded_file',
+			'is_writable',
+			'is_writeable',
+			'parse_ini_file',
+			'parse_ini_string',
+			'lchgrp',
+			'lchown',
+			'link',
+			'linkinfo',
+			'lstat',
+			'mkdir',
+			'pathinfo',
+			'pclose',
+			'popen',
+			'readfile',
+			'readlink',
+			'realpath',
+			'rename',
+			'rewind',
+			'rmdir',
+			'stat',
+			'symlink',
+			'tempnam',
+			'tmpfile',
+			'touch',
+			'umask',
+			'unlink'
+		);
+
+		$this->checkCommands( $restricted_commands );
+	}
+
+	public function testProcessControl() {
+		$restricted_commands = array(
+			'pcntl_alarm',
+			'pcntl_exec',
+			'pcntl_fork',
+			'pcntl_getpriority',
+			'pcntl_setpriority',
+			'pcntl_signal_dispatch',
+			'pcntl_signal',
+			'pcntl_sigprocmask',
+			'pcntl_sigtimedwait',
+			'pcntl_sigwaitinfo',
+			'pcntl_wait',
+			'pcntl_waitpid',
+			'pcntl_wexitstatus',
+			'pcntl_wifexited',
+			'pcntl_wifsignaled',
+			'pcntl_wifstopped',
+			'pcntl_wstopsig',
+			'pcntl_wtermsig'
+		);
+
+		$this->checkCommands( $restricted_commands );
+	}
 
 	public function testSession() {
 		$restricted_commands = array(
