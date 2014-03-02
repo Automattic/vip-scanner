@@ -15,7 +15,7 @@ class PHPShortTagsCheck extends BaseCheck {
 
 				$this->add_error(
 					'php-shorttags',
-					'Found PHP short tags in file <strong>{$filename}</strong>.',
+					"Found PHP short tags in file <strong>{$filename}</strong>.",
 					'warning',
 					$filename,
 					$lines
