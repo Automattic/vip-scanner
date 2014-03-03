@@ -5,17 +5,22 @@ class DirectoriesCheck extends BaseCheck {
 
 		$result = true;
 		$found = false;
+		
+		$bad_paths = array( '.git', '.svn', '.sass-cache', '.DS_Store' );
 
 		foreach ( $files as $path => $file ) {
 			$this->increment_check_count();
-			if ( strpos( $path, '.git' ) !== false || strpos( $path, '.svn' ) !== false )
-				$found = true;
+			foreach ( $bad_paths as $bad_path ) {
+				if ( strpos( $path, $bad_path ) !== false ) {
+					$found = true;
+				}
+			}
 		}
 
 		if ( $found ) {
 			$this->add_error(
 				'unnecessary-directories',
-				'Please remove any extraneous directories like `.git` or `.svn`',
+				'Please remove any extraneous directories like `.git`, `.svn`, `.sass-cache` or `.DS_Store`',
 				'required'
 			);
 			$result = false;
