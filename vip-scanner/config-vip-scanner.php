@@ -57,6 +57,7 @@ VIP_Scanner::get_instance()->register_review( 'VIP Theme Review', array(
 	'VIPRestrictedPatternsCheck',
 	'VIPRestrictedCommandsCheck',
 	'VIPInitCheck',
+	'PHPShortTagsCheck',
 	'WordPressCodingStandardsCheck',
 	'ClamAVCheck', // Pass null to lookup the check normally
 ) );
