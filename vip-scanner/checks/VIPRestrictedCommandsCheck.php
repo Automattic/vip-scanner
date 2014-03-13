@@ -6,6 +6,9 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 		$result = true;
 
 		$checks = array(
+			// WordPress Classes
+			"WP_User_Query" => array( 'level' => "Note", "note" => "Use of WP_User_Query" ),
+
 			// wordpress functions
 			"remove_filter" => array( "level" => "Note", "note" => "Removing filters" ),
 			"remove_action" => array( "level" => "Note", "note" => "Removing actions" ),
