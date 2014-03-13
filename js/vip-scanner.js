@@ -22,4 +22,10 @@ jQuery(document).ready(function($){
 			e.preventDefault();
 		});
 	});
+	
+	$( '#analysis-accordion, .meta-group-body' ).accordion( {
+		heightStyle: "content",
+		collapsible: true,
+		active: false,
+	} ).accordion( "option", "animate", "linear" );
 });
