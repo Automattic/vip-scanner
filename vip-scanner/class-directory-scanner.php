@@ -4,12 +4,12 @@ class DirectoryScanner extends BaseScanner
 {
 	protected $path;
 
-	function __construct( $path, $checks ) {
+	function __construct( $path, $review ) {
 		$this->set_path( $path );
 
 		// Scan directory and read in contents
 		$files = $this->get_file_contents( $this->get_path() );
-		parent::__construct( $files, $checks );
+		parent::__construct( $files, $review );
 	}
 
 	function get_files_in_directory( $directory = '.' ) {

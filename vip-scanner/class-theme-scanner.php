@@ -2,7 +2,7 @@
 
 class ThemeScanner extends DirectoryScanner
 {
-	function __construct( $theme, $checks ) {
+	function __construct( $theme, $review ) {
 		if( ! function_exists( 'get_theme_root' ) )
 			return $this->add_error( 'wp-load', sprintf( '%s requires WordPress to be loaded.', get_class( $this ) ), 'blocker' );
 
@@ -10,6 +10,6 @@ class ThemeScanner extends DirectoryScanner
 		$path = sprintf( '%s/%s', get_theme_root(), $theme );
 
 		// Call Parent Constructor
-		parent::__construct( $path, $checks );
+		parent::__construct( $path, $review );
 	}
 }

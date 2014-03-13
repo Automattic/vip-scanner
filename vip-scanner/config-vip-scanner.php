@@ -37,6 +37,8 @@ VIP_Scanner::get_instance()->register_review( 'WP.org Theme Review', array(
 	'TimeDateCheck',
 	'TimThumbCheck',
 	'WormCheck',
+), array(
+	'PHPAnalyzer',
 ) );
 
 VIP_Scanner::get_instance()->register_review( 'Undefined Function Check', array(
