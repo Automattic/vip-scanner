@@ -6,7 +6,7 @@ class VIPRestrictedPatternsCheck extends BaseCheck
 		$result = true;
 
 		$checks = array(
-			"/(\\\$isIE)+/msiU" => array( "level" => "Warning", "note" => 'Using $isIE which conflicts with Batcached' ),
+			"/(\\\$isIE)+/msiU" => array( "level" => "Warning", "note" => 'Using $isIE conflicts with full page caching' ),
 			"/(kses)+/msiU" => array ( "level" => "Warning", "note" => "Working with kses" ),
 			"/(\\\$wpdb->|mysql_)+.+(ALTER)+\s+/msiU" => array( "level" => "Blocker", "note" => "Possible database table alteration" ),
 			"/(\\\$wpdb->|mysql_)+.+(CREATE)+\s+/msiU" => array( "level" => "Blocker", "note" => "Possible database table creation" ),
