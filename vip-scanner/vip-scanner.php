@@ -18,6 +18,7 @@ require_once( VIP_SCANNER_DIR . '/class-preg-file.php' );
 
 require_once( VIP_SCANNER_DIR . '/class-analyzer-renderer.php' );
 require_once( VIP_SCANNER_DIR . '/class-analyzed-file.php' );
+require_once( VIP_SCANNER_DIR . '/class-analyzed-php-file.php' );
 require_once( VIP_SCANNER_DIR . '/class-resource-renderer.php' );
 require_once( VIP_SCANNER_DIR . '/class-renderer-group.php' );
 require_once( VIP_SCANNER_DIR . '/class-file-renderer.php' );

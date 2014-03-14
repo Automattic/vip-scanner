@@ -123,7 +123,7 @@ class BaseScanner {
 		if ( 'analyzers' === $type ) {
 			$analyzed_files = array();
 			foreach ( $this->files['php'] as $filepath => $filecontents ) {
-				$analyzed_files[] = new AnalyzedFile( $filepath, $filecontents );
+				$analyzed_files[] = new AnalyzedPHPFile( $filepath, $filecontents );
 			}
 		}
 		
