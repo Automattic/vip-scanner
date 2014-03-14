@@ -3,6 +3,7 @@
 class AnalyzedFile {
 	protected $filepath = '';
 	protected $filecontents = '';
+	protected $processed_file_contents = '';
 	
 	protected $hierarchy_elements = array(
 		'namespaces' => array(),
@@ -139,6 +140,15 @@ EOT
 	}
 	
 	/**
+	 * Gets the contents of the file after processing, with every recognized 
+	 * element stripped out.
+	 * @return string
+	 */
+	public function get_processed_file_contents() {
+		return $this->processed_file_contents;
+	}
+	
+	/**
 	 * Gets elements of PHP code from a file by their path. This includes things such as namespaces,
 	 * classes, and functions.
 	 * 
@@ -197,7 +207,7 @@ EOT
 		$stripped = $this->strip_strings_and_comments( $this->filecontents );
 		
 		// Do the php check hierarchy
-		$this->do_check_hierarchy( '', self::$check_hierarchy, $stripped, 0 );
+		$this->processed_file_contents = $this->do_check_hierarchy( '', self::$check_hierarchy, $stripped, 0 );
 	}
 	
 	/**
@@ -274,6 +284,8 @@ EOT
 				$this->replace_match_with_whitespace( $contents, $matches[0][$index][0] );
 			}
 		}
+		
+		return $contents;
 	}
 	
 	/**
@@ -283,7 +295,7 @@ EOT
 	 * @param number $char
 	 * @param number $line_offset
 	 */
-	protected function compute_line_number( $string, $char, $line_offset = 0 ) {
+	public function compute_line_number( $string, $char, $line_offset = 0 ) {
 		preg_match_all( "/\r\n|\r|\n/", substr( $string, 0, $char ), $matches );
 		
 		return count( $matches[0] ) + 1 + $line_offset;
@@ -296,7 +308,7 @@ EOT
 	 * @param string $contents
 	 * @param string $match
 	 */
-	protected function replace_match_with_whitespace( &$contents, $match ) {
+	public function replace_match_with_whitespace( &$contents, $match ) {
 		// Count the number of lines we're about to remove
 		preg_match_all( "/\r\n|\r|\n/", $match, $line_end_matches );
 		$mod_line_count = count( $line_end_matches[0] );
@@ -312,7 +324,7 @@ EOT
 	 * @param string $contents The initial contents
 	 * @return string $contents with strings and comments stripped out
 	 */
-	protected function strip_strings_and_comments( $contents ) {
+	public function strip_strings_and_comments( $contents ) {
 		$regexes = array(
 			$this->comments_regex,
 			$this->strings_regex,
