@@ -30,7 +30,7 @@ class MetaGroup extends AnalyzerMeta {
 	function display_header() {
 		return sprintf( 
 			'<strong class="meta-class-name">%s</strong> (%s)',
-			esc_html( $this->name() ),
+			esc_html( ucwords( $this->name() ) ),
 			empty( $this->child_metas ) ? '0' : esc_html( $this->get_child_summary() )
 		);
 	}

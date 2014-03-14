@@ -18,6 +18,7 @@ require_once( VIP_SCANNER_DIR . '/class-preg-file.php' );
 
 require_once( VIP_SCANNER_DIR . '/class-analyzer-meta.php' );
 require_once( VIP_SCANNER_DIR . '/class-analyzed-file.php' );
+require_once( VIP_SCANNER_DIR . '/class-resource-meta.php' );
 require_once( VIP_SCANNER_DIR . '/class-meta-group.php' );
 require_once( VIP_SCANNER_DIR . '/class-file-meta.php' );
 require_once( VIP_SCANNER_DIR . '/class-namespace-meta.php' );
