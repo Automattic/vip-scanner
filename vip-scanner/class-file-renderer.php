@@ -15,6 +15,10 @@ class FileRenderer extends AnalyzerRenderer {
 		$this->set_file( $file );
 	}
 	
+	function identifier() {
+		return $this->file->get_filepath();
+	}
+	
 	function display_header() {
 		$header_items = array();
 

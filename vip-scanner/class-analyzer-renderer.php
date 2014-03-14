@@ -25,6 +25,14 @@ abstract class AnalyzerRenderer {
 	}
 	
 	/**
+	 * Gets a string that should be relatively unique for this element.
+	 * @return array
+	 */
+	function identifier() {
+		return $this->name();
+	}
+	
+	/**
 	 * Gets the singular noun for this class.
 	 * @return string
 	 */
@@ -106,7 +114,7 @@ abstract class AnalyzerRenderer {
 	 * @param AnalyzerRenderer $child
 	 */
 	function add_child( $child ) {
-		$this->children[$child->name()] = $child;
+		$this->children[$child->identifier()] = $child;
 	}
 	
 	/**

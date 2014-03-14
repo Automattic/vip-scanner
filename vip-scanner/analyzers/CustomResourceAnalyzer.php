@@ -43,15 +43,15 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 		$file_metas = $this->scanner->renderers['files']->get_children();
 		
 		foreach ( $files as $file ) {
-			$filename = $file->get_filename();
-			if ( !array_key_exists( $filename, $file_metas ) || $file_metas[$filename]->get_file()->get_filepath() !== $file->get_filepath() ) {
+			$filepath = $file->get_filepath();
+			if ( !array_key_exists( $filepath, $file_metas ) ) {
 				// This is not a file we can handle
-				var_dump( "Not scanning file: {$file->get_filepath()}: " . $file_metas[$filename]->get_file()->get_filepath());
+				var_dump( "Not scanning file: {$file->get_filepath()}: " . $file_metas[$filepath]->get_file()->get_filepath());
 				continue;
 			}
 			
 			// Scan this file for custom resources
-			$this->scan_file( $file, $file_metas[$filename] );
+			$this->scan_file( $file, $file_metas[$filepath] );
 		}
 	}
 	
