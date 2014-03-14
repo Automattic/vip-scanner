@@ -79,9 +79,10 @@ abstract class AnalyzerRenderer {
 	function process_header_args( $header, $args ) {
 		if ( isset( $args['highlight_substrs'] ) ) {
 			foreach ( $args['highlight_substrs'] as $highlight_arg ) {
+				$escaped_str = esc_html( $highlight_arg['str'] );
 				$header = str_replace(
-					$highlight_arg['str'],
-					sprintf( '<span style="color: %s;">%s</span>', esc_attr( $highlight_arg['color'] ), $highlight_arg['str'] ),
+					$escaped_str,
+					sprintf( '<span style="color: %s;">%s</span>', esc_attr( $highlight_arg['color'] ), $escaped_str ),
 					$header
 				);
 			}
