@@ -66,7 +66,7 @@ abstract class AnalyzerRenderer {
 
 		$output .= '<h3 class="' . esc_attr( implode( ' ', $header_classes ) ) . '">' . $this->process_header_args( $this->display_header(), $args ) . '</h3>';
 
-		$classes = array( 'analyzer-group-body' );
+		$classes = array( 'renderer-group-body' );
 		if ( isset( $args['classes'] ) ) {
 			$classes = array_merge( $classes, $args['classes'] );
 		}
