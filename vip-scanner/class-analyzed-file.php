@@ -9,6 +9,7 @@ class AnalyzedFile {
 		'namespaces' => array(),
 		'classes'    => array(),
 		'functions'  => array(),
+		'php'		 => array(),
 	);
 	
 	protected $comments_regex = <<<EOT
@@ -253,7 +254,9 @@ EOT
 				if ( isset( $this->hierarchy_elements[$level] ) ) {
 
 					if ( empty( $top_level ) ) {
-						$this_top_level = $matches['name'][$index][0];
+						if ( ! empty( $matches['name'] ) ) {
+							$this_top_level = $matches['name'][$index][0];
+						}
 					} else {
 						$this_top_level = "$top_level::{$matches['name'][$index][0]}";
 					}
