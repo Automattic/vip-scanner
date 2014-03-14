@@ -26,6 +26,36 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 			'plural'	=> 'roles',
 			'singular'  => 'role',
 		),
+		
+		array(
+			'func_name' => 'add_shortcode',
+			'plural'    => 'shortcodes',
+			'singular'  => 'shortcode',
+		),
+		
+		array(
+			'func_name' => 'register_post_type',
+			'plural'    => 'custom post types',
+			'singular'  => 'custom post type',
+		),
+		
+		array(
+			'func_name' => 'register_taxonomy',
+			'plural'    => 'taxonomies',
+			'singular'  => 'taxonomy',
+		),
+		
+		array(
+			'func_name' => array( 'wp_enqueue_script', 'wp_register_script' ),
+			'plural'    => 'scripts',
+			'singular'  => 'script',
+		),
+		
+		array(
+			'func_name' => array( 'wp_enqueue_style', 'wp_register_style' ),
+			'plural'    => 'styles',
+			'singular'  => 'style',
+		),
 	);
 	
 	function __construct() {
@@ -68,9 +98,15 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 		$file_functions = $file->get_code_elements( 'functions' );
 		
 		foreach ( $this->resource_types as $resource ) {
-			$regexes = array(
-				"/{$resource['func_name']}\s*\(\s*(?<name>([a-zA-Z0-9_'\".$-]|\s*)+)/ix"
-			);
+			$regexes = array();
+				
+			if ( is_array( $resource['func_name'] ) ) {
+				foreach ( $resource['func_name'] as $func_name ) {
+					$regexes[] = "/{$func_name}\s*\(\s*(?<name>([a-zA-Z0-9_'\".$-]|\s*)+)/ix";
+				}
+			} else {
+				$regexes[] = "/{$resource['func_name']}\s*\(\s*(?<name>([a-zA-Z0-9_'\".$-]|\s*)+)/ix";
+			}
 				
 			if ( isset( $resource['regexes'] ) ) {
 				$regexes = array_merge( $regexes, $resource['regexes'] );
