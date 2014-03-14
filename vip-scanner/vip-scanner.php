@@ -16,14 +16,14 @@ require_once( VIP_SCANNER_DIR . '/class-content-scanner.php' );
 require_once( VIP_SCANNER_DIR . '/class-diff-scanner.php' );
 require_once( VIP_SCANNER_DIR . '/class-preg-file.php' );
 
-require_once( VIP_SCANNER_DIR . '/class-analyzer-meta.php' );
+require_once( VIP_SCANNER_DIR . '/class-analysis-renderer.php' );
 require_once( VIP_SCANNER_DIR . '/class-analyzed-file.php' );
-require_once( VIP_SCANNER_DIR . '/class-resource-meta.php' );
-require_once( VIP_SCANNER_DIR . '/class-meta-group.php' );
-require_once( VIP_SCANNER_DIR . '/class-file-meta.php' );
-require_once( VIP_SCANNER_DIR . '/class-namespace-meta.php' );
-require_once( VIP_SCANNER_DIR . '/class-class-meta.php' );
-require_once( VIP_SCANNER_DIR . '/class-function-meta.php' );
+require_once( VIP_SCANNER_DIR . '/class-resource-renderer.php' );
+require_once( VIP_SCANNER_DIR . '/class-renderer-group.php' );
+require_once( VIP_SCANNER_DIR . '/class-file-renderer.php' );
+require_once( VIP_SCANNER_DIR . '/class-namespace-renderer.php' );
+require_once( VIP_SCANNER_DIR . '/class-class-renderer.php' );
+require_once( VIP_SCANNER_DIR . '/class-function-renderer.php' );
 require_once( VIP_SCANNER_DIR . '/class-base-analyzer.php' );
 
 class VIP_Scanner {

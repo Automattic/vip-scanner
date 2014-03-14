@@ -1,10 +1,10 @@
 <?php
 
-abstract class AnalyzerMeta {
+abstract class AnalyzerRenderer {
 	/**
-	 * @var array<AnalyzerMeta>
+	 * @var array<AnalyzerRenderer>
 	 */
-	protected $child_metas = array();
+	protected $children = array();
 	protected $name = '';
 	protected $attributes = array();
 	protected $stats = array();
@@ -17,7 +17,7 @@ abstract class AnalyzerMeta {
 	}
 
 	/**
-	 * Gets the name of this meta element.
+	 * Gets the name of this element.
 	 * @return string
 	 */
 	function name() {
@@ -41,7 +41,7 @@ abstract class AnalyzerMeta {
 	}
 	
 	/**
-	 * Displays this meta and all child metas as a hierarchical list. Assumes to
+	 * Displays this and all children as a hierarchical list. Assumes to
 	 * already be surround in either a <ul> or <ol>.
 	 * 
 	 * @param bool $echo Whether or not to echo the output
@@ -53,9 +53,9 @@ abstract class AnalyzerMeta {
 		// Output the header. Don't escape here because we expect the header to contain html.
 		$output .= '<h3>' . $this->display_header() . '</h3>';
 		
-		$output .= '<div class="meta-group-body">';
-		foreach ( $this->child_metas as $meta ) {
-			$output .= $meta->display( false );
+		$output .= '<div class="analyzer-group-body">';
+		foreach ( $this->children as $child ) {
+			$output .= $child->display( false );
 		}
 		$output .= '</div>';
 		
@@ -67,7 +67,7 @@ abstract class AnalyzerMeta {
 	}
 	
 	/**
-	 * Gets the header to display for this meta. This should include any important attributes.
+	 * Gets the header to display. This should include any important attributes.
 	 * 
 	 * @return string
 	 */
@@ -76,20 +76,20 @@ abstract class AnalyzerMeta {
 	}
 	
 	/**
-	 * Adds a child AnalyzerMeta to this object.
+	 * Adds a child AnalyzerRenderer to this object.
 	 * 
-	 * @param AnalyzerMeta $child
+	 * @param AnalyzerRenderer $child
 	 */
-	function add_child_meta( $child ) {
-		$this->child_metas[$child->name()] = $child;
+	function add_child( $child ) {
+		$this->children[$child->name()] = $child;
 	}
 	
 	/**
-	 * Gets this objects the child metas.
-	 * @return array<AnalyzerMeta>
+	 * Gets this objects the children.
+	 * @return array<AnalyzerRenderer>
 	 */
-	function get_child_metas() {
-		return $this->child_metas;
+	function get_children() {
+		return $this->children;
 	}
 	
 	/**
@@ -100,12 +100,12 @@ abstract class AnalyzerMeta {
 		$summary = array();
 
 		// Count children of each type
-		foreach ( $this->get_child_metas() as $meta ) {
-			$singular = $meta->singular();
+		foreach ( $this->get_children() as $child ) {
+			$singular = $child->singular();
 			if ( !array_key_exists( $singular, $summary ) ) {
 				$summary[$singular] = array(
 					'count'  => 0,
-					'plural' => $meta->plural(),
+					'plural' => $child->plural(),
 				);
 			}
 
@@ -122,7 +122,7 @@ abstract class AnalyzerMeta {
 	}
 	
 	/**
-	 * Adds a statistic to this meta item.
+	 * Adds a statistic to this item.
 	 * @param string $name
 	 * @param number $stat
 	 */
@@ -131,7 +131,7 @@ abstract class AnalyzerMeta {
 	}
 	
 	/**
-	 * Gets a statistic from this meta. If the stat is not set returns 0.
+	 * Gets a statistic from this item. If the stat is not set returns 0.
 	 * @param string $name
 	 * @return int
 	 */
@@ -144,7 +144,7 @@ abstract class AnalyzerMeta {
 	}
 	
 	/**
-	 * Gets the attributes for this meta.
+	 * Gets the attributes for this item.
 	 * @return array
 	 */
 	function get_attributes() {
@@ -165,7 +165,7 @@ abstract class AnalyzerMeta {
 	}
 	
 	/**
-	 * Sets the attributes for this meta. $attributes should be in the form:
+	 * Sets the attributes for this item. $attributes should be in the form:
 	 *	array( 'attribute_name' => 'attribute_value' );
 	 * 
 	 * @param array $attributes
@@ -175,7 +175,7 @@ abstract class AnalyzerMeta {
 	}
 	
 	/**
-	 * Adds the specified attribute on this meta.
+	 * Adds the specified attribute on this item.
 	 * 
 	 * @param string $name
 	 * @param mixed $attribute

@@ -1,6 +1,6 @@
 <?php
 
-class ResourceMeta extends AnalyzerMeta {
+class ResourceRenderer extends AnalyzerRenderer {
 	
 	function set_resource_type( $singular, $plural ) {
 		$this->singular = $singular;
@@ -11,7 +11,7 @@ class ResourceMeta extends AnalyzerMeta {
 		$header_items = array();
 		
 		$header_items[] = sprintf( 
-			'%1$s <strong class="meta-resource-name meta-resource-%1$s-name">%2$s</strong>',
+			'%1$s <strong class="renderer-resource-name renderer-resource-%1$s-name">%2$s</strong>',
 			esc_html( $this->singular ),
 			esc_html( $this->name() )
 		);

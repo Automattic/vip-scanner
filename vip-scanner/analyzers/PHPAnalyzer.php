@@ -1,19 +1,19 @@
 <?php
 
 class PHPAnalyzer extends BaseAnalyzer {
-	protected $metas = array();
+	protected $renderers = array();
 	protected $hierarchy_metas = array(
-		'namespaces' => 'NamespaceMeta',
-		'classes'    => 'ClassMeta',
-		'functions'  => 'FunctionMeta',
+		'namespaces' => 'NamespaceRenderer',
+		'classes'    => 'ClassRenderer',
+		'functions'  => 'FunctionRenderer',
 	);
 	
 	function __construct() {
-		$this->metas = array(
-			'files'		 => new MetaGroup( __( 'Files', 'theme-review' ), __( 'File', 'theme-review' ) ),
-			'namespaces' => new MetaGroup( __( 'Namespaces', 'theme-review' ), __( 'Namespace', 'theme-review' ) ),
-			'classes'	 => new MetaGroup( __( 'Classes', 'theme-review' ), __( 'Class', 'theme-review' ) ),
-			'functions'  => new MetaGroup( __( 'Functions', 'theme-review' ), __( 'Function', 'theme-review' ) ),
+		$this->renderers = array(
+			'files'		 => new RendererGroup( __( 'Files', 'theme-review' ), __( 'File', 'theme-review' ) ),
+			'namespaces' => new RendererGroup( __( 'Namespaces', 'theme-review' ), __( 'Namespace', 'theme-review' ) ),
+			'classes'	 => new RendererGroup( __( 'Classes', 'theme-review' ), __( 'Class', 'theme-review' ) ),
+			'functions'  => new RendererGroup( __( 'Functions', 'theme-review' ), __( 'Function', 'theme-review' ) ),
 		);
 	}
 	
@@ -24,18 +24,18 @@ class PHPAnalyzer extends BaseAnalyzer {
 	 */
 	public function analyze( $files ) {
 		foreach ( $files as $file ) {
-			$file_meta = new FileMeta( $file );
-			$this->add_metas( $file, $file_meta );
-			$this->metas['files']->add_child_meta( $file_meta );
+			$file_meta = new FileRenderer( $file );
+			$this->add_renderers( $file, $file_meta );
+			$this->renderers['files']->add_child( $file_meta );
 		}
 	}
 
 	/**
 	 * 
 	 * @param AnalyzedFile $file
-	 * @param AnalyzerMeta $meta
+	 * @param AnalyzerRenderer $renderer
 	 */
-	public function add_metas( $file, &$meta, $path = '', $hierarchy = null ) {
+	public function add_renderers( $file, &$renderer, $path = '', $hierarchy = null ) {
 		if ( is_null( $hierarchy ) ) {
 			$hierarchy = $file->get_check_hierarchy();
 		}
@@ -44,7 +44,7 @@ class PHPAnalyzer extends BaseAnalyzer {
 			$code_elements = $file->get_code_elements( $level, $path );
 			
 			if ( empty( $code_elements ) ) {
-				$this->add_metas( $file, $meta, $path, $hierarchy_children );
+				$this->add_renderers( $file, $renderer, $path, $hierarchy_children );
 				
 			} else {
 				foreach ( $code_elements as $child_path => $child_element ) {
@@ -56,16 +56,16 @@ class PHPAnalyzer extends BaseAnalyzer {
 							$child_meta->add_attribute( $prop_name, $prop_value );
 						}
 
-						$this->add_metas( $file, $child_meta, $child_path, $hierarchy_children );
+						$this->add_renderers( $file, $child_meta, $child_path, $hierarchy_children );
 
-						$meta->add_child_meta( $child_meta );
+						$renderer->add_child( $child_meta );
 						
 						// If the path is empty add this to the list of root metas
 						if ( empty( $path ) ) {
-							$this->metas[$level]->add_child_meta( $child_meta );
+							$this->renderers[$level]->add_child( $child_meta );
 						}
 					} else {
-						$this->add_metas( $file, $meta, $child_path, $hierarchy_children );
+						$this->add_renderers( $file, $renderer, $child_path, $hierarchy_children );
 					}
 				}
 			}

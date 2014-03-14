@@ -30,7 +30,7 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 	
 	function __construct() {
 		foreach ( $this->resource_types as $resource ) {
-			$this->metas[$resource['plural']] = new MetaGroup( $resource['plural'], $resource['singular'] );
+			$this->renderers[$resource['plural']] = new RendererGroup( $resource['plural'], $resource['singular'] );
 		}
 	}
 	
@@ -40,7 +40,7 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 	 */
 	public function analyze( $files ) {
 		// First we get the list of file metas
-		$file_metas = $this->scanner->metas['files']->get_child_metas();
+		$file_metas = $this->scanner->renderers['files']->get_children();
 		
 		foreach ( $files as $file ) {
 			$filename = $file->get_filename();
@@ -62,9 +62,9 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 	 * Creates meta objects for everything that we find.
 	 * 
 	 * @param AnalyzedFile $file The file to scan
-	 * @param FileMeta $file_meta The meta object for this file.
+	 * @param FileRenderer $file_renderer The meta object for this file.
 	 */
-	public function scan_file( $file, $file_meta ) {
+	public function scan_file( $file, $file_renderer ) {
 		$file_functions = $file->get_code_elements( 'functions' );
 		
 		foreach ( $this->resource_types as $resource ) {
@@ -82,9 +82,9 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 					foreach ( $functions as $function ) {
 						preg_match_all( $regex, $function['contents'], $matches, PREG_OFFSET_CAPTURE );
 						foreach ( $matches['name'] as $match ) {
-							$child_meta = $this->create_child_meta_from_match( $match, $function['contents'], $resource, $file, $function['line'] );
-							$file_meta->add_child_meta( $child_meta );
-							$this->metas[$resource['plural']]->add_child_meta( $child_meta );
+							$child_renderer = $this->create_child_renderer_from_match( $match, $function['contents'], $resource, $file, $function['line'] );
+							$file_renderer->add_child( $child_renderer );
+							$this->renderers[$resource['plural']]->add_child( $child_renderer );
 						}
 					}
 
@@ -94,9 +94,9 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 						$matches = array();
 						preg_match_all( $regex, $phpcontent['contents'], $matches, PREG_OFFSET_CAPTURE );
 						foreach ( $matches['name'] as $match ) {
-							$child_meta = $this->create_child_meta_from_match( $match, $phpcontent['contents'], $resource, $file, $phpcontent['line'] );
-							$file_meta->add_child_meta( $child_meta );
-							$this->metas[$resource['plural']]->add_child_meta( $child_meta );
+							$child_renderer = $this->create_child_renderer_from_match( $match, $phpcontent['contents'], $resource, $file, $phpcontent['line'] );
+							$file_renderer->add_child( $child_renderer );
+							$this->renderers[$resource['plural']]->add_child( $child_renderer );
 						}
 					}
 				}
@@ -104,10 +104,10 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 		}
 	}
 	
-	public function create_child_meta_from_match( $match, $contents, $resource, $file, $line_offset = 0 ) {
-		$child_meta = new ResourceMeta( $match[0] );
-		$child_meta->set_resource_type( $resource['singular'], $resource['plural'] );
-		$child_meta->add_attribute( 'line', $file->compute_line_number( $contents, $match[1], $line_offset ) );
-		return $child_meta;
+	public function create_child_renderer_from_match( $match, $contents, $resource, $file, $line_offset = 0 ) {
+		$child_renderer = new ResourceRenderer( $match[0] );
+		$child_renderer->set_resource_type( $resource['singular'], $resource['plural'] );
+		$child_renderer->add_attribute( 'line', $file->compute_line_number( $contents, $match[1], $line_offset ) );
+		return $child_renderer;
 	}
 }

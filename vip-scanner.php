@@ -253,8 +253,8 @@ class VIP_Scanner_UI {
 		<div id="analysis">
 			<div id="analysis-accordion">
 				<?php 
-				foreach ( $scanner->metas as $meta ): ?>
-					<?php $meta->display(); ?>
+				foreach ( $scanner->renderers as $renderer ): ?>
+					<?php $renderer->display(); ?>
 				<?php endforeach; ?>
 			</div>
 		</div>

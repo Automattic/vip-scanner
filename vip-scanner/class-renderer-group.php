@@ -1,6 +1,6 @@
 <?php
 
-class MetaGroup extends AnalyzerMeta {
+class RendererGroup extends AnalyzerRenderer {
 	protected $singular = '';
 			
 	function __construct( $plural, $singular, $attributes = array() ) {
@@ -12,11 +12,11 @@ class MetaGroup extends AnalyzerMeta {
 		$output = '';
 		
 		// Output the header. Don't escape here because we expect the header to contain html.
-		$output .= '<h3 class="meta-group-header">' . $this->display_header() . '</h3>';
+		$output .= '<h3 class="renderer-group-header">' . $this->display_header() . '</h3>';
 		
-		$output .= '<div class="meta-group-body">';
-		foreach ( $this->child_metas as $meta ) {
-			$output .= $meta->display( false );
+		$output .= '<div class="renderer-group-body">';
+		foreach ( $this->children as $child ) {
+			$output .= $child->display( false );
 		}
 		$output .= '</div>';
 		
@@ -29,9 +29,9 @@ class MetaGroup extends AnalyzerMeta {
 
 	function display_header() {
 		return sprintf( 
-			'<strong class="meta-class-name">%s</strong> (%s)',
+			'<strong class="renderer-class-name">%s</strong> (%s)',
 			esc_html( ucwords( $this->name() ) ),
-			empty( $this->child_metas ) ? '0' : esc_html( $this->get_child_summary() )
+			empty( $this->children ) ? '0' : esc_html( $this->get_child_summary() )
 		);
 	}
 }

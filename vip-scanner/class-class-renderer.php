@@ -1,6 +1,6 @@
 <?php
 
-class ClassMeta extends AnalyzerMeta {
+class ClassRenderer extends AnalyzerRenderer {
 	protected $singular = 'class';
 	protected $plural = 'classes';
 	
@@ -9,20 +9,20 @@ class ClassMeta extends AnalyzerMeta {
 
 		// Add the abstract keyword
 		if ( array_key_exists( 'abstract', $this->attributes ) && !empty( $this->attributes['abstract'] ) ) {
-			$header_items[] = '<code class="meta-class-abstract">' . esc_html( $this->attributes['abstract'] ) . '</code>';
+			$header_items[] = '<code class="renderer-class-abstract">' . esc_html( $this->attributes['abstract'] ) . '</code>';
 		}
 
 		$header_items[] = sprintf( 
-			'class <strong class="meta-class-name">%s</strong>',
+			'class <strong class="renderer-class-name">%s</strong>',
 			esc_html( $this->name() )
 		);
 
 		// Add any inheritance
 		if ( array_key_exists( 'parentclass', $this->attributes ) && !empty( $this->attributes['parentclass'] ) ) {
-			$header_items[] = 'extends <code class="meta-class-parentclass">' . esc_html( $this->attributes['parentclass'] ) . '</code>';
+			$header_items[] = 'extends <code class="renderer-class-parentclass">' . esc_html( $this->attributes['parentclass'] ) . '</code>';
 		}
 		
-		if ( !empty( $this->child_metas ) ) {
+		if ( !empty( $this->children ) ) {
 			$header_items[] = sprintf( '<small>(%s)</small>', esc_html( $this->get_child_summary() ) );
 		}
 		

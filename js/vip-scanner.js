@@ -23,7 +23,7 @@ jQuery(document).ready(function($){
 		});
 	});
 	
-	$( '#analysis-accordion, .meta-group-body' ).accordion( {
+	$( '#analysis-accordion, .renderer-group-body' ).accordion( {
 		heightStyle: "content",
 		collapsible: true,
 		active: false,

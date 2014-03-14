@@ -1,6 +1,6 @@
 <?php
 
-class FunctionMeta extends AnalyzerMeta {
+class FunctionRenderer extends AnalyzerRenderer {
 	protected $singular = 'function';
 	protected $plural = 'functions';
 	
@@ -10,13 +10,13 @@ class FunctionMeta extends AnalyzerMeta {
 		// Add the keywords
 		foreach ( array( 'visibility', 'static', 'abstract' ) as $keyword ) {
 			if ( array_key_exists( $keyword, $this->attributes ) && !empty( $this->attributes[$keyword] ) ) {
-				$header_items[] = "<code class='meta-class-$keyword'>" . esc_html( $this->attributes[$keyword] ) . '</code>';
+				$header_items[] = "<code class='renderer-class-$keyword'>" . esc_html( $this->attributes[$keyword] ) . '</code>';
 			}
 		}
 
 		$args = $this->get_attribute( 'args' );
 		$header_items[] = sprintf( 
-			'function <strong class="meta-function-name">%s</strong>%s',
+			'function <strong class="renderer-function-name">%s</strong>%s',
 			esc_html( $this->name() ),
 			$args === ';' ? ';' : '(' . esc_html( $args ) . ')'
 		);

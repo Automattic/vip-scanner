@@ -10,7 +10,7 @@ class BaseScanner {
 	public $analyzers = array();
 	public $total_checks = 0;
 	public $errors = array();
-	public $metas = array();
+	public $renderers = array();
 	public $stats = array();
 	public $known_extensions = array(
 		'php' => array( 'php', 'php5', 'inc' ),
@@ -152,8 +152,9 @@ class BaseScanner {
 
 				$this->total_checks += $results['count'];
 			} elseif ( 'analyzers' === $type && $check instanceof BaseAnalyzer ) {
+				$check->set_scanner( $this );
 				$check->analyze( $analyzed_files );
-				$this->metas = array_merge( $check->get_metas(), $this->metas );
+				$this->renderers = array_merge( $check->get_renderers(), $this->renderers );
 				$this->stats = array_merge( $check->get_stats(), $this->stats );
 			}
 		}
