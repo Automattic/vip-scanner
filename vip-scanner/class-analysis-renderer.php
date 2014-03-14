@@ -47,18 +47,28 @@ abstract class AnalyzerRenderer {
 	 * @param bool $echo Whether or not to echo the output
 	 * @return string
 	 */
-	function display( $echo = true ) {
+	function display( $echo = true, $args = array() ) {
 		$output = '';
-		
+
 		// Output the header. Don't escape here because we expect the header to contain html.
-		$output .= '<h3>' . $this->display_header() . '</h3>';
-		
-		$output .= '<div class="analyzer-group-body">';
+		$header_classes = array( 'renderer-group-header' );
+		if ( isset( $args['body_classes'] ) ) {
+			$header_classes = array_merge( $header_classes, $args['body_classes'] );
+		}
+
+		$output .= '<h3 class="' . esc_attr( implode( ' ', $header_classes ) ) . '">' . $this->process_header_args( $this->display_header(), $args ) . '</h3>';
+
+		$classes = array( 'analyzer-group-body' );
+		if ( isset( $args['classes'] ) ) {
+			$classes = array_merge( $classes, $args['classes'] );
+		}
+
+		$output .= '<div class="' . implode( ' ', $classes ) . '">';
 		foreach ( $this->children as $child ) {
 			$output .= $child->display( false );
 		}
 		$output .= '</div>';
-		
+
 		if ( $echo ) {
 			echo $output;
 		} else {
@@ -66,6 +76,20 @@ abstract class AnalyzerRenderer {
 		}
 	}
 	
+	function process_header_args( $header, $args ) {
+		if ( isset( $args['highlight_substrs'] ) ) {
+			foreach ( $args['highlight_substrs'] as $highlight_arg ) {
+				$header = str_replace(
+					$highlight_arg['str'],
+					sprintf( '<span style="color: %s;">%s</span>', esc_attr( $highlight_arg['color'] ), $highlight_arg['str'] ),
+					$header
+				);
+			}
+		}
+
+		return $header;
+	}
+
 	/**
 	 * Gets the header to display. This should include any important attributes.
 	 * 

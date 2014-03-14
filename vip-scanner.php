@@ -254,7 +254,13 @@ class VIP_Scanner_UI {
 			<div id="analysis-accordion">
 				<?php 
 				foreach ( $scanner->renderers as $renderer ): ?>
-					<?php $renderer->display(); ?>
+					<?php
+					if ( $renderer->name() !== 'Files' ) {
+						$renderer->analyze_prefixes();
+					}
+
+					$renderer->display();
+					?>
 				<?php endforeach; ?>
 			</div>
 		</div>
