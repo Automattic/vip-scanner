@@ -3,6 +3,7 @@
 class FileMeta extends AnalyzerMeta {
 	protected $singular = 'file';
 	protected $plural = 'files';
+	protected $file = null;
 	
 	/**
 	 * 
@@ -11,9 +12,7 @@ class FileMeta extends AnalyzerMeta {
 	 */
 	function __construct( $file, $attributes = array() ) {
 		parent::__construct( $file->get_filename(), $attributes );
-
-		// Count the number of lines in this file
-		$this->add_stat( 'line_count', substr_count( $file->get_file_contents(), "\n" ) );
+		$this->set_file( $file );
 	}
 	
 	function display_header() {
@@ -28,5 +27,16 @@ class FileMeta extends AnalyzerMeta {
 		);
 		
 		return implode( ' ', $header_items );
+	}
+	
+	function set_file( $file ) {
+		$this->file = $file;
+		
+		// Count the number of lines in this file
+		$this->add_stat( 'line_count', substr_count( $this->file->get_file_contents(), "\n" ) );
+	}
+	
+	function get_file() {
+		return $this->file;
 	}
 }

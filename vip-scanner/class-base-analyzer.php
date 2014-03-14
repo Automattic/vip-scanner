@@ -12,6 +12,11 @@ abstract class BaseAnalyzer {
 	protected $stats = array();
 	
 	/**
+	 * @var BaseScanner
+	 */
+	protected $scanner = null;
+	
+	/**
 	 * Runs the analyzer on the given $files.
 	 * 
 	 * @param array<AnalyzedFile> $files The files to process
@@ -32,5 +37,13 @@ abstract class BaseAnalyzer {
 	 */
 	function get_stats() {
 		return $this->stats;
+	}
+	
+	/**
+	 * Sets the BaseScanner that this analyzer is being run by.
+	 * @param BaseScanner $scanner
+	 */
+	function set_scanner( $scanner ) {
+		$this->scanner = $scanner;
 	}
 }
