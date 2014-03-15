@@ -22,6 +22,7 @@ VIP_Scanner::get_instance()->register_review( 'WP.org Theme Review', array(
 	'ThemeNavMenuCheck',
 	'NonPrintableCheck',
 	'PHPShortTagsCheck',
+	'PHPClosingTagsCheck',
 	'ThemePostFormatCheck',
 	'ThemePostPaginationCheck',
 	'ThemePostThumbnailCheck',
