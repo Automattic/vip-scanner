@@ -8,7 +8,7 @@ class PHPClosingTagsCheck extends BaseCheck {
 
 			$pattern = '/\?>\s*$/';
 
-			if ( preg_match( $pattern, $file_content, $matches ) ) {
+			if ( preg_match( $pattern, $file_content ) ) {
 				$filename = $this->get_filename( $file_path );
 				$this->add_error(
 					'php-closingtags',
