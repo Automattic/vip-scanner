@@ -14,6 +14,7 @@ class PHPAnalyzer extends BaseAnalyzer {
 			'namespaces' => new RendererGroup( __( 'Namespaces', 'theme-review' ), __( 'Namespace', 'theme-review' ) ),
 			'classes'	 => new RendererGroup( __( 'Classes', 'theme-review' ), __( 'Class', 'theme-review' ) ),
 			'functions'  => new RendererGroup( __( 'Functions', 'theme-review' ), __( 'Function', 'theme-review' ) ),
+			'totals'     => new RendererGroup( __( 'Totals', 'theme-review' ), __( 'Total', 'theme-review' ) ),
 		);
 	}
 	
@@ -23,11 +24,16 @@ class PHPAnalyzer extends BaseAnalyzer {
 	 * @param array<AnalyzedFile> $files The files to process
 	 */
 	public function analyze( $files ) {
+		$total_lines = 0;
+		
 		foreach ( $files as $file ) {
 			$file_meta = new FileRenderer( $file );
 			$this->add_renderers( $file, $file_meta );
 			$this->renderers['files']->add_child( $file_meta );
+			$total_lines += (int) $file_meta->get_stat( 'line_count' );
 		}
+		
+		$this->renderers['totals']->add_stat( 'total_lines', $total_lines );
 	}
 
 	/**
