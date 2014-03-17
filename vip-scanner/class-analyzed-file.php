@@ -133,7 +133,7 @@ abstract class AnalyzedFile {
 			if ( empty( $regex ) ) continue;
 
 			// Get all of the matches
-			preg_match_all( "/$regex/ix", $contents, $matches, PREG_OFFSET_CAPTURE );
+			preg_match_all( "/$regex/imx", $contents, $matches, PREG_OFFSET_CAPTURE );
 
 			// Go over each match
 			foreach ( $matches['contents'] as $index => $match ) {
