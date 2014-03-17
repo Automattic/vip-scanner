@@ -30,6 +30,14 @@ abstract class AnalyzedFile {
 	}
 	
 	/**
+	 * Gets the type of the file. (via the extension)
+	 * @return string
+	 */
+	public function get_filetype() {
+		return pathinfo( $this->filepath, PATHINFO_EXTENSION );
+	}
+	
+	/**
 	 * Gets the stored contents of the analyzed file.
 	 * @return string
 	 */
@@ -210,11 +218,7 @@ abstract class AnalyzedFile {
 	 * @return string $contents with strings and comments stripped out
 	 */
 	public function strip_strings_and_comments( $contents ) {
-		$regexes = array(
-			$this->comments_regex,
-			$this->strings_regex,
-			$this->strip_inline_php_regex,
-		);
+		$regexes = $this->get_strings_and_comments_regexes();
 		
 		foreach ( $regexes as $regex ) {
 			preg_match_all( "/{$regex}/ix", $contents, $matches );
@@ -226,4 +230,10 @@ abstract class AnalyzedFile {
 
 		return $contents;
 	}
+	
+	/**
+	 * Retrieves the list of regexes to be used with strip_strings_and_comments().
+	 * @return array
+	 */
+	protected abstract function get_strings_and_comments_regexes();
 }

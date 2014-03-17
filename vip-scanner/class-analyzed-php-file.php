@@ -129,4 +129,13 @@ EOT
 		// Do the php check hierarchy
 		$this->processed_file_contents = $this->do_check_hierarchy( '', $this->check_hierarchy, $stripped, 0 );
 	}
+
+	protected function get_strings_and_comments_regexes() {
+		return array(
+			$this->comments_regex,
+			$this->strings_regex,
+			$this->strip_inline_php_regex,
+		);
+	}
+
 }
