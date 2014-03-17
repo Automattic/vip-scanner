@@ -71,10 +71,17 @@ abstract class AnalyzerRenderer {
 			$classes = array_merge( $classes, $args['classes'] );
 		}
 
+		// Output the body container div
 		$output .= '<div class="' . implode( ' ', $classes ) . '">';
+		$output .= '<div class="renderer-group-children">';
 		foreach ( $this->children as $child ) {
 			$output .= $child->display( false );
 		}
+		$output .= '</div>';
+		
+		// Output stats
+		$output .= $this->display_stats( $args );
+		
 		$output .= '</div>';
 
 		if ( $echo ) {
@@ -82,6 +89,23 @@ abstract class AnalyzerRenderer {
 		} else {
 			return $output;
 		}
+	}
+	
+	function display_stats( $args ) {
+		$output = '';
+		if ( !empty( $this->stats ) ) {
+			$classes = array( 'renderer-group-stats' );
+			if ( isset( $args['stats_classes'] ) ) {
+				$classes = array_merge( $classes, $args['stats_classes'] );
+			}
+
+			$output .= '<div class="' . implode( ' ', $classes ) . '"><ul>';
+			foreach ( $this->stats as $slug => $stat ) {
+				$output .= sprintf( '<li><strong>%s</strong>: %s</li>', esc_html( $slug ), number_format( $stat ) );
+			}
+			$output .= '</ul></div>';
+		}
+		return $output;
 	}
 	
 	function process_header_args( $header, $args ) {

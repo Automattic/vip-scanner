@@ -33,6 +33,7 @@ class RendererGroup extends AnalyzerRenderer {
 		}
 
 		$output .= '<div class="' . esc_attr( implode( ' ', $body_classes ) ) . '">';
+		$output .= '<div class="renderer-group-children">';
 		foreach ( $this->children as $child ) {
 			$args = array();
 
@@ -46,6 +47,10 @@ class RendererGroup extends AnalyzerRenderer {
 
 			$output .= $child->display( false, $args );
 		}
+		$output .= '</div>';
+		
+		$output .= $this->display_stats( $args );
+		
 		$output .= '</div>';
 
 		if ( $echo ) {
