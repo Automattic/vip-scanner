@@ -117,7 +117,7 @@ abstract class AnalyzerRenderer {
 	
 	function display_attributes( $args ) {
 		$output = '';
-		if ( !empty( $this->stats ) ) {
+		if ( !empty( $this->attributes ) ) {
 			$classes = array( 'renderer-group-attributes' );
 			if ( isset( $args['attributes_classes'] ) ) {
 				$classes = array_merge( $classes, $args['attributes_classes'] );
