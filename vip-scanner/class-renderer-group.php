@@ -49,6 +49,8 @@ class RendererGroup extends AnalyzerRenderer {
 		}
 		$output .= '</div>';
 		
+		$output .= $this->display_attributes( $args );
+		
 		$output .= $this->display_stats( $args );
 		
 		$output .= '</div>';

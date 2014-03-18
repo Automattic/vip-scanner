@@ -79,6 +79,9 @@ abstract class AnalyzerRenderer {
 		}
 		$output .= '</div>';
 		
+		// Output attributes
+		$output .= $this->display_attributes( $args );
+		
 		// Output stats
 		$output .= $this->display_stats( $args );
 		
@@ -102,6 +105,23 @@ abstract class AnalyzerRenderer {
 			$output .= '<div class="' . implode( ' ', $classes ) . '"><ul>';
 			foreach ( $this->stats as $slug => $stat ) {
 				$output .= sprintf( '<li><strong>%s</strong>: %s</li>', esc_html( $slug ), number_format( $stat ) );
+			}
+			$output .= '</ul></div>';
+		}
+		return $output;
+	}
+	
+	function display_attributes( $args ) {
+		$output = '';
+		if ( !empty( $this->stats ) ) {
+			$classes = array( 'renderer-group-attributes' );
+			if ( isset( $args['attributes_classes'] ) ) {
+				$classes = array_merge( $classes, $args['attributes_classes'] );
+			}
+
+			$output .= '<div class="' . implode( ' ', $classes ) . '"><ul>';
+			foreach ( $this->attributes as $slug => $stat ) {
+				$output .= sprintf( '<li><strong>%s</strong>: %s</li>', esc_html( $slug ), esc_html( $stat ) );
 			}
 			$output .= '</ul></div>';
 		}
