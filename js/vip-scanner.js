@@ -27,5 +27,9 @@ jQuery(document).ready(function($){
 		heightStyle: "content",
 		collapsible: true,
 		active: false,
+		beforeActivate: function (event, ui) {
+			// Disable this panel if its empty
+			return ! $( event.currentTarget ).hasClass( 'renderer-group-empty' );
+		}
 	} ).accordion( "option", "animate", "linear" );
 });

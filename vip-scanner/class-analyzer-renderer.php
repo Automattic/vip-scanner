@@ -60,6 +60,10 @@ abstract class AnalyzerRenderer {
 
 		// Output the header. Don't escape here because we expect the header to contain html.
 		$header_classes = array( 'renderer-group-header' );
+		if ( $this->is_empty() ) {
+			$header_classes[] = 'renderer-group-empty';
+		}
+
 		if ( isset( $args['body_classes'] ) ) {
 			$header_classes = array_merge( $header_classes, $args['body_classes'] );
 		}
@@ -259,5 +263,15 @@ abstract class AnalyzerRenderer {
 	 */
 	function add_attribute( $name, $attribute ) {
 		$this->attributes[$name] = $attribute;
+	}
+	
+	/**
+	 * Checks whether this renderer has anything to display. True if it is empty
+	 * of false if it has contents.
+	 * 
+	 * @return boolean
+	 */
+	function is_empty() {
+		return empty( $this->children ) && empty( $this->attributes ) && empty( $this->stats );
 	}
 }

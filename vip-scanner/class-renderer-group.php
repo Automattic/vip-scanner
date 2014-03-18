@@ -20,6 +20,10 @@ class RendererGroup extends AnalyzerRenderer {
 			$header_classes = array_merge( $header_classes, $args['body_classes'] );
 		}
 
+		if ( $this->is_empty() ) {
+			$header_classes[] = 'renderer-group-empty';
+		}
+
 		$output .= '<h3 class="' . esc_attr( implode( ' ', $header_classes ) ) . '">' . $this->process_header_args( $this->display_header(), $args ) . '</h3>';
 
 		$body_classes = array( 'renderer-group-body' );
