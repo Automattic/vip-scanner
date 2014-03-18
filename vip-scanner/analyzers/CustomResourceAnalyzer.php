@@ -73,6 +73,10 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 		$file_metas = $this->scanner->renderers['files']->get_children();
 		
 		foreach ( $files as $file ) {
+			if ( $file->get_filetype() !== 'php' ) {
+				continue;
+			}
+			
 			$filepath = $file->get_filepath();
 			if ( !array_key_exists( $filepath, $file_metas ) ) {
 				// This is not a file we can handle

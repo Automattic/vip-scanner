@@ -125,6 +125,10 @@ class BaseScanner {
 			foreach ( $this->files['php'] as $filepath => $filecontents ) {
 				$analyzed_files[] = new AnalyzedPHPFile( $filepath, $filecontents );
 			}
+			
+			foreach ( $this->files['css'] as $filepath => $filecontents ) {
+				$analyzed_files[] = new AnalyzedCSSFile( $filepath, $filecontents );
+			}
 		}
 		
 		foreach( $this->$type as $check => $check_file ) {

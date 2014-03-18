@@ -27,6 +27,10 @@ class PHPAnalyzer extends BaseAnalyzer {
 		$total_lines = 0;
 		
 		foreach ( $files as $file ) {
+			if ( $file->get_filetype() !== 'php' ) {
+				continue;
+			}
+			
 			$file_meta = new FileRenderer( $file );
 			$this->add_renderers( $file, $file_meta );
 			$this->renderers['files']->add_child( $file_meta );
