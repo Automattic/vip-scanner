@@ -158,6 +158,7 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 		$child_renderer = new ResourceRenderer( $match[0] );
 		$child_renderer->set_resource_type( $resource['singular'], $resource['plural'] );
 		$child_renderer->add_attribute( 'line', $file->compute_line_number( $contents, $match[1], $line_offset ) );
+		$child_renderer->add_attribute( 'file', $file->get_filename() );
 		return $child_renderer;
 	}
 }

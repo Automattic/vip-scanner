@@ -61,6 +61,7 @@ class PHPAnalyzer extends BaseAnalyzer {
 					
 					if ( array_key_exists( $level, $this->hierarchy_metas ) ) {
 						$child_meta = new $this->hierarchy_metas[$level]( $child_path );
+						$child_meta->add_attribute( 'file', $file->get_filename() );
 
 						foreach ( $child_element as $prop_name => $prop_value ) {
 							$child_meta->add_attribute( $prop_name, $prop_value );
