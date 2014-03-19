@@ -57,13 +57,13 @@ class VIP_Scanner {
 		);
 	}
 
-	function run_theme_review( $theme, $review_type ) {
+	function run_theme_review( $theme, $review_type, $scanners = array( 'checks', 'analyzers' ) ) {
 		$review = $this->get_review( $review_type );
 		if ( ! $review )
 			return false;
 
 		$scanner = new ThemeScanner( $theme, $review );
-		$scanner->scan();
+		$scanner->scan( $scanners );
 		return $scanner;
 	}
 }
