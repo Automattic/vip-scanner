@@ -26,7 +26,7 @@ class VIPScanner_Command extends WP_CLI_Command {
 
 		$args = wp_parse_args( $assoc_args, $defaults );
 
-		$scanner = VIP_Scanner::get_instance()->run_theme_review( $args['theme'], $args['scan_type'] );
+		$scanner = VIP_Scanner::get_instance()->run_theme_review( $args['theme'], $args['scan_type'], array( 'checks' ) );
 
 		if ( ! $scanner )
 			WP_CLI::error( sprintf( 'Scanning of %s failed', $args['theme'] ) );
