@@ -104,4 +104,53 @@ class VIPScanner_Command extends WP_CLI_Command {
 			WP_CLI\Utils\format_items( $args['format'], $data, array( 'level', 'description', 'lines', 'file' ) );
 		}
 	}
+
+	/**
+	 * Runs the analyzers for the given review on the theme.
+	 * 
+	 * You can change the <depth> parameter to indicate how many levels of hierarchy
+	 * you would like outputted. 0 outputs everything.
+	 * 
+	 * @subcommand analyze-theme
+	 * @synopsis --theme=<theme-name> --scan_type=<scan-type> [--depth=<depth>]
+	 */
+	public function analyze_theme( $args, $assoc_args ) {
+		$defaults = array(
+			'theme'		=> null,
+			'scan_type' => 'WP.org Theme Review',
+			'depth'		=> 1,
+		);
+
+		$args = wp_parse_args( $assoc_args, $defaults );
+
+		$scanner = VIP_Scanner::get_instance()->run_theme_review( $args['theme'], $args['scan_type'], array( 'analyzers' ) );
+
+		if ( ! $scanner ) {
+			WP_CLI::error( sprintf( 'Scanning of %s failed', $args['theme'] ) );
+		}
+
+		$empty = array();
+		$display_args = array(
+			'bare'  => true,
+			'depth' => $args['depth'],
+		);
+
+		foreach ( $scanner->renderers as $renderer ) {
+			// Display empty renderers after the others
+			if ( $renderer->is_empty() ) {
+				$empty[] = $renderer;
+				continue;
+			}
+
+			if ( $renderer->name() !== 'Files' ) {
+				$renderer->analyze_prefixes();
+			}
+
+			WP_CLI::line( $renderer->display( false, $display_args ) );
+		}
+
+		foreach ( $empty as $renderer ) {
+			$renderer->display( true, $display_args );
+		}
+	}
 }

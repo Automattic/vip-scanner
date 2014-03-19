@@ -13,51 +13,74 @@ class RendererGroup extends AnalyzerRenderer {
 	
 	function display( $echo = true, $args = array() ) {
 		$output = '';
+		$defaults = array(
+			'bare'  => false,
+			'level' => 0,
+			'depth' => 0,
+		);
 
-		// Output the header. Don't escape here because we expect the header to contain html.
-		$header_classes = array( 'renderer-group-header' );
-		if ( isset( $args['body_classes'] ) ) {
-			$header_classes = array_merge( $header_classes, $args['body_classes'] );
-		}
+		$args = wp_parse_args( $args, $defaults );
 
-		if ( $this->is_empty() ) {
-			$header_classes[] = 'renderer-group-empty';
-		}
-
-		$output .= '<h3 class="' . esc_attr( implode( ' ', $header_classes ) ) . '">' . $this->process_header_args( $this->display_header(), $args ) . '</h3>';
-
-		$body_classes = array( 'renderer-group-body' );
-		if ( isset( $args['body_classes'] ) ) {
-			$body_classes = array_merge( $body_classes, $args['body_classes'] );
-		}
+		$this->display_args = $args;
 
 		$use_prefixes = !is_null( $this->analyzed_prefixes );
 		if ( $use_prefixes ) {
 			$colours = $this->randColor( $this->num_prefixes );
 		}
 
-		$output .= '<div class="' . esc_attr( implode( ' ', $body_classes ) ) . '">';
-		$output .= '<div class="renderer-group-children">';
-		foreach ( $this->children as $child ) {
-			$args = array();
-
-			$name = $child->name();
-			if ( $use_prefixes && array_key_exists( $name, $this->analyzed_prefixes ) ) {
-				$args['highlight_substrs'] = array( array(
-					'str'   => $this->analyzed_prefixes[$name],
-					'color' => $colours[array_search( $this->analyzed_prefixes[$name], $this->prefixes )],
-				) );
+		// Output the header. Don't escape here because we expect the header to contain html.
+		$header_text = $this->process_header_args( $this->display_header( $args ), $args );
+		if ( ! $args['bare'] ) {
+			$header_classes = array( 'renderer-group-header' );
+			if ( isset( $args['body_classes'] ) ) {
+				$header_classes = array_merge( $header_classes, $args['body_classes'] );
 			}
 
-			$output .= $child->display( false, $args );
+			if ( $this->is_empty() ) {
+				$header_classes[] = 'renderer-group-empty';
+			}
+
+			$output .= '<h3 class="' . esc_attr( implode( ' ', $header_classes ) ) . '">' . $header_text . '</h3>';
+			
+			$body_classes = array( 'renderer-group-body' );
+			if ( isset( $args['body_classes'] ) ) {
+				$body_classes = array_merge( $body_classes, $args['body_classes'] );
+			}
+
+			$output .= '<div class="' . esc_attr( implode( ' ', $body_classes ) ) . '">';
+			$output .= '<div class="renderer-group-children">';
+		} else {
+			$output .= str_repeat( $this->spacing_char, $args['level'] ) . $header_text . "\n";
+			$args['level'] += 1;
 		}
-		$output .= '</div>';
+
+		if ( 0 === $args['depth'] || $args['level'] < $args['depth'] ) {
+			foreach ( $this->children as $child ) {
+				$name = $child->name();
+				if ( $use_prefixes && array_key_exists( $name, $this->analyzed_prefixes ) ) {
+					$args['highlight_substrs'] = array( array(
+						'str'   => $this->analyzed_prefixes[$name],
+						'color' => $colours[array_search( $this->analyzed_prefixes[$name], $this->prefixes )],
+					) );
+				}
+
+				$output .= $child->display( false, $args );
+			}
+		}
+
+		if ( ! $args['bare'] ) {
+			$output .= '</div>';
+		}
 		
 		$output .= $this->display_attributes( $args );
 		
 		$output .= $this->display_stats( $args );
 		
-		$output .= '</div>';
+		if ( ! $args['bare'] ) {
+			$output .= '</div>';
+		} else {
+			$output .= "\n";
+		}
 
 		if ( $echo ) {
 			echo $output;
@@ -68,8 +91,8 @@ class RendererGroup extends AnalyzerRenderer {
 
 	function display_header() {
 		return sprintf( 
-			'<strong class="renderer-class-name">%s</strong> (%s)',
-			esc_html( ucwords( $this->name() ) ),
+			'%s (%s)',
+			$this->stylize_text( esc_html( ucwords( $this->name() ) ), array( 'bold' => true, 'classes' => array( 'renderer-class-name' ) ) ),
 			empty( $this->children ) ? '0' : esc_html( $this->get_child_summary() )
 		);
 	}
@@ -143,17 +166,31 @@ class RendererGroup extends AnalyzerRenderer {
 	}
 
 	function randColor( $numColors ) {
-		$base = array( 200, 200, 200 );
-		$str = array();
+		if ( $this->display_args['bare'] ) {
+			$code = 0;
+			$keys = array_keys( $this->bash_color_codes );
+			$numColors = count( $keys );
+			$codes = array();
+			
+			for ( $i = 0; $i < $numColors; $i++ ) {
+				$codes[] = $keys[$code++ % $numColors];
+//				$code[] = $keys[1];
+			}
+			
+			return $codes;
+		} else {
+			$base = array( 200, 200, 200 );
+			$str = array();
 
-		for( $i = 0; $i < $numColors; $i++ ) {
-			$colour = array(
-				( $base[0] + rand( 0, 255 ) ) / 2,
-				( $base[1] + rand( 0, 255 ) ) / 2,
-				( $base[2] + rand( 0, 255 ) ) / 2,
-			);
+			for( $i = 0; $i < $numColors; $i++ ) {
+				$colour = array(
+					( $base[0] + rand( 0, 255 ) ) / 2,
+					( $base[1] + rand( 0, 255 ) ) / 2,
+					( $base[2] + rand( 0, 255 ) ) / 2,
+				);
 
-			$str[$i] = sprintf( 'rgb( %d, %d, %d )', $colour[0], $colour[1], $colour[2] );
+				$str[$i] = sprintf( 'rgb( %d, %d, %d )', $colour[0], $colour[1], $colour[2] );
+			}
 		}
 
 		return $str;

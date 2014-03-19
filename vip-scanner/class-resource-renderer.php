@@ -9,13 +9,18 @@ class ResourceRenderer extends AnalyzerRenderer {
 	
 	function display_header() {
 		$header_items = array();
-		
+
+		$name = esc_html( $this->name() );
+
 		$header_items[] = sprintf( 
-			'%1$s <strong class="renderer-resource-name renderer-resource-%1$s-name">%2$s</strong>',
-			esc_html( $this->singular ),
-			esc_html( $this->name() )
+			'%1$s %2$s',
+			$this->stylize_text( esc_html( $this->singular ), array( 
+				'bold' => true,
+				'classes' => array( 'renderer-resource-name', "renderer-resource-$name-name" ),
+			) ),
+			$name
 		);
-		
+
 		return implode( ' ', $header_items );
 	}
 }

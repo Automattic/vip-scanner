@@ -5,6 +5,6 @@ class NamespaceRenderer extends AnalyzerRenderer {
 	protected $plural = 'namespaces';
 	
 	function display_header() {
-		return 'namespace <strong class="renderer-namespace-name">' . esc_html( $this->name() ) . '</strong>';
+		return 'namespace ' . $this->stylize_text( esc_html( $this->name() ), array( 'bold' => true, 'classes' => array( 'renderer-namespace-name' ) ) );
 	}
 }
