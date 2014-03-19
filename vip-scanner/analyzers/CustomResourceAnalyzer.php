@@ -116,12 +116,21 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 				$regexes = array_merge( $regexes, $resource['regexes'] );
 			}
 			
+			$remove_chars = array(
+				'\'',
+				'"',
+				'.',
+				' ',
+				"\t",
+			);
+			
 			foreach ( $regexes as $regex ) {
 				foreach ( $file_functions as $function_path => $functions ) {
 					// Scan the functions in the file
 					foreach ( $functions as $function ) {
 						preg_match_all( $regex, $function['contents'], $matches, PREG_OFFSET_CAPTURE );
 						foreach ( $matches['name'] as $match ) {
+							$match = str_replace( $remove_chars, '', $match );
 							$child_renderer = $this->create_child_renderer_from_match( $match, $function['contents'], $resource, $file, $function['line'] );
 							$file_renderer->add_child( $child_renderer );
 							$this->renderers[$resource['plural']]->add_child( $child_renderer );
@@ -134,6 +143,7 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 						$matches = array();
 						preg_match_all( $regex, $phpcontent['contents'], $matches, PREG_OFFSET_CAPTURE );
 						foreach ( $matches['name'] as $match ) {
+							$match = str_replace( $remove_chars, '', $match );
 							$child_renderer = $this->create_child_renderer_from_match( $match, $phpcontent['contents'], $resource, $file, $phpcontent['line'] );
 							$file_renderer->add_child( $child_renderer );
 							$this->renderers[$resource['plural']]->add_child( $child_renderer );
