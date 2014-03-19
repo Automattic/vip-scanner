@@ -10,11 +10,11 @@ class PHPAnalyzer extends BaseAnalyzer {
 	
 	function __construct() {
 		$this->renderers = array(
-			'files'		 => new RendererGroup( __( 'Files', 'theme-review' ), __( 'File', 'theme-review' ) ),
-			'namespaces' => new RendererGroup( __( 'Namespaces', 'theme-review' ), __( 'Namespace', 'theme-review' ) ),
-			'classes'	 => new RendererGroup( __( 'Classes', 'theme-review' ), __( 'Class', 'theme-review' ) ),
-			'functions'  => new RendererGroup( __( 'Functions', 'theme-review' ), __( 'Function', 'theme-review' ) ),
-			'totals'     => new RendererGroup( __( 'Totals', 'theme-review' ), __( 'Total', 'theme-review' ) ),
+			'files'		 => new RendererGroup( __( 'Files', 'theme-check' ), __( 'File', 'theme-check' ) ),
+			'namespaces' => new RendererGroup( __( 'Namespaces', 'theme-check' ), __( 'Namespace', 'theme-check' ) ),
+			'classes'	 => new RendererGroup( __( 'Classes', 'theme-check' ), __( 'Class', 'theme-check' ) ),
+			'functions'  => new RendererGroup( __( 'Functions', 'theme-check' ), __( 'Function', 'theme-check' ) ),
+			'totals'     => new RendererGroup( __( 'Totals', 'theme-check' ), __( 'Total', 'theme-check' ) ),
 		);
 	}
 	
