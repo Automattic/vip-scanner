@@ -137,6 +137,7 @@ abstract class AnalyzerRenderer {
 	function display_stats( $args ) {
 		$output = '';
 		if ( !empty( $this->stats ) ) {
+			$skip_stats = $this->skip_stats();
 			if ( ! isset( $args['bare'] ) || ! $args['bare'] ) {
 				$classes = array( 'renderer-group-stats' );
 				if ( isset( $args['stats_classes'] ) ) {
@@ -145,13 +146,16 @@ abstract class AnalyzerRenderer {
 
 				$output .= '<div class="' . implode( ' ', $classes ) . '"><ul>';
 				foreach ( $this->stats as $slug => $stat ) {
-					$output .= sprintf( '<li><strong>%s</strong>: %s</li>', esc_html( $slug ), number_format( $stat ) );
+					if ( ! in_array( $slug, $skip_stats ) ) {
+						$output .= sprintf( '<li><strong>%s</strong>: %s</li>', esc_html( $slug ), number_format( $stat ) ); 
+					}
 				}
 				$output .= '</ul></div>';
 			} else {
-				$level = isset( $args['level'] ) ? (int) $args['level'] : 0;
 				foreach ( $this->stats as $slug => $stat ) {
-					$output .= sprintf( "%s> %s: %s\n", str_repeat( $this->spacing_char, $args['level'] ), $slug, number_format( $stat ) );
+					if ( ! in_array( $slug, $skip_stats ) ) {
+						$output .= sprintf( "%s> %s: %s\n", str_repeat( $this->spacing_char, $args['level'] ), $slug, number_format( $stat ) );
+					}
 				}
 			}
 		}
@@ -161,6 +165,7 @@ abstract class AnalyzerRenderer {
 	function display_attributes( $args ) {
 		$output = '';
 		if ( !empty( $this->attributes ) ) {
+			$skip_attributes = $this->skip_attributes();
 			if ( ! $args['bare'] ) {
 				$classes = array( 'renderer-group-attributes' );
 				if ( isset( $args['attributes_classes'] ) ) {
@@ -169,16 +174,15 @@ abstract class AnalyzerRenderer {
 
 				$output .= '<div class="' . implode( ' ', $classes ) . '"><ul>';
 				foreach ( $this->attributes as $slug => $attribute ) {
-					if ( 'contents' !== $slug ) {
+					if ( ! in_array( $slug, $skip_attributes ) && ! empty( $attribute ) ) {
 						$output .= sprintf( '<li><strong>%s</strong>: %s</li>', esc_html( $slug ), esc_html( $attribute ) );
 					}
 				}
 				$output .= '</ul></div>';
 			} else {
-				$level = isset( $args['level'] ) ? (int) $args['level'] : 0;
 				foreach ( $this->attributes as $slug => $attribute ) {
-					if ( 'contents' !== $slug ) {
-						$output .= sprintf( "%s> %s: %s\n", str_repeat( $this->spacing_char, $args['level'] ), $slug, number_format( $attribute ) );
+					if ( ! in_array( $slug, $skip_attributes ) && ! empty( $attribute ) ) {
+						$output .= sprintf( "%s> %s: %s\n", str_repeat( $this->spacing_char, $args['level'] ), $slug, $attribute );
 					}
 				}
 			}
@@ -383,5 +387,21 @@ abstract class AnalyzerRenderer {
 	 */
 	function is_empty() {
 		return empty( $this->children ) && empty( $this->attributes ) && empty( $this->stats );
+	}
+	
+	/**
+	 * Returns an array of attribute names that should not be displayed in the ui.
+	 * @return array
+	 */
+	protected function skip_attributes() {
+		return array( 'contents', 'name' );
+	}
+	
+	/**
+	 * Returns an array of attribute names that should not be displayed in the ui.
+	 * @return array
+	 */
+	protected function skip_stats() {
+		return array();
 	}
 }

@@ -45,4 +45,8 @@ class FileRenderer extends AnalyzerRenderer {
 	function get_file() {
 		return $this->file;
 	}
+	
+	protected function skip_stats() {
+		return array_merge( array( 'line_count' ), parent::skip_stats() );
+	}
 }
