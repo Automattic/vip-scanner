@@ -97,6 +97,13 @@ class RendererGroup extends AnalyzerRenderer {
 		);
 	}
 
+	/**
+	 * Analyzes the groups childrens' names for prefixes. Attempts to find the 
+	 * longest/most common prefix within the children.
+	 * 
+	 * The output of this function is placed in the class members $analyzed_prefixes,
+	 * $prefixes, and $num_prefixes.
+	 */
 	function analyze_prefixes() {
 		$similar = array();
 
@@ -150,6 +157,13 @@ class RendererGroup extends AnalyzerRenderer {
 		}
 	}
 
+	/**
+	 * Searches two strings for a common prefix. Returns the longest string of matching
+	 * characters from the start of the string.
+	 * @param string $str1
+	 * @param string $str2
+	 * @return string
+	 */
 	function get_common_prefix( $str1, $str2 ) {
 		$common = array();
 		$str2len = strlen( $str2 );
@@ -165,6 +179,11 @@ class RendererGroup extends AnalyzerRenderer {
 		return implode( '', $common );
 	}
 
+	/**
+	 * Generates $numColors random colours. Used to highlight prefixes.
+	 * @param int $numColors
+	 * @return array
+	 */
 	function randColor( $numColors ) {
 		if ( $this->display_args['bare'] ) {
 			$code = 0;

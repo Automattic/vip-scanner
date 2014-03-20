@@ -134,6 +134,11 @@ abstract class AnalyzerRenderer {
 		}
 	}
 	
+	/**
+	 * Gets the HTML for displaying this renderers' stats.
+	 * @param array $args
+	 * @return string
+	 */
 	function display_stats( $args ) {
 		$output = '';
 		if ( !empty( $this->stats ) ) {
@@ -162,6 +167,11 @@ abstract class AnalyzerRenderer {
 		return $output;
 	}
 	
+	/**
+	 * Gets the HTML for displaying this renderers' attributes.
+	 * @param array $args
+	 * @return string
+	 */
 	function display_attributes( $args ) {
 		$output = '';
 		if ( !empty( $this->attributes ) ) {
@@ -190,6 +200,14 @@ abstract class AnalyzerRenderer {
 		return $output;
 	}
 	
+	/**
+	 * Transforms the $header text as specified by the $args.
+	 * 
+	 * Setting `highlight_substrs` is used to highlight parts of a string with a colour.
+	 * 
+	 * @param array $args
+	 * @return string
+	 */
 	function process_header_args( $header, $args ) {
 		if ( isset( $args['highlight_substrs'] ) ) {
 			foreach ( $args['highlight_substrs'] as $highlight_arg ) {
@@ -214,6 +232,14 @@ abstract class AnalyzerRenderer {
 		return $this->name();
 	}
 	
+	/**
+	 * Applies styling to text depending on which output system is being used. If
+	 * we're rendering a web UI it will return text with HTML. If we are outputting
+	 * to the shell then it will return bash text modififers.
+	 * @param string $text
+	 * @param array $opts
+	 * @return string
+	 */
 	function stylize_text( $text, $opts ) {
 		if ( $this->display_args['bare'] ) {
 			$f_str = '';
