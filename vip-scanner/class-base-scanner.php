@@ -136,6 +136,12 @@ class BaseScanner {
 				$check = $check_file;
 				$check_file = '';
 			}
+
+			if ( apply_filters( "vip-scanner-skip-$check", false ) ) {
+				$this->add_error( 'skipped-check', sprintf( __( 'The "%s" check was skipped.', 'vip-scanner' ), $check ), BaseScanner::LEVEL_WARNING );
+				continue;
+			}
+
 			$check_exists = $this->load_check( $check, $check_file, $type );
 
 			if ( ! $check_exists ) {
