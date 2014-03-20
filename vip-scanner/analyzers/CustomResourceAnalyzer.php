@@ -1,6 +1,14 @@
 <?php
 
 class CustomResourceAnalyzer extends BaseAnalyzer {
+	protected $remove_chars = array(
+		'\'',
+		'"',
+		'.',
+		' ',
+		"\t",
+	);
+
 	protected $resource_types = array(
 		array(
 			'func_name' => 'apply_filters',
@@ -116,35 +124,17 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 				$regexes = array_merge( $regexes, $resource['regexes'] );
 			}
 			
-			$remove_chars = array(
-				'\'',
-				'"',
-				'.',
-				' ',
-				"\t",
-			);
-			
 			foreach ( $regexes as $regex ) {
-				foreach ( $file_functions as $function_path => $functions ) {
+				foreach ( $file_functions as $functions ) {
 					// Scan the functions in the file
-					foreach ( $functions as $function ) {
-						preg_match_all( $regex, $function['contents'], $matches, PREG_OFFSET_CAPTURE );
-						foreach ( $matches['name'] as $match ) {
-							$match = str_replace( $remove_chars, '', $match );
-							$child_renderer = $this->create_child_renderer_from_match( $match, $function['contents'], $resource, $file, $function['line'] );
-							$file_renderer->add_child( $child_renderer );
-							$this->renderers[$resource['plural']]->add_child( $child_renderer );
-						}
-					}
-
-					// Scan the file contents after processing to catch global resource calls
 					$phpelements = $file->get_code_elements( 'php' );
-					foreach( $phpelements[''] as $phpcontent ) {
-						$matches = array();
-						preg_match_all( $regex, $phpcontent['contents'], $matches, PREG_OFFSET_CAPTURE );
+					$code_blocks_to_scan = array_merge( $functions, $phpelements[''] );
+
+					foreach ( $code_blocks_to_scan as $code_block ) {
+						preg_match_all( $regex, $code_block['contents'], $matches, PREG_OFFSET_CAPTURE );
 						foreach ( $matches['name'] as $match ) {
-							$match = str_replace( $remove_chars, '', $match );
-							$child_renderer = $this->create_child_renderer_from_match( $match, $phpcontent['contents'], $resource, $file, $phpcontent['line'] );
+							$match = str_replace( $this->remove_chars, '', $match );
+							$child_renderer = $this->create_child_renderer_from_match( $match, $code_block['contents'], $resource, $file, $code_block['line'] );
 							$file_renderer->add_child( $child_renderer );
 							$this->renderers[$resource['plural']]->add_child( $child_renderer );
 						}
