@@ -37,6 +37,7 @@ VIP_Scanner::get_instance()->register_review( 'WP.org Theme Review', array(
 	'TimeDateCheck',
 	'TimThumbCheck',
 	'WormCheck',
+	'VCMergeConflictCheck',
 ), array(
 	'PHPAnalyzer',
 	'CustomResourceAnalyzer',
@@ -53,6 +54,7 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 	'TheamPubFileCheck',
 	'TheamPubIndividualFiles',
 	'ThemecolorsCheck',
+	'VCMergeConflictCheck',
 	'WordPressCodingStandardsCheck',
 ), array(
 	'PHPAnalyzer',
@@ -66,6 +68,7 @@ VIP_Scanner::get_instance()->register_review( 'VIP Theme Review', array(
 	'VIPRestrictedCommandsCheck',
 	'VIPInitCheck',
 	'PHPShortTagsCheck',
+	'VCMergeConflictCheck',
 	'WordPressCodingStandardsCheck',
 	'ClamAVCheck', // Pass null to lookup the check normally
 ), array(
