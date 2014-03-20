@@ -14,18 +14,18 @@ class AnalyzedPHPFile extends AnalyzedFile {
 	
 	protected $comments_regex = <<<EOT
 		(\/\*(?:(?!\*\/)[\s\S])*\*\/)			# match a multiline comment
-			|
-		(\/\/(?:(?!\n|\r)[\s\S])*)				# match a single line comment
 EOT
 		;
+
+	protected $single_comment_regex = <<<EOT
+		(\/\/.*$)			# match a single line comment
+EOT;
 	
-	protected $strings_regex = <<<EOT
+	protected $heredox_regex = <<<EOT
 		<<<(?<herestart>\S+)((?!\1)[\s\S])*\3;	# match a heredoc
-			|
-		(([\'"])((?!\6)[\s\S])*\6)				# match a string
 EOT
 		;
-	
+
 	protected $strip_inline_php_regex = '\?>((?!<\?php)[\s\S])*<\?php';
 	
 	protected $hierarchy_regexes = array(
@@ -132,8 +132,9 @@ EOT
 
 	protected function get_strings_and_comments_regexes() {
 		return array(
+			$this->single_comment_regex,
 			$this->comments_regex,
-			$this->strings_regex,
+			$this->heredox_regex,
 			$this->strip_inline_php_regex,
 		);
 	}

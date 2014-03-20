@@ -221,7 +221,7 @@ abstract class AnalyzedFile {
 		$regexes = $this->get_strings_and_comments_regexes();
 		
 		foreach ( $regexes as $regex ) {
-			preg_match_all( "/{$regex}/ix", $contents, $matches );
+			preg_match_all( "/{$regex}/imx", $contents, $matches );
 
 			foreach ( $matches[0] as $match ) {
 				$this->replace_match_with_whitespace( $contents, $match );
