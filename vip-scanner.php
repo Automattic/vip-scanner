@@ -86,6 +86,9 @@ class VIP_Scanner_UI {
 
 		wp_enqueue_style( 'vip-scanner-css', plugins_url( 'css/vip-scanner.css', __FILE__ ), array(), '20120320' );
 		wp_enqueue_script( 'vip-scanner-js', plugins_url( 'js/vip-scanner.js', __FILE__ ), array('jquery'), '20120320' );
+		wp_enqueue_script( 'jquery-ui-accordion');
+		wp_enqueue_script( 'jquery-ui-core' );
+		wp_enqueue_style('vip-scanner-admin-ui-css', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css');
 	}
 
 	function display_admin_page() {
@@ -207,6 +210,7 @@ class VIP_Scanner_UI {
 		<h2 class="nav-tab-wrapper">
 			<a href="#errors" class="nav-tab"><?php echo absint( $errors ); ?> <?php _e( 'Errors', 'theme-check' ); ?></a>
 			<a href="#notes" class="nav-tab"><?php echo absint( $notes ); ?> <?php _e( 'Notes', 'theme-check' ); ?></a>
+			<a href="#analysis" class="nav-tab"><?php _e( 'Analysis', 'theme-check' ); ?></a>
 		</h2>
 
 		<div id="errors">
@@ -236,14 +240,40 @@ class VIP_Scanner_UI {
 					continue;
 				?>
 				<h3><?php echo esc_html( $title ); ?></h3>
-				<ol class="scan-results-list">
+				<ul class="analysis-results-list">
 					<?php
 					foreach( $errors as $result ) {
 						$this->display_theme_review_result_row( $result, $scanner, $theme );
 					}
 					?>
-				</ol>
+				</ul>
 			<?php endforeach; ?>
+		</div>
+			
+		<div id="analysis">
+			<div id="analysis-accordion">
+				<?php 
+				$empty = array();
+				foreach ( $scanner->renderers as $renderer ) {
+					if ( $renderer->name() !== 'Files' ) {
+						$renderer->analyze_prefixes();
+					}
+					
+					// Display empty renderers after the others
+					if ( $renderer->is_empty() ) {
+						$empty[] = $renderer;
+						continue;
+					}
+
+					$renderer->display();
+				}
+				
+				foreach ( $empty as $renderer ) {
+					$renderer->display();
+				}
+				
+				?>
+			</div>
 		</div>
 		<?php
 	}
