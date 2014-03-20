@@ -54,6 +54,10 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 	'TheamPubIndividualFiles',
 	'ThemecolorsCheck',
 	'WordPressCodingStandardsCheck',
+), array(
+	'PHPAnalyzer',
+	'CustomResourceAnalyzer',
+	'ThemeAnalyzer',
 ) );
 
 VIP_Scanner::get_instance()->register_review( 'VIP Theme Review', array(
@@ -64,4 +68,8 @@ VIP_Scanner::get_instance()->register_review( 'VIP Theme Review', array(
 	'PHPShortTagsCheck',
 	'WordPressCodingStandardsCheck',
 	'ClamAVCheck', // Pass null to lookup the check normally
+), array(
+	'PHPAnalyzer',
+	'CustomResourceAnalyzer',
+	'ThemeAnalyzer',
 ) );
