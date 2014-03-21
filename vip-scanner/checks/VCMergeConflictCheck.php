@@ -2,7 +2,15 @@
 
 class VCMergeConflictCheck extends BaseCheck {
 	protected $checks = array(
+		// Check for the signs of a merge conflict IE:
+		// <<<<<< YOUR_SIDE
+		// /*some stuff*/
+		// ======
+		// /*some other stuff*/
+		// >>>>>> THEIR_SIDE
 		'merge-conflict' => '/(<{4,}\W+(?<your_side>\w+)[\s\S]*>{4,}\W+(?<their_side>\w+))/im',
+
+		// Matches the filename of a conflict file created by SVN. Eg: test.php.mine, test.php.r10, test.php.r100
 		'conflict_file'  => '/mine|r[0-9]+/im'
 	);
 
