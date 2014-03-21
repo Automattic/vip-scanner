@@ -2,7 +2,7 @@
 
 A WordPress plugin that enables you to scan all sorts of themes and files and things.
 
-Contributors: [Mohammad Jangda](http://profiles.wordpress.org/batmoo/), [Automattic](http://profiles.wordpress.org/automattic/), [Thorsten Ott](http://profiles.wordpress.org/tott/), [Michael Fields](http://profiles.wordpress.org/mfields/), [Filipe Varela](http://profiles.wordpress.org/keoshi/), [Josh Betz](http://profiles.wordpress.org/betzster/), and [Nick Daugherty](http://profiles.wordpress.org/nickdaugherty/)
+Contributors: [Mohammad Jangda](http://profiles.wordpress.org/batmoo/), [Automattic](http://profiles.wordpress.org/automattic/), [Thorsten Ott](http://profiles.wordpress.org/tott/), [Michael Fields](http://profiles.wordpress.org/mfields/), [Filipe Varela](http://profiles.wordpress.org/keoshi/), [Josh Betz](http://profiles.wordpress.org/betzster/), [Mike Blouin](https://github.com/Mobius5150), and [Nick Daugherty](http://profiles.wordpress.org/nickdaugherty/)
 
 Requires WordPress version 3.4 or greater.
 
@@ -29,6 +29,15 @@ Install using the Plugin Installer.
 
 Changelog
 ---------
+
+__0.6__
+
+* Analysis tab for analysing functions, classes, namespaces, shortcodes, actions, filters, capabilities, roles, CPTs, taxonomies, scripts, and styles.
+* WP CLI command for analysis: `wp vip-scanner analyze-theme`
+* New checks, including VCMergeConflictCheck, WordPressCodingStandardsCheck
+* [PHP Code Sniffer](http://pear.php.net/package/PHP_CodeSniffer/) integration using the [WordPress Coding Standards](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards)
+* Check improvements: VIPRestrictedCommandsCheck, VIPRestrictedPatternsCheck, PHPShortTagsCheck
+* Added unit testing for some tests
 
 __0.5__
 
