@@ -410,26 +410,26 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 
 		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
 			foreach ( $checks as $check => $check_info ) {
-				$pattern = "/\s+($check)+\s?\(+/msiU";
-
 				$this->increment_check_count();
 
-				if ( preg_match( $pattern, $file_content, $matches ) ) {
-					$filename = $this->get_filename( $file_path );
-
-					$error = rtrim( $matches[0], '(' );//esc_html( rtrim( $matches[0],'(') );
+				if ( strpos( $file_content, $check ) !== false ) {
+					$pattern = "/\s+($check)+\s?\(+/msiU";
 					
-					$lines = $this->grep_content( rtrim( $matches[0], '(' ), $file_content );
-					
-					$this->add_error(
-						$check,
-						$check_info['note'],
-						$check_info['level'],
-						$filename,
-						$lines
-					);
+					if ( preg_match( $pattern, $file_content, $matches ) ) {
+						$filename = $this->get_filename( $file_path );
 
-					$result = false;
+						$lines = $this->grep_content( rtrim( $matches[0], '(' ), $file_content );
+
+						$this->add_error(
+							$check,
+							$check_info['note'],
+							$check_info['level'],
+							$filename,
+							$lines
+						);
+
+						$result = false;
+					}
 				}
 			}
 		}
