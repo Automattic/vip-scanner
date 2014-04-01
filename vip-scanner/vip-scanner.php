@@ -28,6 +28,11 @@ require_once( VIP_SCANNER_DIR . '/class-class-renderer.php' );
 require_once( VIP_SCANNER_DIR . '/class-function-renderer.php' );
 require_once( VIP_SCANNER_DIR . '/class-base-analyzer.php' );
 
+if ( is_admin() ) {
+	require_once( VIP_SCANNER_DIR . '/class-async-directory-scanner.php' );
+	require_once( VIP_SCANNER_DIR . '/vip-scanner-async.php' );
+}
+
 class VIP_Scanner {
 	private static $instance;
 	var $reviews = array();
