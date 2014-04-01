@@ -213,7 +213,7 @@ abstract class BaseCheck
 	public function get_path() {
 		$scanner = $this->get_scanner();
 
-		if ( ! $scanner instanceof ThemeScanner )
+		if ( !is_subclass_of( $scanner, 'DirectoryScanner' ) )
 			return null;
 
 		return $scanner->get_path();
