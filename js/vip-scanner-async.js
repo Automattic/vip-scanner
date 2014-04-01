@@ -34,17 +34,21 @@ function vip_scanner() {
 
 			var response = results.responseJSON;
 			var issue_count = 0;
+			var classes = [];
 
 			for ( var issue_type in response.data.issues ) {
 				var issue_type_count = Object.keys( response.data.issues[issue_type] ).length;
 				var issue_type_text = vip_scanner_i18n.levels[issue_type].none;
 
 				issue_count += issue_type_count;
+				if ( issue_type_count ) {
+					classes += ' vip-scanner-has-' + issue_type;
 
-				if ( 1 === issue_type_count ) {
-					issue_type_text = vip_scanner_i18n.levels[issue_type].single;
-				} else if ( 1 < issue_type_count ) {
-					issue_type_text = vip_scanner_i18n.levels[issue_type].multiple.replace( '{issue_count}', issue_type_count );
+					if ( 1 === issue_type_count ) {
+						issue_type_text = vip_scanner_i18n.levels[issue_type].single;
+					} else {
+						issue_type_text = vip_scanner_i18n.levels[issue_type].multiple.replace( '{issue_count}', issue_type_count );
+					}
 				}
 
 				$( '#wp-admin-bar-vip-scanner-' + issue_type ).children().html( issue_type_text );
@@ -54,12 +58,14 @@ function vip_scanner() {
 			if ( 0 === issue_count ) {
 				issue_text = vip_scanner_i18n.no_issues;
 			} else if ( 1 === issue_count ) {
+				classes += 'vip-scanner-has-issues';
 				issue_text = vip_scanner_i18n.single_issue;
 			} else {
+				classes += 'vip-scanner-has-issues';
 				issue_text = vip_scanner_i18n.multiple_issues.replace( '{issue_count}', issue_count );
 			}
 
-			$( '#wp-admin-bar-vip-scanner a' ).html( issue_text );
+			$( '#wp-admin-bar-vip-scanner a' ).html( issue_text ).addClass( classes );
 
 			$( '#wp-admin-bar-vip-scanner-theme' ).children().html( vip_scanner_i18n.theme_header.replace( '{theme_name}',  response.data.theme ) );
 			$( '#wp-admin-bar-vip-scanner-review' ).children().html( vip_scanner_i18n.review_header.replace( '{review_name}',  response.data.review ) );

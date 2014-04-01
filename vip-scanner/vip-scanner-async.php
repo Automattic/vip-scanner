@@ -87,6 +87,8 @@ class VIP_Scanner_Async {
 		wp_localize_script( 'vip_scanner_async_js', 'vip_scanner_settings', array(
 			'default_async_scan_interval' => $this->default_async_scan_interval,
 		) );
+
+		wp_enqueue_style( 'vip_scanner_async_css', plugins_url( '../css/vip-scanner-async.css' , __FILE__ ) );
 	}
 
 	function add_admin_bar_node() {
