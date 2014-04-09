@@ -124,3 +124,8 @@
 .scan-info .theme-name {
 	font-weight: 600;
 }
+
+/* Analyzer */
+#analysis ul ul {
+	margin-left: 30px;
+}

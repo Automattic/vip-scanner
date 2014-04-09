@@ -185,19 +185,42 @@ abstract class AnalyzerRenderer {
 				$output .= '<div class="' . implode( ' ', $classes ) . '"><ul>';
 				foreach ( $this->attributes as $slug => $attribute ) {
 					if ( ! in_array( $slug, $skip_attributes ) && ! empty( $attribute ) ) {
-						$output .= sprintf( '<li><strong>%s</strong>: %s</li>', esc_html( $slug ), esc_html( $attribute ) );
+						$output .= $this->display_html_attribute( $slug, $attribute, $args );
 					}
 				}
 				$output .= '</ul></div>';
 			} else {
 				foreach ( $this->attributes as $slug => $attribute ) {
 					if ( ! in_array( $slug, $skip_attributes ) && ! empty( $attribute ) ) {
-						$output .= sprintf( "%s> %s: %s\n", str_repeat( $this->spacing_char, $args['level'] ), $slug, $attribute );
+						if ( is_string( $attribute ) ) {
+							$output .= sprintf( "%s> %s: %s\n", str_repeat( $this->spacing_char, $args['level'] ), $slug, $attribute );
+						} elseif ( is_numeric( $attribute ) ) {
+							$output .= sprintf( "%s> %s: %s\n", str_repeat( $this->spacing_char, $args['level'] ), $slug, number_format( $attribute ) );
+						} elseif ( is_array( $attribute ) ) {
+							$output .= sprintf( "%s> %s: %s\n", str_repeat( $this->spacing_char, $args['level'] ), $slug, implode( ', ', $attribute ) );
+						}
 					}
 				}
 			}
 		}
 		return $output;
+	}
+
+	function display_html_attribute( $slug, $attribute, $args ) {
+		$fstring = '<li><strong>%s</strong>: %s</li>';
+		if ( is_string( $attribute ) ) {
+			return sprintf( $fstring, esc_html( $slug ), esc_html( $attribute ) );
+		} elseif ( is_numeric( $attribute ) ) {
+			return sprintf( $fstring, esc_html( $slug ), number_format( $attribute ) );
+		} elseif ( is_bool( $attribute ) ) {
+			return sprintf( $fstring, esc_html( $slug ), $attribute ? __( 'true', 'vip-scanner' ) : __( 'false', 'vip-scanner' ) );
+		} elseif ( is_array( $attribute ) ) {
+			$output = '';
+			foreach ( $attribute as $key => $value ) {
+				$output .= $this->display_html_attribute( $key, $value, $args );
+			}
+			return sprintf( $fstring, esc_html( $slug ), "<ul>$output</ul>" );
+		}
 	}
 	
 	/**
@@ -420,7 +443,7 @@ abstract class AnalyzerRenderer {
 	 * @return array
 	 */
 	protected function skip_attributes() {
-		return array( 'contents', 'name' );
+		return array( 'contents', 'name', 'children' );
 	}
 	
 	/**
