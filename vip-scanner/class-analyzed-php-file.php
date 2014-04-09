@@ -115,7 +115,7 @@ EOT
 	 */
 	protected function analyze_file() {
 		// Load the contents of the file
-		if ( is_null( $this->filecontents ) || ! $this->filecontents ) {
+		/*if ( is_null( $this->filecontents ) || ! $this->filecontents ) {
 			$this->filecontents = file_get_contents( $this->filepath );
 		}
 		
@@ -127,7 +127,7 @@ EOT
 		$stripped = $this->strip_strings_and_comments( $this->filecontents );
 		
 		// Do the php check hierarchy
-		$this->processed_file_contents = $this->do_check_hierarchy( '', $this->check_hierarchy, $stripped, 0 );
+		$this->processed_file_contents = $this->do_check_hierarchy( '', $this->check_hierarchy, $stripped, 0 );*/
 	}
 
 	protected function get_strings_and_comments_regexes() {

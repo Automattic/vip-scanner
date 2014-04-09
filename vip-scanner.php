@@ -210,7 +210,7 @@ class VIP_Scanner_UI {
 		<h2 class="nav-tab-wrapper">
 			<a href="#errors" class="nav-tab"><?php echo absint( $errors ); ?> <?php _e( 'Errors', 'theme-check' ); ?></a>
 			<a href="#notes" class="nav-tab"><?php echo absint( $notes ); ?> <?php _e( 'Notes', 'theme-check' ); ?></a>
-			<a href="#analysis" class="nav-tab"><?php _e( 'Analysis', 'theme-check' ); ?></a>
+			<?php /* <a href="#analysis" class="nav-tab"><?php _e( 'Analysis', 'theme-check' ); ?></a>*/ ?>
 		</h2>
 
 		<div id="errors">
@@ -250,7 +250,7 @@ class VIP_Scanner_UI {
 			<?php endforeach; ?>
 		</div>
 			
-		<div id="analysis">
+		<?php /*<div id="analysis">
 			<div id="analysis-accordion">
 				<?php 
 				$empty = array();
@@ -274,7 +274,7 @@ class VIP_Scanner_UI {
 				
 				?>
 			</div>
-		</div>
+		</div>*/ ?>
 		<?php
 	}
 
