@@ -88,7 +88,7 @@ class TokenParser {
 
 				// Remove this block from the path (leaving the last curly brace)
 				$closes = false;
-				while ( '{' !== end( $blocks['path'] ) ) {
+				while ( count( $blocks['path'] ) && '{' !== end( $blocks['path'] ) ) {
 					$c = array_pop( $blocks['path'] );
 					--$blocks[$c];
 
