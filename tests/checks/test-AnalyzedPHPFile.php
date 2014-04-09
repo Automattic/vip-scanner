@@ -513,6 +513,46 @@ EOT
 	}
 
 	/**
+	 * Tests that the contents of braceless closures are properly parsed.
+	 *
+	 * Also tests that the paths to elements are proper
+	 */
+	public function test_braceless_closures() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+if ( $somevars ):
+	function somefunc() {
+		while ( true ):
+			do_action( 'some_action' );
+		endwhile;
+	}
+
+	foreach ( $somevars as $somevar ):
+		apply_filters( 'some_filter', $somevar );
+	endforeach;
+endif;
+EOT
+		);
+
+		$variables		= $analyzed_file->get_code_elements( 'variables' );
+		$functions		= $analyzed_file->get_code_elements( 'functions' );
+		$function_calls = $analyzed_file->get_code_elements( 'function_calls' );
+
+		// Assert expected variables
+		$this->assertEqualSets( array( '' ), array_keys( $variables ) );
+		$this->assertEqualSets( array( 'somevars', 'somevar' ), array_keys( $variables[''] ) );
+
+		// Assert expected function calls
+		$this->assertEqualSets( array( '', 'somefunc' ), array_keys( $function_calls ) );
+		$this->assertEqualSets( array( 'apply_filters' ), array_keys( $function_calls[''] ) );
+		$this->assertEqualSets( array( 'do_action' ), array_keys( $function_calls['somefunc'] ) );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( '' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'somefunc' ), array_keys( $functions[''] ) );
+	}
+
+	/**
 	 * Tests the parsing of a realistic code sample. This sample should eventually
 	 * be expanded to test more combinations of properties.
 	 */
