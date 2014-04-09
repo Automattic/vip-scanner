@@ -21,11 +21,19 @@ class FunctionRenderer extends AnalyzerRenderer {
 		}
 
 		$args = $this->get_attribute( 'args' );
-		$header_items[] = sprintf( 
-			'function %s%s',
-			$this->stylize_text( esc_html( $this->name() ), array( 'bold' => true, 'classes' => array( 'renderer-function-name' ) ) ),
-			$args === ';' ? ';' : '(' . esc_html( $args ) . ')'
-		);
+		if ( is_array( $args ) ) {
+			$header_items[] = sprintf(
+				'function %s%s',
+				$this->stylize_text( esc_html( $this->name() ), array( 'bold' => true, 'classes' => array( 'renderer-function-name' ) ) ),
+				$args === ';' ? ';' : '(' . esc_html( implode( ', ', $args ) ) . ')'
+			);
+		} else {
+			$header_items[] = sprintf(
+				'function %s%s',
+				$this->stylize_text( esc_html( $this->name() ), array( 'bold' => true, 'classes' => array( 'renderer-function-name' ) ) ),
+				$args === ';' ? ';' : '(' . esc_html( $args ) . ')'
+			);
+		}
 
 		return implode( ' ', $header_items );
 	}

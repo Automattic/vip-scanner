@@ -7,7 +7,26 @@ class PHPAnalyzer extends BaseAnalyzer {
 		'classes'    => 'ClassRenderer',
 		'functions'  => 'FunctionRenderer',
 	);
-	
+
+	protected $check_hierarchy = array(
+		'php' => array(
+			'namespaces' => array(
+				'classes' => array(
+					'functions' => array(),
+					'members'   => array(),
+				),
+			),
+
+			'classes' => array(
+				'functions' => array(),
+				'members'	=> array(),
+			),
+
+			'functions' => array(),
+			'members'   => array(),
+		),
+	);
+
 	function __construct() {
 		$this->renderers = array(
 			'files'		 => new RendererGroup( __( 'Files', 'theme-check' ), __( 'File', 'theme-check' ) ),
@@ -30,7 +49,7 @@ class PHPAnalyzer extends BaseAnalyzer {
 			if ( $file->get_filetype() !== 'php' ) {
 				continue;
 			}
-			
+
 			$file_meta = new FileRenderer( $file );
 			$this->add_renderers( $file, $file_meta );
 			$this->renderers['files']->add_child( $file_meta );
@@ -47,18 +66,21 @@ class PHPAnalyzer extends BaseAnalyzer {
 	 */
 	public function add_renderers( $file, &$renderer, $path = '', $hierarchy = null ) {
 		if ( is_null( $hierarchy ) ) {
-			$hierarchy = $file->get_check_hierarchy();
+			$hierarchy = $this->check_hierarchy;
 		}
 
 		foreach ( $hierarchy as $level => $hierarchy_children ) {
 			$code_elements = $file->get_code_elements( $level, $path );
-			
+			if ( $file->get_filepath() == '/srv/www/wp-content/themes/twentyfourteen/inc/featured_.php' ) {
+				var_dump( $file->get_filename() );
+				var_dump( $level );
+				$code_elements;
+			}
 			if ( empty( $code_elements ) ) {
 				$this->add_renderers( $file, $renderer, $path, $hierarchy_children );
 				
 			} else {
 				foreach ( $code_elements as $child_path => $child_element ) {
-					
 					if ( array_key_exists( $level, $this->hierarchy_metas ) ) {
 						$child_meta = new $this->hierarchy_metas[$level]( $child_path );
 						$child_meta->add_attribute( 'file', $file->get_filename() );

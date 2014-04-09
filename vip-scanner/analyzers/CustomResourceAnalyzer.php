@@ -11,44 +11,44 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 
 	protected $resource_types = array(
 		array(
-			'func_name' => 'apply_filters',
+			'func_name' => array( 'apply_filters' ),
 			'plural'	=> 'filters',
 			'singular'  => 'filter',
 		),
 		
 		array(
-			'func_name' => 'do_action',
+			'func_name' => array( 'do_action' ),
 			'plural'	=> 'actions',
 			'singular'  => 'action',
 		),
 		
 		array(
-			'func_name'	=> '->add_cap',
+			'func_name'	=> array( '->add_cap' ),
 			'plural'	=> 'capabilities',
 			'singular'  => 'capability',
 			'regexes'   => array(  ),
 		),
 		
 		array(
-			'func_name' => 'add_role',
+			'func_name' => array( 'add_role' ),
 			'plural'	=> 'roles',
 			'singular'  => 'role',
 		),
 		
 		array(
-			'func_name' => 'add_shortcode',
+			'func_name' => array( 'add_shortcode' ),
 			'plural'    => 'shortcodes',
 			'singular'  => 'shortcode',
 		),
 		
 		array(
-			'func_name' => 'register_post_type',
+			'func_name' => array( 'register_post_type' ),
 			'plural'    => 'custom post types',
 			'singular'  => 'custom post type',
 		),
 		
 		array(
-			'func_name' => 'register_taxonomy',
+			'func_name' => array( 'register_taxonomy' ),
 			'plural'    => 'taxonomies',
 			'singular'  => 'taxonomy',
 		),
@@ -107,34 +107,25 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 	 * @param FileRenderer $file_renderer The meta object for this file.
 	 */
 	public function scan_file( $file, $file_renderer ) {
-		$file_functions = $file->get_code_elements( 'functions' );
-		
-		foreach ( $this->resource_types as $resource ) {
-			$regexes = array();
-				
-			if ( is_array( $resource['func_name'] ) ) {
-				foreach ( $resource['func_name'] as $func_name ) {
-					$regexes[] = "/{$func_name}\s*\(\s*(?<name>([a-zA-Z0-9_'\".$-]|\s*)+)/ix";
-				}
-			} else {
-				$regexes[] = "/{$resource['func_name']}\s*\(\s*(?<name>([a-zA-Z0-9_'\".$-]|\s*)+)/ix";
-			}
-				
-			if ( isset( $resource['regexes'] ) ) {
-				$regexes = array_merge( $regexes, $resource['regexes'] );
-			}
-			
-			foreach ( $regexes as $regex ) {
-				foreach ( $file_functions as $functions ) {
-					// Scan the functions in the file
-					$phpelements = $file->get_code_elements( 'php' );
-					$code_blocks_to_scan = array_merge( $functions, $phpelements[''] );
+		$function_calls = $file->get_code_elements( 'function_calls' );
 
-					foreach ( $code_blocks_to_scan as $code_block ) {
-						preg_match_all( $regex, $code_block['contents'], $matches, PREG_OFFSET_CAPTURE );
-						foreach ( $matches['name'] as $match ) {
-							$match = str_replace( $this->remove_chars, '', $match );
-							$child_renderer = $this->create_child_renderer_from_match( $match, $code_block['contents'], $resource, $file, $code_block['line'] );
+		foreach ( $this->resource_types as $resource ) {
+			foreach ( $resource['func_name'] as $function_name ) {
+				foreach ( $function_calls as $call_path => $functions ) {
+					// check and see if this function was called
+					if ( array_key_exists( $function_name, $functions ) ) {
+						if ( isset( $functions[$function_name]['args'] ) ) {
+							$calls = array( $functions[$function_name] );
+						} else {
+							$calls = $functions[$function_name];
+						}
+
+						foreach( $calls as $call ) {
+							$child_renderer = new ResourceRenderer( str_replace( $this->remove_chars, '', $call['args'][0] ) );
+							$child_renderer->set_resource_type( $resource['singular'], $resource['plural'] );
+							$child_renderer->add_attribute( 'file', $file->get_filename() );
+							$child_renderer->add_attribute( 'args', $call['args'] );
+
 							$file_renderer->add_child( $child_renderer );
 							$this->renderers[$resource['plural']]->add_child( $child_renderer );
 						}
@@ -142,13 +133,5 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 				}
 			}
 		}
-	}
-	
-	public function create_child_renderer_from_match( $match, $contents, $resource, $file, $line_offset = 0 ) {
-		$child_renderer = new ResourceRenderer( $match[0] );
-		$child_renderer->set_resource_type( $resource['singular'], $resource['plural'] );
-		$child_renderer->add_attribute( 'line', $file->compute_line_number( $contents, $match[1], $line_offset ) );
-		$child_renderer->add_attribute( 'file', $file->get_filename() );
-		return $child_renderer;
 	}
 }
