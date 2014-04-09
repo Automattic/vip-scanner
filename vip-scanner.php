@@ -495,7 +495,7 @@ class VIP_Scanner_UI {
 
 			// redirect with error message
 			if ( !$zip )
-				break;
+				return;
 
 			$mail = wp_mail(
 				$this->to,
