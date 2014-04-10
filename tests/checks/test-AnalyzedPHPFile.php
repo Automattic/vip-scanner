@@ -553,6 +553,56 @@ EOT
 	}
 
 	/**
+	 * Tests that code blocks are properly followed.
+	 *
+	 * The second and third function definitions are important, as they test
+	 * that not only are the functions seen by the parser, but that they're properly
+	 * scoped. It is a common bug to have secondfunc() show up as somefunc::secondfunc().
+	 */
+	public function test_code_blocks() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+if ( $somevars ) {
+	function somefunc( $arg ) {
+		{
+			while ( true ) {
+				$variable = ( isset( $_GET[ $arg ] ) ? true : false );
+			}
+		}
+	}
+
+	function secondfunc() {
+		do_action( 'some_action' );
+	}
+}
+
+function thirdfunc() {
+	var_dump( 'last_action' );
+}
+EOT
+		);
+
+		$variables		= $analyzed_file->get_code_elements( 'variables' );
+		$functions		= $analyzed_file->get_code_elements( 'functions' );
+		$function_calls = $analyzed_file->get_code_elements( 'function_calls' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( '' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'somefunc', 'secondfunc', 'thirdfunc' ), array_keys( $functions[''] ) );
+
+		// Assert expected variables
+		$this->assertEqualSets( array( '', 'somefunc' ), array_keys( $variables ) );
+		$this->assertEqualSets( array( 'somevars' ), array_keys( $variables[''] ) );
+		$this->assertEqualSets( array( 'somefunc::variable', 'somefunc::_GET', 'somefunc::arg' ), array_keys( $variables['somefunc'] ) );
+
+		// Assert expected function calls
+		$this->assertEqualSets( array( 'secondfunc', 'somefunc', 'thirdfunc' ), array_keys( $function_calls ) );
+		$this->assertEqualSets( array( 'isset' ), array_keys( $function_calls['somefunc'] ) );
+		$this->assertEqualSets( array( 'do_action' ), array_keys( $function_calls['secondfunc'] ) );
+		$this->assertEqualSets( array( 'var_dump' ), array_keys( $function_calls['thirdfunc'] ) );
+	}
+
+	/**
 	 * Tests the parsing of a realistic code sample. This sample should eventually
 	 * be expanded to test more combinations of properties.
 	 */
