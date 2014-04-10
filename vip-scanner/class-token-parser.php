@@ -25,6 +25,22 @@ class TokenParser {
 	private $index		  = 0;
 	private $in_namespace = false;
 
+	private $function_indicators = array(
+		T_STRING,
+		T_EVAL,
+		T_EMPTY,
+		T_EXIT,
+		T_HALT_COMPILER,
+		T_INCLUDE,
+		T_INCLUDE_ONCE,
+		T_REQUIRE,
+		T_REQUIRE_ONCE,
+		T_ISSET,
+		T_LIST,
+		T_PRINT,
+		T_UNSET,
+	);
+
 	function parse_contents( $contents ) {
 		$this->tokens = token_get_all( $contents );
 		$this->token_count = count( $this->tokens );
@@ -641,7 +657,7 @@ class TokenParser {
 							$properties['contents'] .= $token_contents;
 						}
 					} elseif ( $token !== ';' ) {
-						if ( $token === T_STRING || $token === T_VARIABLE ) {
+						if ( $token === T_VARIABLE || in_array( $token, $this->function_indicators ) ) {
 							$last_t_string = $this->index;
 						} elseif ( $last_t_string !== -1 ) {
 							$last_t_string = -1;
