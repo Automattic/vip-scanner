@@ -502,6 +502,11 @@ class TokenParser {
 							}
 						}
 
+						// If this token is a closure, skip parsing
+						if ( in_array( $token, array( '(', '{', '[', ']', '}', ')' ) ) ) {
+							break;
+						}
+
 						$result = $this->parse_next( $levels );
 						if ( ! is_null( $result ) ) {
 							$properties['children'][] = $result;
@@ -546,8 +551,13 @@ class TokenParser {
 
 			// Checks for an unexpected closing block
 			if ( $this->closes_block( $token, $levels ) ) {
-				$properties['name'] = $this->get_name_with_path( $properties['name'] );
 				$this->index -= 1;
+
+				if ( false === $properties['type'] ) {
+					return;
+				}
+
+				$properties['name'] = $this->get_name_with_path( $properties['name'] );
 				return $properties;
 			}
 
@@ -644,6 +654,10 @@ class TokenParser {
 
 					break;
 			}
+		}
+
+		if ( false === $properties['type'] ) {
+			return;
 		}
 
 		$properties['name'] = $this->get_name_with_path( $properties['name'] );
