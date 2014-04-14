@@ -14,7 +14,8 @@ if ( defined('WP_CLI') && WP_CLI )
 	require_once( dirname( __FILE__ ) . '/vip-scanner/class-wp-cli.php' );
 
 class VIP_Scanner_UI {
-	const key = 'vip-scanner';
+	const key     = 'vip-scanner';
+	const version = '0.6';
 
 	public $default_review;
 	private static $instance;
@@ -134,7 +135,7 @@ class VIP_Scanner_UI {
 
 		$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
 
-		$transient_key = 'vip_scanner_' . md5( $theme . $review );
+		$transient_key = 'vip_scanner_' . self::version . '_' . md5( $theme . $review );
 		if ( $scanner !== get_transient( $transient_key ) )
 			@set_transient( $transient_key, $scanner );
 
@@ -428,7 +429,7 @@ class VIP_Scanner_UI {
 	}
 
 	function get_cached_theme_review( $theme, $review ) {
-		$transient_key = 'vip_scanner_' . md5( $theme . $review );
+		$transient_key = 'vip_scanner_' . self::version . '_' . md5( $theme . $review );
 
 		if ( false === $scanner = get_transient( $transient_key ) ) {
 			$scanner = VIP_Scanner::get_instance()->run_theme_review( $theme, $review );
