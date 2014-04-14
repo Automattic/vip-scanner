@@ -347,7 +347,13 @@ class VIP_Scanner_UI {
 		$results = "";
 
 		$results .= $title = apply_filters( 'vip_scanner_export_title', "$theme - $review", $review ) . PHP_EOL;
-		$results .= str_repeat( '=', strlen( $title ) ) . PHP_EOL . PHP_EOL;
+		$title_len = strlen( $title );
+		$results .= str_repeat( '=', $title_len ) . PHP_EOL;
+
+		$version_str = ' ' . sprintf( __( 'VIP Scanner %s', 'theme-check' ), self::version ) . ' ';
+		$side_spacing = ( $title_len - strlen( $version_str ) ) / 2.;
+		$results .= str_repeat( '=', ceil( $side_spacing ) ) . $version_str . str_repeat( '=', floor( $side_spacing ) ) . PHP_EOL;
+		$results .= str_repeat( '=', $title_len ) . PHP_EOL . PHP_EOL;
 
 		$form_results = apply_filters( 'vip_scanner_form_results', '', $review );
 
