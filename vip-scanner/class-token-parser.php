@@ -24,6 +24,7 @@ class TokenParser {
 	private $elements     = array();
 	private $index		  = 0;
 	private $in_namespace = false;
+	private $line		  = 0;
 
 	private $function_indicators = array(
 		T_STRING,
@@ -67,6 +68,7 @@ class TokenParser {
 		$this->token_count  = 0;
 		$this->token_count  = array();
 		$this->elements     = array();
+		$this->line			= 0;
 	}
 
 	function closes_block( $closure, &$blocks, $true_on_empty = false ) {
@@ -179,6 +181,7 @@ class TokenParser {
 			$this->get_token( $token, $token_contents );
 
 			if ( T_WHITESPACE === $token ) {
+				$this->parse_whitespace( $token_contents );
 				continue;
 			}
 
@@ -263,6 +266,7 @@ class TokenParser {
 			$this->get_token( $token, $token_contents );
 
 			if ( T_WHITESPACE === $token ) {
+				$this->parse_whitespace( $token_contents );
 				continue;
 			}
 
@@ -311,6 +315,7 @@ class TokenParser {
 			$this->get_token( $token, $token_contents );
 
 			if ( T_WHITESPACE === $token ) {
+				$this->parse_whitespace( $token_contents );
 				continue;
 			}
 
@@ -394,6 +399,7 @@ class TokenParser {
 
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			if ( T_WHITESPACE === $this->tokens[$this->index][0] ) {
+				$this->parse_whitespace( $token_contents );
 				continue;
 			}
 
@@ -451,6 +457,7 @@ class TokenParser {
 			$this->get_token( $token, $token_contents );
 
 			if ( T_WHITESPACE === $token ) {
+				$this->parse_whitespace( $token_contents );
 				continue;
 			}
 
@@ -562,6 +569,7 @@ class TokenParser {
 			$this->get_token( $token, $token_contents );
 
 			if ( T_WHITESPACE === $token ) {
+				$this->parse_whitespace( $token_contents );
 				continue;
 			}
 
@@ -699,6 +707,7 @@ class TokenParser {
 			$this->get_token( $token, $token_contents );
 
 			if ( T_WHITESPACE === $token ) {
+				$this->parse_whitespace( $token_contents );
 				continue;
 			}
 
@@ -804,5 +813,9 @@ class TokenParser {
 		}
 
 		return $properties;
+	}
+
+	function parse_whitespace( $whitespace ) {
+		$this->line += substr_count( "\n", $whitespace );
 	}
 }
