@@ -67,8 +67,12 @@ class VIP_Scanner {
 		if ( ! $review )
 			return false;
 
+		do_action( 'vip_scanner_pre_theme_review', $theme, $review_type );
+
 		$scanner = new ThemeScanner( $theme, $review );
 		$scanner->scan( $scanners );
+
+		do_action( 'vip_scanner_post_theme_review', $theme, $review_type, $scanner );
 		return $scanner;
 	}
 }

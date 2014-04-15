@@ -30,6 +30,7 @@ class VIP_Scanner_Async {
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'wp_before_admin_bar_render', array( $this, 'add_admin_bar_node' ) );
+		add_action( 'vip_scanner_post_theme_review', array( $this, 'post_external_theme_review' ), 10, 3 );
 		add_action( 'wp_ajax_vip-scanner-do_async_scan', array( $this, 'ajax_do_scan' ) );
 		add_action( 'wp_ajax_vip-scanner-get_errors_summary', array( $this, 'ajax_get_errors_summary' ) );
 	}
@@ -155,6 +156,10 @@ class VIP_Scanner_Async {
 		}
 	}
 
+	function post_external_theme_review( $theme, $review, $scanner ) {
+		$this->cache_scan_results( $review, $this->get_theme_path( $theme ), $scanner );
+	}
+
 	function ajax_do_scan() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( array( 'error' => 'insufficient_permissions', 'message' => __( 'You do not have sufficient permissions to perform that action.', 'vip-scanner' ) ) );
@@ -209,9 +214,7 @@ class VIP_Scanner_Async {
 	}
 
 	function run_theme_review( $theme, $review_type, $scanners = array( 'checks', 'analyzers' ) ) {
-		$path = sprintf( '%s/%s', get_theme_root(), $theme );
-
-		return $this->run_directory_review( $path, $review_type, $scanners );
+		return $this->run_directory_review( $this->get_theme_path( $theme ), $review_type, $scanners );
 	}
 
 	function get_default_review_type() {
@@ -319,7 +322,8 @@ class VIP_Scanner_Async {
 			self::REVIEW_TAXONOMY => $review_slug,
 		) );
 
-		if ( $posts_query->have_posts() ) {
+		$update = $posts_query->have_posts();
+		if ( $update ) {
 			$post_args['ID'] = $posts_query->next_post();
 		}
 
@@ -331,7 +335,11 @@ class VIP_Scanner_Async {
 		}
 
 		// Save the error counts meta
-		add_post_meta( $id, 'vip-scanner-error-counts', $error_counts, true );
+		if ( $update ) {
+			update_post_meta( $id, 'vip-scanner-error-counts', $error_counts );
+		} else {
+			add_post_meta( $id, 'vip-scanner-error-counts', $error_counts, true );
+		}
 
 		return true;
 	}
@@ -343,6 +351,10 @@ class VIP_Scanner_Async {
 		}
 
 		return $path;
+	}
+
+	private function get_theme_path( $theme ) {
+		return $this->normalize_path_str( sprintf( '%s/%s', get_theme_root(), $theme ) );
 	}
 }
 
