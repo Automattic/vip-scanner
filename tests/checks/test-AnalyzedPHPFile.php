@@ -606,7 +606,7 @@ EOT
 	 * Tests the parsing of a realistic code sample. This sample should eventually
 	 * be expanded to test more combinations of properties.
 	 */
-	public function test_actual_code_sample() {
+	public function test_actual_code_sample(){
 		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
 <?php
 abstract class BaseFileClass {
@@ -682,5 +682,87 @@ EOT
 		// Assert the expected constants
 		$this->assertEqualSets( array( 'FileClass' ), array_keys( $constants ) );
 		$this->assertEqualSets( array( 'FileClass::NUM_FILES' ), array_keys( $constants['FileClass'] ) );
+	}
+
+	/**
+	 * Tests that line numberings are correctly maintained.
+	 */
+	public function test_line_numbers() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<h1>title</h1>
+<?php
+<<<SOMETEXT
+
+SOMETEXT
+		;
+/**
+ * Tests something.
+ */
+function some_test() {
+		$somevar = '';
+		some_call();
+}
+
+class test_class {
+	private
+	function some_func() {}
+}
+?>
+
+
+<?php
+$last_var = null;
+
+EOT
+		);
+
+		$classes        = $analyzed_file->get_code_elements( 'classes' );
+		$functions      = $analyzed_file->get_code_elements( 'functions' );
+		$function_calls = $analyzed_file->get_code_elements( 'function_calls' );
+		$variables      = $analyzed_file->get_code_elements( 'variables' );
+
+		// Assert things in order of line numbers
+		$this->assert_object_property( $functions['']['some_test'], 'line', 10 );
+		$this->assert_object_property( $variables['some_test']['some_test::somevar'], 'line', 11 );
+		$this->assert_object_property( $function_calls['some_test']['some_call'], 'line', 12 );
+		$this->assert_object_property( $classes['']['test_class'], 'line', 15 );
+		$this->assert_object_property( $functions['test_class']['test_class::some_func'], 'line', 17 );
+		$this->assert_object_property( $variables['']['last_var'], 'line', 23 );
+	}
+
+	/**
+	 * Tests that function doc strings are correctly parsed in.
+	 */
+	public function test_doc_strings() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+/**
+ * Tests something.
+ */
+function some_test() {
+		$somevar = '';
+		some_call();
+}
+
+class test_class {
+
+	/**
+	 *Does something.
+	 */
+	private function some_func() {}
+}
+?>
+
+
+<?php
+$last_var = null;
+
+EOT
+		);
+
+		$functions = $analyzed_file->get_code_elements( 'functions' );
+
+		$this->assert_object_property( $functions['']['some_test'], 'documentation', 'Tests something.' );
+		$this->assert_object_property( $functions['test_class']['test_class::some_func'], 'documentation', 'Does something.' );
 	}
 }
