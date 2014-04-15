@@ -307,7 +307,6 @@ class VIP_Scanner_Async {
 		$post_args = array(
 			'post_type'    => self::SCANNER_RESULT_CPT,
 			'post_name'    => $normalized_path,
-			'post_content' => json_encode( $results ),
 			'post_date'    => date( 'Y-m-d H:i:s' ),
 			'tax_input'    => array(
 				self::REVIEW_TAXONOMY => $review_slug,
@@ -335,10 +334,13 @@ class VIP_Scanner_Async {
 		}
 
 		// Save the error counts meta
+		$content = json_encode( $results );
 		if ( $update ) {
 			update_post_meta( $id, 'vip-scanner-error-counts', $error_counts );
+			update_post_meta( $id, 'vip-scanner-results', $content );
 		} else {
 			add_post_meta( $id, 'vip-scanner-error-counts', $error_counts, true );
+			add_post_meta( $id, 'vip-scanner-results', $content, true );
 		}
 
 		return true;
