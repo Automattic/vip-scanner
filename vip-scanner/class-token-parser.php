@@ -24,7 +24,7 @@ class TokenParser {
 	private $elements     = array();
 	private $index		  = 0;
 	private $in_namespace = false;
-	private $line		  = 0;
+	private $line		  = 1;
 
 	private $function_indicators = array(
 		T_STRING,
@@ -53,8 +53,6 @@ class TokenParser {
 			$result = $this->parse_next( $levels );
 			if ( ! is_null( $result ) ) {
 				$this->elements[] = $result;
-			} else {
-				$this->index++;
 			}
 		}
 
@@ -68,7 +66,7 @@ class TokenParser {
 		$this->token_count  = 0;
 		$this->token_count  = array();
 		$this->elements     = array();
-		$this->line			= 0;
+		$this->line			= 1;
 	}
 
 	function closes_block( $closure, &$blocks, $true_on_empty = false ) {
@@ -180,11 +178,6 @@ class TokenParser {
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
 
-			if ( T_WHITESPACE === $token ) {
-				$this->parse_whitespace( $token_contents );
-				continue;
-			}
-
 			// Checks for an unexpected closing block
 			if ( $this->closes_block( $token, $levels, true ) ) {
 				return;
@@ -243,6 +236,10 @@ class TokenParser {
 
 				case $break_on:
 					return;
+
+				default:
+					$this->parse_contents_line_breaks( $token_contents );
+					break;
 			}
 		}
 	}
@@ -265,8 +262,9 @@ class TokenParser {
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
 
+			$this->parse_contents_line_breaks( $token_contents );
+
 			if ( T_WHITESPACE === $token ) {
-				$this->parse_whitespace( $token_contents );
 				continue;
 			}
 
@@ -314,8 +312,8 @@ class TokenParser {
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
 
+			$this->parse_contents_line_breaks( $token_contents );
 			if ( T_WHITESPACE === $token ) {
-				$this->parse_whitespace( $token_contents );
 				continue;
 			}
 
@@ -339,6 +337,7 @@ class TokenParser {
 						continue;
 					}
 
+					$properties['line'] = $this->line;
 					$state = self::CLASS_OPEN;
 					break;
 
@@ -398,12 +397,12 @@ class TokenParser {
 		);
 
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
+			$this->get_token( $token, $token_contents );
+
 			if ( T_WHITESPACE === $this->tokens[$this->index][0] ) {
-				$this->parse_whitespace( $token_contents );
+				$this->parse_contents_line_breaks( $token_contents );
 				continue;
 			}
-
-			$this->get_token( $token, $token_contents );
 
 			if ( $this->closes_block( $token, $levels ) ) {
 				return;
@@ -431,6 +430,10 @@ class TokenParser {
 				case T_VARIABLE:
 				case T_VAR:
 					return $this->parse_variable( $properties );
+
+				default:
+					$this->parse_contents_line_breaks( $token_contents );
+					break;
 			}
 		}
 
@@ -456,8 +459,9 @@ class TokenParser {
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
 
+			$this->parse_contents_line_breaks( $token_contents );
+
 			if ( T_WHITESPACE === $token ) {
-				$this->parse_whitespace( $token_contents );
 				continue;
 			}
 
@@ -486,6 +490,7 @@ class TokenParser {
 						case T_FUNCTION:
 							$state = self::CLASS_MEMBER_DEFINITION;
 							$properties['type'] = 'function';
+							$properties['line'] = $this->line;
 							break;
 					}
 
@@ -556,6 +561,7 @@ class TokenParser {
 				'name' => '',
 				'contents' => '',
 				'path' => $this->get_current_path_str(),
+				'line' => $this->line,
 			),
 			$properties
 		);
@@ -568,8 +574,9 @@ class TokenParser {
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
 
+			$this->parse_contents_line_breaks( $token_contents );
+
 			if ( T_WHITESPACE === $token ) {
-				$this->parse_whitespace( $token_contents );
 				continue;
 			}
 
@@ -695,6 +702,7 @@ class TokenParser {
 				'name' => '',
 				'args' => array(),
 				'path' => $this->get_current_path_str(),
+				'line' => $this->line,
 			),
 			$properties
 		);
@@ -706,8 +714,9 @@ class TokenParser {
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
 
+			$this->parse_contents_line_breaks( $token_contents );
+
 			if ( T_WHITESPACE === $token ) {
-				$this->parse_whitespace( $token_contents );
 				continue;
 			}
 
@@ -815,7 +824,7 @@ class TokenParser {
 		return $properties;
 	}
 
-	function parse_whitespace( $whitespace ) {
-		$this->line += substr_count( "\n", $whitespace );
+	function parse_contents_line_breaks( $whitespace ) {
+		$this->line += substr_count( $whitespace, "\n" );
 	}
 }
