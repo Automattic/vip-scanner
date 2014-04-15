@@ -209,7 +209,11 @@ abstract class AnalyzerRenderer {
 	function display_html_attribute( $slug, $attribute, $args ) {
 		$fstring = '<li><strong>%s</strong>: %s</li>';
 		if ( is_string( $attribute ) ) {
-			return sprintf( $fstring, esc_html( $slug ), esc_html( $attribute ) );
+			if ( substr_count( $attribute, "\n" ) ) {
+				return sprintf( $fstring, esc_html( $slug ), '<pre>' . esc_html( $attribute ) . '</pre>' );
+			} else {
+				return sprintf( $fstring, esc_html( $slug ), esc_html( $attribute ) );
+			}
 		} elseif ( is_numeric( $attribute ) ) {
 			return sprintf( $fstring, esc_html( $slug ), number_format( $attribute ) );
 		} elseif ( is_bool( $attribute ) ) {
