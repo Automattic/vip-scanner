@@ -250,7 +250,7 @@ class VIP_Scanner_UI {
 			<?php endforeach; ?>
 		</div>
 			
-		<?php /*<div id="analysis">
+		<div id="analysis">
 			<div id="analysis-accordion">
 				<?php 
 				$empty = array();
@@ -274,7 +274,7 @@ class VIP_Scanner_UI {
 				
 				?>
 			</div>
-		</div>*/ ?>
+		</div>
 		<?php
 	}
 
