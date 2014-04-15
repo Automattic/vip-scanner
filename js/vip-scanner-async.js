@@ -21,7 +21,7 @@ function vip_scanner() {
 	function update_issue_count() {
 		$.ajax( ajaxurl, {
 			data: {
-				action: 'vip-scanner-get_errors',
+				action: 'vip-scanner-get_errors_summary',
 			},
 		} ).complete( process_scanner_results );
 	}
@@ -37,7 +37,7 @@ function vip_scanner() {
 			var classes = [];
 
 			for ( var issue_type in response.data.issues ) {
-				var issue_type_count = Object.keys( response.data.issues[issue_type] ).length;
+				var issue_type_count = response.data.issues[issue_type];
 				var issue_type_text = vip_scanner_i18n.levels[issue_type].none;
 
 				issue_count += issue_type_count;

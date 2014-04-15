@@ -1,6 +1,9 @@
 <?php
 
 class VIP_Scanner_Async {
+	const SCANNER_RESULT_CPT = 'scanresult';
+	const REVIEW_TAXONOMY = 'vip-scan-review';
+
 	private static $instance;
 
 	/**
@@ -28,7 +31,7 @@ class VIP_Scanner_Async {
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 		add_action( 'wp_before_admin_bar_render', array( $this, 'add_admin_bar_node' ) );
 		add_action( 'wp_ajax_vip-scanner-do_async_scan', array( $this, 'ajax_do_scan' ) );
-		add_action( 'wp_ajax_vip-scanner-get_errors', array( $this, 'ajax_get_errors' ) );
+		add_action( 'wp_ajax_vip-scanner-get_errors_summary', array( $this, 'ajax_get_errors_summary' ) );
 	}
 
 	static function get_instance() {
@@ -44,6 +47,13 @@ class VIP_Scanner_Async {
 			'public' => false,
 			'label'  => AsyncDirectoryScanner::ASYNC_SCAN_CPT,
 		) );
+
+		register_post_type( self::SCANNER_RESULT_CPT, array(
+			'public' => false,
+			'label'  => self::SCANNER_RESULT_CPT,
+		) );
+
+		register_taxonomy( self::REVIEW_TAXONOMY, self::SCANNER_RESULT_CPT, array( 'public' => false ) );
 	}
 
 	function admin_init() {
@@ -156,26 +166,23 @@ class VIP_Scanner_Async {
 		$data = array(
 			'theme'  => wp_get_theme()->display( 'Name' ),
 			'review' => $review,
-			'issues' => $this->get_cached_issues_summary( $review ),
+			'issues' => $this->get_cached_results_summary( $review ),
 		);
 
 		wp_send_json_success( $data );
 	}
 
-	function ajax_get_errors() {
+	function ajax_get_errors_summary() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( array( 'error' => 'insufficient_permissions', 'message' => __( 'You do not have sufficient permissions to perform that action.', 'vip-scanner' ) ) );
 		}
 
 		$review = $this->get_default_review_type();
-		if ( false === $this->get_stored_theme_review( $review ) ) {
-			$this->ajax_do_scan();
-		}
 
 		$data = array(
 			'theme'  => wp_get_theme()->display( 'Name' ),
 			'review' => $review,
-			'issues' => $this->get_cached_issues_summary( $review ),
+			'issues' => $this->get_cached_results_summary( $review ),
 		);
 
 		wp_send_json_success( $data );
@@ -196,7 +203,6 @@ class VIP_Scanner_Async {
 		$scanner = new AsyncDirectoryScanner( $path, $review );
 		$scanner->scan( $scanners );
 
-		$this->store_theme_review( $review_type, $path );
 		$this->cache_scan_results( $review_type, $path, $scanner );
 
 		return $scanner;
@@ -223,26 +229,22 @@ class VIP_Scanner_Async {
 		update_option( 'vip-scanner-default-async-review-type', $review_type );
 	}
 
-	function store_theme_review( $review, $path ) {
-		$review = sanitize_title_with_dashes( $review );
-		update_option( "vip-scanner-review-$review", $path );
-	}
-
-	function get_stored_theme_review( $review ) {
-		$review = sanitize_title_with_dashes( $review );
-		return get_option( "vip-scanner-review-$review", false );
-	}
-
 	function cache_scan_results( $review, $path, $scanner ) {
 		$review = sanitize_title_with_dashes( $review );
 
+		$results = array();
+		$error_counts = array();
+
 		// Cache the results
 		foreach ( $this->report_levels as $level ) {
+			$error_counts[$level] = 0;
 			$errors = $scanner->get_errors( array( $level ) );
-			$file_errors = array();
+			$results = array();
 
 			// Split up errors by file
 			foreach ( $errors as $error ) {
+				++$error_counts[$level];
+
 				$file = '';
 				if ( is_array( $error['file'] ) ) {
 					if ( !empty( $error['file'][0] ) ) {
@@ -252,35 +254,95 @@ class VIP_Scanner_Async {
 					$file = str_replace( $path, '', $error['file'] );
 				}
 
-				if ( !isset( $file_errors[$file] ) ) {
-					$file_errors[$file] = array();
+				if ( !isset( $results[$file] ) ) {
+					$results[$file] = array_fill_keys( $this->report_levels, array() );
 				}
 
-				$file_errors[$file][] = $error;
+				$results[$file][$level] = $error;
 			}
-
-			// Summarize the number of errors by file
-			$option = "vip-scanner-file-errors-$review-$level";
-			$file_error_counts = get_option( $option, array() );
-			foreach ( $file_errors as $file => $errors ) {
-				$file_error_counts[$file] = count( $errors );
-			}
-
-			// Store this information for later use
-			update_option( $option, $file_error_counts );
 		}
+
+		$this->insert_cache_post( $review, $path, $results, $error_counts );
 	}
 
-	function get_cached_issues_summary( $review ) {
-		$issues = array();
+	function get_cached_results_summary( $review = null, $path = null ) {
+		$query_args = array(
+			'post_type' => self::SCANNER_RESULT_CPT,
+			'fields'    => 'ids',
+		);
 
-		$review = sanitize_title_with_dashes( $review );
-		foreach ( $this->report_levels as $level ) {
-			$file_error_counts = get_option( "vip-scanner-file-errors-$review-$level", array() );
-			$issues[$level] = $file_error_counts;
+		// Do a taxonomy query if the review is specified
+		if ( ! is_null( $review ) ) {
+			$query_args[self::REVIEW_TAXONOMY] = sanitize_title_with_dashes( $review );
+		}
+
+		// Do a post name query if the path is specified
+		if ( ! is_null( $path ) ) {
+			$query_args['name'] = sanitize_title_with_dashes( $this->normalize_path_str( $path ) );
+		}
+
+		// Do the query and parse the issue counts
+		$issues = array_fill_keys( $this->report_levels, 0 );
+		$issue_query = new WP_Query( $query_args );
+
+		while ( $issue_query->have_posts() ) {
+			$post_id = $issue_query->next_post();
+			$error_counts = get_post_meta( $post_id, 'vip-scanner-error-counts', true );
+
+			foreach ( $this->report_levels as $level ) {
+				$issues[$level] += isset( $error_counts[$level] ) ? intval( $error_counts[$level] ) : 0;
+			}
 		}
 
 		return $issues;
+	}
+
+	private function insert_cache_post( $review, $path, $results, $error_counts ) {
+		$review_slug     = sanitize_title_with_dashes( $review );
+		$normalized_path = sanitize_title_with_dashes( $this->normalize_path_str( $path ) );
+
+		$post_args = array(
+			'post_type'    => self::SCANNER_RESULT_CPT,
+			'post_name'    => $normalized_path,
+			'post_content' => json_encode( $results ),
+			'post_date'    => date( 'Y-m-d H:i:s' ),
+			'tax_input'    => array(
+				self::REVIEW_TAXONOMY => $review_slug,
+			),
+		);
+
+		// Check if the post already exists and add the id to args if it does
+		$posts_query = new WP_Query( array(
+			'post_type'			  => self::SCANNER_RESULT_CPT,
+			'name'   			  => $normalized_path,
+			'fields'			  => 'ids',
+			self::REVIEW_TAXONOMY => $review_slug,
+		) );
+
+		if ( $posts_query->have_posts() ) {
+			$post_args['ID'] = $posts_query->next_post();
+		}
+
+		$id = wp_insert_post( $post_args );
+
+		if ( is_wp_error( $id ) ) {
+			var_dump( $id );
+			return $id;
+		}
+
+		// Save the error counts meta
+		add_post_meta( $id, 'vip-scanner-error-counts', $error_counts, true );
+
+		return true;
+	}
+
+	private function normalize_path_str( $path ) {
+		$str_size = strlen( $path );
+		if ( $path[$str_size - 1] == '/' ) {
+			$path = substr( $path, 0, $str_size - 1 );
+		}
+
+		return $path;
 	}
 }
 
