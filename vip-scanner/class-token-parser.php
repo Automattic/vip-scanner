@@ -237,6 +237,10 @@ class TokenParser {
 				case $break_on:
 					return;
 
+				case T_DOC_COMMENT:
+					$properties['documentation'] = $this->clean_doc_string( $token_contents );
+					// lack of break on purpose
+
 				default:
 					$this->parse_contents_line_breaks( $token_contents );
 					break;
@@ -430,6 +434,10 @@ class TokenParser {
 				case T_VARIABLE:
 				case T_VAR:
 					return $this->parse_variable( $properties );
+
+				case T_DOC_COMMENT:
+					$properties['documentation'] = $this->clean_doc_string( $token_contents );
+					// lack of break on purpose
 
 				default:
 					$this->parse_contents_line_breaks( $token_contents );
@@ -826,5 +834,21 @@ class TokenParser {
 
 	function parse_contents_line_breaks( $whitespace ) {
 		$this->line += substr_count( $whitespace, "\n" );
+	}
+
+	private function clean_doc_string( $docstring ) {
+		// Remove the leading /** and trailing */
+		$docstring = substr( $docstring, 3, strlen( $docstring ) - 6 );
+
+		// Remove line beginnings
+		$docstring = preg_replace( '/(\r|\n)+\h*\**\h?/', "\n",  $docstring );
+
+		// Remove empty lines at the start
+		$docstring = preg_replace( '/\A(\r|\n)+\s*/', '', $docstring );
+
+		// Remove empty lines at the end
+		$docstring = preg_replace( '/(\r|\n)+\s*(\r|\n)*\Z/', '', $docstring );
+
+		return $docstring;
 	}
 }
