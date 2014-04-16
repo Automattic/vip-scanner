@@ -316,6 +316,7 @@ namespace SomeNamespace\SubNamespace;
 
 function second_test_function() {
 	$var = namespace\SOMECONST;
+	SomeNamespace\SubNamespace\other_test_func();
 	namespace\other_func();
 	throw new namespace\error( 'Error Message' );
 }
@@ -328,7 +329,7 @@ EOT
 		$constants = $analyzed_file->get_code_elements( 'constants' );
 		$variables = $analyzed_file->get_code_elements( 'variables' );
 		$function_calls = $analyzed_file->get_code_elements( 'function_calls' );
-
+		var_dump($namespaces);
 		// Assert expected
 		$this->assertEqualSets( array(
 			'SomeNamespace',
@@ -351,7 +352,7 @@ EOT
 		// Assert expected constants
 		$this->assertEqualSets( array( 'SomeNamespace' ), array_keys( $constants ) );
 		$this->assertEqualSets( array( 'SomeNamespace::SOMECONST' ), array_keys( $constants['SomeNamespace'] ) );
-
+		var_dump( $function_calls);
 		// Assert expected function calls
 		$this->assertEqualSets( array( 'SomeNamespace\SubNamespace::second_test_function' ), array_keys( $function_calls ) );
 		$this->assertEqualSets( array(
