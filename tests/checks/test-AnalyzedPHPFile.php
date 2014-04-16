@@ -309,33 +309,55 @@ EOT
 		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
 <?php
 namespace SomeNamespace;
-
+const SOMECONST = 1;
 function test_function() {}
 
-namespace SomeNamespace/SubNamespace;
+namespace SomeNamespace\SubNamespace;
 
-function second_test_function() {}
+function second_test_function() {
+	$var = namespace\SOMECONST;
+	namespace\other_func();
+	throw new namespace\error( 'Error Message' );
+}
 EOT
 		);
 
 		$namespaces = $analyzed_file->get_code_elements( 'namespaces' );
 		$classes = $analyzed_file->get_code_elements( 'classes' );
 		$functions = $analyzed_file->get_code_elements( 'functions' );
+		$constants = $analyzed_file->get_code_elements( 'constants' );
+		$variables = $analyzed_file->get_code_elements( 'variables' );
+		$function_calls = $analyzed_file->get_code_elements( 'function_calls' );
 
 		// Assert expected
 		$this->assertEqualSets( array(
 			'SomeNamespace',
-			'SomeNamespace/SubNamespace',
+			'SomeNamespace\SubNamespace',
 		), array_keys( $namespaces[''] ) );
 
 		// Assert no classes
 		$this->assertEmpty( $classes );
 
 		// Assert expected functions
-		$this->assertEqualSets( array( 'SomeNamespace', 'SomeNamespace/SubNamespace' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'SomeNamespace', 'SomeNamespace\SubNamespace' ), array_keys( $functions ) );
 
 		$this->assertEqualSets( array( 'SomeNamespace::test_function' ), array_keys( $functions['SomeNamespace'] ) );
-		$this->assertEqualSets( array( 'SomeNamespace/SubNamespace::second_test_function' ), array_keys( $functions['SomeNamespace/SubNamespace'] ) );
+		$this->assertEqualSets( array( 'SomeNamespace\SubNamespace::second_test_function' ), array_keys( $functions['SomeNamespace\SubNamespace'] ) );
+
+		// Assert expected variables
+		$this->assertEqualSets( array( 'SomeNamespace\SubNamespace::second_test_function' ), array_keys( $variables ) );
+		$this->assertEqualSets( array( 'SomeNamespace\SubNamespace::second_test_function::var' ), array_keys( $variables['SomeNamespace\SubNamespace::second_test_function'] ) );
+
+		// Assert expected constants
+		$this->assertEqualSets( array( 'SomeNamespace' ), array_keys( $constants ) );
+		$this->assertEqualSets( array( 'SomeNamespace::SOMECONST' ), array_keys( $constants['SomeNamespace'] ) );
+
+		// Assert expected function calls
+		$this->assertEqualSets( array( 'SomeNamespace\SubNamespace::second_test_function' ), array_keys( $function_calls ) );
+		$this->assertEqualSets( array(
+			'namespace\other_func',
+			'namespace\error',
+		), array_keys( $function_calls['SomeNamespace\SubNamespace::second_test_function'] ) );
 	}
 
 	/**
