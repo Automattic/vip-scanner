@@ -249,15 +249,10 @@ class TokenParser {
 	}
 
 	function parse_namespace( $properties = array() ) {
-		if ( false !== $this->in_namespace ) {
-			while ( $this->in_namespace !== $this->path_up() );
-		}
-		
 		$properties = array_merge(
 			array(
 				'name' => '',
 				'type' => 'namespace',
-				'path' => $this->get_current_path_str(),
 			),
 			$properties
 		);
@@ -284,12 +279,32 @@ class TokenParser {
 				case self::NAMESPACE_DEFINITION:
 					if ( ';' === $token ) {
 						break 2;
+					} elseif ( T_NS_SEPARATOR === $token ) {
+						if ( empty( $properties['name'] ) ) {
+							// This is not a namespace declaration, but the use of
+							// a namespace member.
+							$levels = array( 'path' => array() );
+							++$this->index;
+							$element = $this->parse_next( $levels, ';' );
+
+							if ( ! is_null( $element ) ) {
+								$element['name'] = 'namespace' . $token_contents . $element['name'];
+							}
+
+							return $element;
+						}
 					}
 
 					$properties['name'] .= $token_contents;
 					break;
 			}
 		}
+
+		if ( false !== $this->in_namespace ) {
+			while ( $this->in_namespace !== $this->path_up() );
+		}
+
+		$properties['path'] = $this->get_current_path_str();
 
 		$this->in_namespace = $properties['name'];
 		$properties['name'] = $this->get_name_with_path( $properties['name'] );
