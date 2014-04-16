@@ -350,7 +350,7 @@ class VIP_Scanner_UI {
 		$title_len = strlen( $title );
 		$results .= str_repeat( '=', $title_len ) . PHP_EOL;
 
-		$version_str = ' ' . sprintf( __( 'VIP Scanner %s', 'theme-check' ), self::version ) . ' ';
+		$version_str = ' ' . sprintf( __( 'VIP Scanner %s', 'theme-check' ), $this->get_version() ) . ' ';
 		$side_spacing = ( $title_len - strlen( $version_str ) ) / 2.;
 		$results .= str_repeat( '=', ceil( $side_spacing ) ) . $version_str . str_repeat( '=', floor( $side_spacing ) ) . PHP_EOL;
 		$results .= str_repeat( '=', $title_len ) . PHP_EOL . PHP_EOL;
