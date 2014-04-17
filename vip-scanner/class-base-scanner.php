@@ -12,10 +12,37 @@ class BaseScanner {
 	public $errors = array();
 	public $renderers = array();
 	public $stats = array();
+	//recognized extensions
 	public $known_extensions = array(
 		'php' => array( 'php', 'php5', 'inc' ),
 		'css' => 'css',
 		'js' => 'js',
+		'gif' => 'gif',
+		'jpg' => array( 'jpg', 'jpeg' ),
+		'png' => 'png',
+		'svg' => 'svg',
+		'txt' => 'txt',
+	);
+	//these extensions are not allowed and will produce blocking errors
+	public $known_bad_extensions = array(
+		'gz',
+		'zip',
+		'tar',
+		'orig',
+		'rej',
+		'bak',
+		'log',
+		'git',
+		'asp',
+		'py',
+		'cfm',
+		'htaccess',
+		'swf'
+	);
+	//these patterns are not allowed anywhere in any filename and will produce blocking errors
+	public $known_bad_file_patterns = array(
+		'\.php\..*',
+		'^\.DS_Store$',
 	);
 
 
@@ -63,6 +90,53 @@ class BaseScanner {
 		return in_array( $this->get_file_type( $filename ), array_keys( $this->known_extensions ) );
 	}
 
+	public function is_bad_file_type( $filename ) {
+		return in_array( $this->get_file_type( $filename ), $this->known_bad_extensions );
+	}
+
+	public function has_bad_file_pattern( $filename ) {
+		foreach ( $this->known_bad_file_patterns as $pattern ) {
+			$pattern = '/' . $pattern . '/i';
+			if ( 1 === preg_match( $pattern, $filename ) ) {
+				return true;
+			}
+		}
+	}
+
+	public function check_filename( $filename, $type ) {
+		if ( $this->has_bad_file_pattern( basename( $filename ) ) ) {
+			$this->add_error(
+				'badfile-error',
+				'bad file in theme',
+				'Blocker',
+				basename( $filename )
+			);
+			return false;
+		}
+
+		if ( $this->is_bad_file_type( $filename ) ) {
+			$this->add_error(
+				'filetype-error',
+				'File type ' . $type . ' not permitted',
+				'Blocker',
+				basename( $filename )
+			);
+			return false;
+		}
+
+		if ( !$this->is_known_file_type( $filename ) ) {
+			$this->add_error(
+				'filetype-error',
+				'File type ' . $type . ' detected',
+				'Warning',
+				basename( $filename )
+			);
+			return false;
+		}
+
+		return true;
+	}
+
 	public function get_file_count() {
 		$count = 0;
 		foreach( $this->files as $files_by_filetype ) {
@@ -80,9 +154,7 @@ class BaseScanner {
 		foreach( $files as $filename => $file_contents ) {
 			$file_type = $this->get_file_type( $filename );
 
-			// If we only want to scan files of a certain type
-			//if ( ! $this->is_known_file_type( $filename ) )
-			//	continue;
+			$this->check_filename( $filename, $file_type);
 
 			if( !isset( $grouped_files[$file_type] ) )
 				$grouped_files[$file_type] = array();
@@ -111,7 +183,7 @@ class BaseScanner {
 		if ( in_array( 'analyzers', $scanners ) ) {
 			$this->run_scanners( 'analyzers' );
 		}
-		
+	
 		return $pass;
 	}
 	

@@ -76,9 +76,8 @@ class VIPScanner_Command extends WP_CLI_Command {
 				foreach ( $errors as $error ) {
 					$lines = array();
 
-					// Not all errors have lines
-					if ( isset( $error['lines'] ) )
-						$lines = $error['lines'];
+					// Not all errors have lines -- assign a null line if we lack lines entirely
+					$lines =  ( isset( $error['lines'] ) ) ? $error['lines'] : array( '' );
 
 					// In JSON output, group the lines together
 					if ( 'json' == $args['format'] ) {
