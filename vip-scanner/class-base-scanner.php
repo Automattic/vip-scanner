@@ -183,7 +183,7 @@ class BaseScanner {
 		if ( in_array( 'analyzers', $scanners ) ) {
 			$this->run_scanners( 'analyzers' );
 		}
-	
+
 		return $pass;
 	}
 	

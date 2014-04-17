@@ -63,13 +63,13 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 ) );
 
 VIP_Scanner::get_instance()->register_review( 'VIP Theme Review', array(
-	//'VIPWhitelistCheck',
+	'VIPWhitelistCheck',
 	'VIPRestrictedPatternsCheck',
 	'VIPRestrictedCommandsCheck',
 	'VIPInitCheck',
 	'PHPShortTagsCheck',
 	'VCMergeConflictCheck',
-	//'WordPressCodingStandardsCheck',
+	'WordPressCodingStandardsCheck',
 	'ClamAVCheck', // Pass null to lookup the check normally
 ), array(
 	'PHPAnalyzer',
