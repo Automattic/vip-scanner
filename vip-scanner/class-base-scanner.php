@@ -43,6 +43,8 @@ class BaseScanner {
 	public $known_bad_file_patterns = array(
 		'\.php\..*',
 		'^\.DS_Store$',
+		'^Thumbs.db$',
+		'^WS_FTP.*',
 	);
 
 
