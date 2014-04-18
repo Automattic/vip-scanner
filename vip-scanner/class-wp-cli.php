@@ -14,7 +14,7 @@ class VIPScanner_Command extends WP_CLI_Command {
 	 * Perform checks on a theme
 	 *
 	 * @subcommand scan-theme
-	 * @synopsis --theme=<theme-name> --scan_type=<scan-type> [--format=<format>] [--summary=<summary>]
+	 * @synopsis --theme=<theme-name> [--scan_type=<scan-type>] [--format=<format>] [--summary=<summary>]
 	 */
 	public function scan_theme( $args, $assoc_args ) {
 		$defaults = array(
