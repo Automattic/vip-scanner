@@ -28,6 +28,11 @@ require_once( VIP_SCANNER_DIR . '/class-class-renderer.php' );
 require_once( VIP_SCANNER_DIR . '/class-function-renderer.php' );
 require_once( VIP_SCANNER_DIR . '/class-base-analyzer.php' );
 
+if ( is_admin() ) {
+	require_once( VIP_SCANNER_DIR . '/class-async-directory-scanner.php' );
+	require_once( VIP_SCANNER_DIR . '/vip-scanner-async.php' );
+}
+
 class VIP_Scanner {
 	private static $instance;
 	var $reviews = array();
@@ -62,8 +67,12 @@ class VIP_Scanner {
 		if ( ! $review )
 			return false;
 
+		do_action( 'vip_scanner_pre_theme_review', $theme, $review_type );
+
 		$scanner = new ThemeScanner( $theme, $review );
 		$scanner->scan( $scanners );
+
+		do_action( 'vip_scanner_post_theme_review', $theme, $review_type, $scanner );
 		return $scanner;
 	}
 }

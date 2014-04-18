@@ -1,0 +1,15 @@
+#wp-admin-bar-vip-scanner a {
+	color: #7AD03A !important;
+}
+
+#wp-admin-bar-vip-scanner a.vip-scanner-has-issues { 
+	font-weight: bold;
+}
+
+#wp-admin-bar-vip-scanner a.vip-scanner-has-warning {
+	color: #FFBA00 !important;
+}
+
+#wp-admin-bar-vip-scanner a.vip-scanner-has-blocker {
+	color: #DD3D36 !important;
+}
