@@ -1,7 +1,8 @@
 <?php
 
 class TokenParser {
-	const PATH_SEPERATOR = '::';
+	const PATH_SEPERATOR      = '::';
+	const ANON_FUNCTION_LABEL = '{closure}';
 
 	const CLASS_OPEN				   = 0;
 	const CLASS_PARSE_PARENT		   = 1;
@@ -471,6 +472,7 @@ class TokenParser {
 				'chlidren' => array(),
 				'visibility' => 'public',
 				'abstract' => '',
+				'args' => '',
 				'path' => $this->get_current_path_str(),
 			),
 			$properties
@@ -519,19 +521,25 @@ class TokenParser {
 
 					break;
 				case self::CLASS_MEMBER_DEFINITION:
-					if ( $token !== T_STRING ) {
+					if ( $token !== T_STRING && $token !== '(' ) {
 						continue;
 					}
 
-					$properties['name'] = $this->get_name_with_path( $token_contents );
-					$this->add_to_path( $token_contents );
+					if ( $token === '(' ) {
+						// This is an anonymous function
+						$name = self::ANON_FUNCTION_LABEL;
+					} else {
+						$name = $token_contents;
+					}
+
+					$properties['name'] = $this->get_name_with_path( $name );
+					$this->add_to_path( $name );
 					$state = self::CLASS_MEMBER_FUNC_DEFINITION;
 					break;
 
 				case self::CLASS_MEMBER_FUNC_DEFINITION:
 					switch ( $token ) {
 						case '(':
-							$properties['args'] = '';
 							break;
 						case ')':
 							$state = self::CLASS_MEMBER_FUNC_BODY;
