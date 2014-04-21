@@ -845,9 +845,11 @@ class TokenParser {
 				$parser->add_to_path( $properties['path'] );
 			}
 
+			$parser->line = $this->line;
 			foreach ( $parser->parse_contents( "<?php $arg" ) as $element ) {
 				$this->elements[] = $element;
 			}
+			$this->line = $parser->line;
 
 			$parser->reset();
 		}
