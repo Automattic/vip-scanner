@@ -221,7 +221,7 @@ class VIP_Scanner_UI {
 		<h2 class="nav-tab-wrapper">
 			<a href="#errors" class="nav-tab"><?php echo absint( $errors ); ?> <?php _e( 'Errors', 'theme-check' ); ?></a>
 			<a href="#notes" class="nav-tab"><?php echo absint( $notes ); ?> <?php _e( 'Notes', 'theme-check' ); ?></a>
-			<?php /* <a href="#analysis" class="nav-tab"><?php _e( 'Analysis', 'theme-check' ); ?></a>*/ ?>
+			<a href="#analysis" class="nav-tab"><?php _e( 'Analysis', 'theme-check' ); ?></a>
 		</h2>
 
 		<div id="errors">
