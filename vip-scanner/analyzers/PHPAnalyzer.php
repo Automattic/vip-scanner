@@ -71,11 +71,6 @@ class PHPAnalyzer extends BaseAnalyzer {
 
 		foreach ( $hierarchy as $level => $hierarchy_children ) {
 			$code_elements = $file->get_code_elements( $level, $path );
-			if ( $file->get_filepath() == '/srv/www/wp-content/themes/twentyfourteen/inc/featured_.php' ) {
-				var_dump( $file->get_filename() );
-				var_dump( $level );
-				$code_elements;
-			}
 			if ( empty( $code_elements ) ) {
 				$this->add_renderers( $file, $renderer, $path, $hierarchy_children );
 				

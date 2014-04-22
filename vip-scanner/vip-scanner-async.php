@@ -329,7 +329,6 @@ class VIP_Scanner_Async {
 		$id = wp_insert_post( $post_args );
 
 		if ( is_wp_error( $id ) ) {
-			var_dump( $id );
 			return $id;
 		}
 
