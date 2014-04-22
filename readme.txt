@@ -3,7 +3,7 @@ Contributors: batmoo, automattic, tott, mfields, keoshi, betzster, mobius5150, n
 Tags: scanner, scan, files, security, theme check
 Requires at least: 3.4
 Tested up to: 3.9
-Stable tag: 0.6
+Stable tag: 0.7
 
 Scan all sorts of themes and files and things.
 
@@ -34,6 +34,14 @@ To come...
 1. The VIP Scanner has a slick UI. Slicker than your average.
 
 == Changelog ==
+
+= 0.7 =
+
+* Modified analyzer to use PHP tokens rather than regular expressions
+* New checks, including white/blacklist checking for file types and names
+* Added basic async scanning as an admin bar node
+* WP CLI scan commands now support paths in addition to theme slugs
+* WP CLI `scan_type` argument is now optional
 
 = 0.6 =
 
