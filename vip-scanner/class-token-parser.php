@@ -1,7 +1,8 @@
 <?php
 
 class TokenParser {
-	const PATH_SEPERATOR = '::';
+	const PATH_SEPERATOR      = '::';
+	const ANON_FUNCTION_LABEL = '{closure}';
 
 	const CLASS_OPEN				   = 0;
 	const CLASS_PARSE_PARENT		   = 1;
@@ -471,6 +472,7 @@ class TokenParser {
 				'chlidren' => array(),
 				'visibility' => 'public',
 				'abstract' => '',
+				'args' => '',
 				'path' => $this->get_current_path_str(),
 			),
 			$properties
@@ -519,19 +521,25 @@ class TokenParser {
 
 					break;
 				case self::CLASS_MEMBER_DEFINITION:
-					if ( $token !== T_STRING ) {
+					if ( $token !== T_STRING && $token !== '(' ) {
 						continue;
 					}
 
-					$properties['name'] = $this->get_name_with_path( $token_contents );
-					$this->add_to_path( $token_contents );
+					if ( $token === '(' ) {
+						// This is an anonymous function
+						$name = self::ANON_FUNCTION_LABEL;
+					} else {
+						$name = $token_contents;
+					}
+
+					$properties['name'] = $this->get_name_with_path( $name );
+					$this->add_to_path( $name );
 					$state = self::CLASS_MEMBER_FUNC_DEFINITION;
 					break;
 
 				case self::CLASS_MEMBER_FUNC_DEFINITION:
 					switch ( $token ) {
 						case '(':
-							$properties['args'] = '';
 							break;
 						case ')':
 							$state = self::CLASS_MEMBER_FUNC_BODY;
@@ -589,7 +597,6 @@ class TokenParser {
 			$properties
 		);
 
-		$last_t_string = -1;
 		$encountered_assignment = false;
 		$state = self::CLASS_MEMBER_OPEN;
 		$levels = array( 'path' => array() );
@@ -665,43 +672,17 @@ class TokenParser {
 					if ( ! $encountered_assignment && $token === '=' ) {
 						$encountered_assignment = true;
 						continue;
-					} elseif ( $token === '(' || $token === T_OBJECT_OPERATOR || $token === T_DOUBLE_COLON ) {
-						// Looks like theres a function call within the variable assignment
-						if ( $last_t_string !== -1 ) {
-							// There's a function call in this variable assignment!
-							// e.g: $var = somefunc();
-							$start_index   = $this->index;
-							$this->index   = $last_t_string;
-							$last_t_string = -1;
-							$func_call     = $this->parse_function_call( array( 'in_var' => $properties['name'] ) );
+					} elseif ( $token !== ';' || ! empty( $levels['path'] ) ) {
+						$element = $this->parse_next( $levels, ';' );
 
-							// Un-capture the opening bracket
-							if ( $token === '(' ) {
-								--$levels['('];
-								array_pop( $levels['path'] );
-							}
-
-							// If the function call returns null, it wasn't a function call
-							if ( is_null( $func_call ) ) {
-								$this->index = $start_index;
-								continue;
-							}
-
-							$properties['children'][] = $func_call;
-
-							// Append the function arguments to the variable definition (the function name will already be there)
-							$properties['contents'] .= '(' . implode( ', ', $func_call['args'] ) . ')';
-						} else {
-							$properties['contents'] .= $token_contents;
-						}
-					} elseif ( $token !== ';' ) {
-						if ( $token === T_VARIABLE || in_array( $token, $this->function_indicators ) ) {
-							$last_t_string = $this->index;
-						} elseif ( $last_t_string !== -1 ) {
-							$last_t_string = -1;
+						if ( !empty( $element ) ) {
+							$element['in_var'] = $properties['name'];
+							$properties['children'][] = $element;
 						}
 
-						$properties['contents'] .= $token_contents;
+						if ( $this->tokens[$this->index] === ';' && empty( $levels['path'] ) ) {
+							break 2;
+						}
 					} else {
 						break 2;
 					}
@@ -837,9 +818,11 @@ class TokenParser {
 				$parser->add_to_path( $properties['path'] );
 			}
 
+			$parser->line = $this->line;
 			foreach ( $parser->parse_contents( "<?php $arg" ) as $element ) {
 				$this->elements[] = $element;
 			}
+			$this->line = $parser->line;
 
 			$parser->reset();
 		}

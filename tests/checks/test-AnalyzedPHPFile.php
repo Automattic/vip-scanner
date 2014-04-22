@@ -788,4 +788,36 @@ EOT
 		$this->assert_object_property( $functions['']['some_test'], 'documentation', 'Tests something.' );
 		$this->assert_object_property( $functions['test_class']['test_class::some_func'], 'documentation', 'Does something.' );
 	}
+
+	/**
+	 * Tests that function doc strings are correctly parsed in.
+	 */
+	public function test_anonymous_functions() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+
+function some_func() {
+	apply_filters( 'some_filter', function( $arg ) { return $arg; } );
+}
+
+$f = function() {
+	apply_filters( 'some_filter', function( $arg1 ) { return $arg1; } );
+};
+
+$f();
+EOT
+		);
+
+		$functions = $analyzed_file->get_code_elements( 'functions' );
+
+		$this->assert_object_property( $functions['some_func']['some_func::{closure}'], 'args', '$arg' );
+		$this->assert_object_property( $functions['some_func']['some_func::{closure}'], 'line', 4 );
+
+		$this->assert_object_property( $functions['']['{closure}'], 'args', '' );
+		$this->assert_object_property( $functions['']['{closure}'], 'line', 7 );
+		$this->assert_object_property( $functions['']['{closure}'], 'in_var', 'f' );
+
+		$this->assert_object_property( $functions['{closure}']['{closure}::{closure}'], 'args', '$arg1' );
+		$this->assert_object_property( $functions['{closure}']['{closure}::{closure}'], 'line', 8 );
+	}
 }
