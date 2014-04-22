@@ -88,7 +88,6 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 			$filepath = $file->get_filepath();
 			if ( !array_key_exists( $filepath, $file_metas ) ) {
 				// This is not a file we can handle
-				var_dump( "Not scanning file: {$file->get_filepath()}: " . $file_metas[$filepath]->get_file()->get_filepath());
 				continue;
 			}
 			

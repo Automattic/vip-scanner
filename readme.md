@@ -30,6 +30,14 @@ Install using the Plugin Installer.
 Changelog
 ---------
 
+__0.7__
+
+* Modified analyzer to use PHP tokens rather than regular expressions
+* New checks, including white/blacklist checking for file types and names
+* Added basic async scanning as an admin bar node
+* WP CLI scan commands now support paths in addition to theme slugs
+* WP CLI `scan_type` argument is now optional
+
 __0.6__
 
 * Analysis tab for analysing functions, classes, namespaces, shortcodes, actions, filters, capabilities, roles, CPTs, taxonomies, scripts, and styles.
