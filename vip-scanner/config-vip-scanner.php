@@ -1,7 +1,7 @@
 <?php
 
 // Include the form config
-include_once('config-vip-scanner-wpcom-form.php');
+include_once( VIP_SCANNER_DIR . '/config-vip-scanner-wpcom-form.php' );
 
 // TODO: Not sure if this is the best place or way to handle this...
 

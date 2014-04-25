@@ -19,7 +19,7 @@ class AnalyzedPHPFile extends AnalyzedFile {
 		}
 
 		// Parse the tokens
-		require_once( 'class-token-parser.php' );
+		require_once( VIP_SCANNER_DIR . '/class-token-parser.php' );
 		$parser = new TokenParser();
 		$items = $parser->parse_contents( $this->filecontents );
 
