@@ -54,8 +54,16 @@ class BaseScanner {
 		// --- Run Checks against Files
 		// --- Return results
 		$this->files = $this->group_files( $files );
-		$this->checks = $review['checks'];
-		$this->analyzers = $review['analyzers'];
+
+		if ( isset( $review['checks'] ) ) {
+			// Is new API that supports analyzers
+			$this->checks 		= $review['checks'];
+			$this->analyzers 	= $review['analyzers'];
+		} else {
+			// Old api, treat $review as list of checks
+			$this->checks 		= $review;
+			$this->analyzers 	= array();
+		}
 	}
 
 	protected function add_error( $slug, $description, $level, $file = '', $lines = array() ) {
