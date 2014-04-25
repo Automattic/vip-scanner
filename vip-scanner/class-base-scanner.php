@@ -196,15 +196,24 @@ class BaseScanner {
 		
 		if ( 'analyzers' === $type ) {
 			$analyzed_files = array();
-			foreach ( $this->files['php'] as $filepath => $filecontents ) {
-				$analyzed_files[] = new AnalyzedPHPFile( $filepath, $filecontents );
+
+			if ( is_array( $this->files['php'] ) ) {
+				foreach ( $this->files['php'] as $filepath => $filecontents ) {
+					$analyzed_files[] = new AnalyzedPHPFile( $filepath, $filecontents );
+				}
 			}
 			
-			foreach ( $this->files['css'] as $filepath => $filecontents ) {
-				$analyzed_files[] = new AnalyzedCSSFile( $filepath, $filecontents );
+			if ( is_array( $this->files['css'] ) ) {
+				foreach ( $this->files['css'] as $filepath => $filecontents ) {
+					$analyzed_files[] = new AnalyzedCSSFile( $filepath, $filecontents );
+				}
 			}
 		}
 		
+		if ( ! is_array( $this->$type ) ) {
+			return;
+		}
+
 		foreach( $this->$type as $check => $check_file ) {
 			if ( is_numeric( $check ) ) { // a bit of a hack, but let's us pass in either associative or indexed or combined array
 				$check = $check_file;
