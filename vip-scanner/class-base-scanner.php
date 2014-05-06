@@ -15,13 +15,15 @@ class BaseScanner {
 	//recognized extensions
 	public $known_extensions = array(
 		'php' => array( 'php', 'php5', 'inc' ),
-		'css' => 'css',
-		'js' => 'js',
+		'css' => array( 'css', 'scss', 'sass', 'less' ),
+		'js' => array( 'js', 'coffee' ),
 		'gif' => 'gif',
 		'jpg' => array( 'jpg', 'jpeg' ),
 		'png' => 'png',
 		'svg' => 'svg',
-		'txt' => 'txt',
+		'txt' => array( 'txt', 'md', 'markdown' ),
+		'html' => array( 'html', 'htm' ),
+		'font' => array( 'woff', 'eot', 'ttf' ),
 	);
 	//these extensions are not allowed and will produce blocking errors
 	public $known_bad_extensions = array(
