@@ -23,7 +23,7 @@ class BaseScanner {
 		'svg' => 'svg',
 		'txt' => array( 'txt', 'md', 'markdown' ),
 		'html' => array( 'html', 'htm' ),
-		'font' => array( 'woff', 'eot', 'ttf' ),
+		'font' => array( 'woff', 'eot', 'ttf', 'otf' ),
 	);
 	//these extensions are not allowed and will produce blocking errors
 	public $known_bad_extensions = array(
