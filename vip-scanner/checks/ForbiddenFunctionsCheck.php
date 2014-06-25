@@ -13,6 +13,7 @@
 class ForbiddenFunctionsCheck extends BaseCheck {
 
 	function check( $files ) {
+		$result = true;
 
 		$forbidden_functions = array(
 			'register_post_type',
