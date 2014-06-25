@@ -1,6 +1,9 @@
 # Files we want to ignore
 *.svn/
 *Thumbs.db
+*.un~
+*.swp
+*.swo
 
 #############
 # OSX Ignores
