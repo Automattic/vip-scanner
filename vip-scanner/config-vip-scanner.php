@@ -50,6 +50,7 @@ VIP_Scanner::get_instance()->register_review( 'Undefined Function Check', array(
 ) );
 
 VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
+	'BodyClassCheck',
 	'EscapingCheck',
 	'ForbiddenFunctionsCheck',
 	'InternationalizedStringCheck',
