@@ -119,8 +119,8 @@ class BaseScanner {
 		if ( $this->has_bad_file_pattern( basename( $filename ) ) ) {
 			$this->add_error(
 				'badfile-error',
-				'bad file in theme',
-				'Blocker',
+				'Found a file with an extension that is not allowed in a theme.',
+				BaseScanner::LEVEL_BLOCKER,
 				basename( $filename )
 			);
 			return false;
