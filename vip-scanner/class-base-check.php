@@ -75,6 +75,24 @@ abstract class BaseCheck
 		return implode( ' ', $this->get_all_files( $files ) );
 	}
 
+	/**
+	 * Checks if a specific file exists the passed files.
+	 */
+	protected function file_exists( $files, $file_name ) {
+		$file_name_parts = explode( '.', $file_name );
+		$file_extension  = array_pop( $file_name_parts );
+
+		$files_to_search = $this->filter_files( $files, $file_extension );
+
+		$all_file_names = array();
+
+		foreach ( $files_to_search as $name => $contents ) {
+			array_push( $all_file_names, strtolower( basename( $name ) ) );
+		}
+
+		return in_array( $file_name, $all_file_names );
+	}
+
 	function get_line( $line, $content ) {
 		if( ! is_array( $content ) )
 			$lines = preg_split( '/((?<!\\\|\r)\n)|((?<!\\\)\r\n)/', $content );
