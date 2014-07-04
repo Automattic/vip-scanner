@@ -19,8 +19,7 @@ class ForbiddenLibrariesCheck extends BaseCheck {
 			$this->add_error(
 				'forbidden-library',
 				'Found <code>timthumb.php</code>. The use of this library is not allowed.',
-				BaseScanner::LEVEL_BLOCKER,
-				$this->get_filename( $file_path )
+				BaseScanner::LEVEL_BLOCKER
 			);
 			$result = false;
 		}
@@ -34,8 +33,7 @@ class ForbiddenLibrariesCheck extends BaseCheck {
 			$this->add_error(
 				'forbidden-library',
 				'Found <code>options-framework.php</code>. The use of this library is not allowed.',
-				BaseScanner::LEVEL_BLOCKER,
-				$this->get_filename( $file_path )
+				BaseScanner::LEVEL_BLOCKER
 			);
 			$result = false;
 		}
