@@ -51,7 +51,7 @@ class DeprecatedFunctionsCheck extends BaseCheck {
 			'get_linkobjectsbyname'      => 'get_bookmarks()',
 			'get_linksbyname_withrating' => 'get_bookmarks()',
 			'get_settings'               => 'get_option()',
-			'link_pages'                 => 'wp_link_pages()',
+			'\slink_pages'               => 'wp_link_pages()', // Whitespace character avoids false positives for wp_link_pages().
 			'links_popup_script'         => '',
 			'list_authors'               => 'wp_list_authors()',
 			'list_cats'                  => 'wp_list_categories()',
