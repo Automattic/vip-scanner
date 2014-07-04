@@ -13,6 +13,7 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 	'BodyClassCheck',
 	'CustomizerCheck',
 	'DeprecatedFunctionsCheck',
+	'DeprecatedParametersCheck',
 	'EscapingCheck',
 	'ForbiddenFunctionsCheck',
 	'HeaderCheck',
