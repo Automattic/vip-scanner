@@ -51,7 +51,7 @@ class DeprecatedFunctionsCheck extends BaseCheck {
 			'get_linkobjectsbyname'      => 'get_bookmarks()',
 			'get_linksbyname_withrating' => 'get_bookmarks()',
 			'get_settings'               => 'get_option()',
-			'link_pages'               => 'wp_link_pages()',
+			'link_pages'                 => 'wp_link_pages()',
 			'links_popup_script'         => '',
 			'list_authors'               => 'wp_list_authors()',
 			'list_cats'                  => 'wp_list_categories()',
@@ -318,9 +318,9 @@ class DeprecatedFunctionsCheck extends BaseCheck {
 				
 				/**
 				 * Before a function, there's either a start of a line, whitespace, . or (
-				 * This is to avoid false positives, like wp_list_pages() being flagged as list_pages().
+				 * This is to avoid false positives, like wp_link_pages() being flagged as link_pages().
 				 */
-				if ( preg_match( '/(?:^\s\.\()' . $check . '\(/', $file_content, $matches ) ) {
+				if ( preg_match( '/(?:^|[\s\.\(])' . $check . '\(/m', $file_content, $matches ) ) {
 					$deprecated_function = trim( rtrim( $matches[0], '(' ) );
 
 					// Indicate the deprecated function that has been found.
