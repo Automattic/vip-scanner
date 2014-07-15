@@ -456,6 +456,9 @@ class VIP_Scanner_UI {
 	}
 
 	function export() {
+		
+		// Turn off error reporting during an export
+		error_reporting(0);
 
 		// Check nonce and permissions
 		check_admin_referer( 'export' );
