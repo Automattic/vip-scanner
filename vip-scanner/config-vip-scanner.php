@@ -22,13 +22,10 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 	'HeaderCheck',
 	'InternationalizedStringCheck',
 	'ScreenshotCheck',
-	'TheamPubFileCheck',
-	'TheamPubIndividualFiles',
 	'ThemeCommentPaginationCheck',
 	'ThemecolorsCheck',
 	'VCMergeConflictCheck',
 	'WidgetsCheck',
-	'PHPClosingTagsCheck',
 	'WordPressCodingStandardsCheck',
 ), array(
 	'PHPAnalyzer',
