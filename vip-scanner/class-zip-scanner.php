@@ -20,6 +20,7 @@ class ZipScanner extends BaseScanner
 
 		if ( false === $zip_ret) {
 			$this->add_error( 'invalid-zip', sprintf( 'Can\'t open: %s', $path ), 'blocker', $path );
+			return;
 		}
 
 		for ( $i = 0; $i < $zip->numFiles; $i++ ) {
