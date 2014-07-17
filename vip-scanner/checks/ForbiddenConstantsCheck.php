@@ -5,6 +5,7 @@
  * WP_PLUGIN_DIR
  * MUPLUGINDIR
  * WPMU_PLUGIN_DIR
+ * IS_WPCOM
  */
 
 class ForbiddenConstantsCheck extends BaseCheck {
@@ -18,6 +19,7 @@ class ForbiddenConstantsCheck extends BaseCheck {
 			'WP_PLUGIN_DIR',
 			'MUPLUGINDIR',
 			'WPMU_PLUGIN_DIR',
+			'IS_WPCOM',
 		);
 
 		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
