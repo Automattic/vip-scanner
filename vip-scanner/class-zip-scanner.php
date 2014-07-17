@@ -25,7 +25,6 @@ class ZipScanner extends BaseScanner
 
 		for ( $i = 0; $i < $zip->numFiles; $i++ ) {
 			$file_name = $zip->getNameIndex( $i );
-			$file_info = pathinfo( $file_name );
 
  	 	 	// Skip directories - seemingly the only way, since php's zip
  	 	 	// wrapper doesn't support stat() calls.
@@ -33,7 +32,7 @@ class ZipScanner extends BaseScanner
 				continue;
 			}
 
-			$files[$file_name] = file_get_contents("zip://{$path}#{$file_name}", 'r' );
+			$files[$file_name] = $zip->getFromIndex( $i );
 		}
 
 		return $files;
