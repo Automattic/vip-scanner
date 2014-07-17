@@ -27,11 +27,11 @@ class ForbiddenConstantsCheck extends BaseCheck {
 			foreach ( $checks as $check ) {
 				
 				/**
-				 * Before a constant, there's either a start of a line, whitespace, . or (
+				 * Before a constant, there's either a start of a line, whitespace, ', ", . or (
 				 * This is to avoid false positives.
 				 */
-				if ( preg_match( '/(?:^|[\s\.\(])' . $check . '/m', $file_content, $matches ) ) {
-					$error= trim( $matches[0] );
+				if ( preg_match( '/(?:^|[\s\.\(\'\"])(' . $check . ')/m', $file_content, $matches ) ) {
+					$error= trim( array_pop( $matches ) );
 
 					$this->add_error(
 						'forbidden',
