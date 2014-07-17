@@ -11,6 +11,7 @@ require_once( VIP_SCANNER_DIR . '/config-vip-scanner.php' );
 require_once( VIP_SCANNER_DIR . '/class-base-check.php' );
 require_once( VIP_SCANNER_DIR . '/class-base-scanner.php' );
 require_once( VIP_SCANNER_DIR . '/class-directory-scanner.php' );
+require_once( VIP_SCANNER_DIR . '/class-zip-scanner.php' );
 require_once( VIP_SCANNER_DIR . '/class-theme-scanner.php' );
 require_once( VIP_SCANNER_DIR . '/class-content-scanner.php' );
 require_once( VIP_SCANNER_DIR . '/class-diff-scanner.php' );
