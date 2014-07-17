@@ -35,7 +35,7 @@ class ScreenshotCheck extends BaseCheck {
 		$png_files = $this->filter_files( $files, 'png' );
 		foreach( $png_files as $path => $content ) {
 			if ( 'screenshot.png' === basename( $path ) ) {
-				$image_size = getimagesize( $path );
+				$image_size = getimagesizefromstring( $content );
 				$message = '';
 
 				if ( 880 != $image_size[0] ) {
