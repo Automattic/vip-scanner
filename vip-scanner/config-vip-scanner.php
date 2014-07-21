@@ -18,6 +18,7 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 	'EscapingCheck',
 	'ForbiddenConstantsCheck',
 	'ForbiddenFunctionsCheck',
+	'ForbiddenGoogleCheck',
 	'ForbiddenLibrariesCheck',
 	'ForbiddenPHPFunctionsCheck',
 	'HeaderCheck',
