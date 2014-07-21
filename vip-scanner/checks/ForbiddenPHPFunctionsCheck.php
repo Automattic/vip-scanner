@@ -38,7 +38,7 @@ class ForbiddenPHPFunctionsCheck extends BaseCheck {
 					$forbidden_function = trim( rtrim( $matches[0], '(' ) );
 
 					$this->add_error(
-						'deprecated',
+						'forbidden-php',
 						'The PHP function <code>' . esc_html( $forbidden_function ) . '()</code> was found. Themes cannot use this function.',
 						BaseScanner::LEVEL_BLOCKER,
 						$this->get_filename( $file_path )
