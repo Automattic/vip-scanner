@@ -11,31 +11,27 @@ class ForbiddenLibrariesCheck extends BaseCheck {
 		$result = true;
 
 		/**
-		 * Check for timthumb.php.
+		 * List of forbidden libraries
 		 */
-		$this->increment_check_count();
-
-		if ( $this->file_exists( $files, 'timthumb.php' ) ) {
-			$this->add_error(
-				'forbidden-library',
-				'Found <code>timthumb.php</code>. The use of this library is not allowed.',
-				BaseScanner::LEVEL_BLOCKER
-			);
-			$result = false;
-		}
+		$checks = array(
+			'timthumb.php',
+			'options-framework.php',
+		);
 
 		/**
-		 * Check for Options Framework.
+		 * Check for the libraries.
 		 */
-		$this->increment_check_count();
+		foreach( $checks as $library ) {
+			$this->increment_check_count();
 
-		if ( $this->file_exists( $files, 'options-framework.php' ) ) {
-			$this->add_error(
-				'forbidden-library',
-				'Found <code>options-framework.php</code>. The use of this library is not allowed.',
-				BaseScanner::LEVEL_BLOCKER
-			);
-			$result = false;
+			if ( $this->file_exists( $files, $library ) ) {
+				$this->add_error(
+					'forbidden-library',
+					'Found <code>' . esc_html( $library ) . '</code> in the theme. The use of this library is not allowed.',
+					BaseScanner::LEVEL_BLOCKER
+				);
+				$result = false;
+			}
 		}
 		
 		return $result;
