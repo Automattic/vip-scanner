@@ -24,6 +24,7 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 	'ForbiddenPHPFunctionsCheck',
 	'HeaderCheck',
 	'InternationalizedStringCheck',
+	'PostThumbnailsCheck',
 	'ScreenshotCheck',
 	'ThemecolorsCheck',
 	'VCMergeConflictCheck',
