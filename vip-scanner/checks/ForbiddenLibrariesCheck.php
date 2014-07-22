@@ -16,6 +16,7 @@ class ForbiddenLibrariesCheck extends BaseCheck {
 		$checks = array(
 			'timthumb.php',
 			'options-framework.php',
+			'isotope.js',
 		);
 
 		/**
