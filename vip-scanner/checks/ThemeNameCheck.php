@@ -62,7 +62,7 @@ class ThemeNameCheck extends BaseCheck {
 		);
 
 		foreach ( $forbidden_words as $word ) {
-			if ( preg_match( '/\s*' . $word . '(\s|$)/i', $name ) ) {
+			if ( preg_match( '/(\s|^)' . $word . '(\s|$)/i', $name ) ) {
 				$this->add_error(
 					'theme-name',
 					'Found the word <em>' . esc_html( $word ) . '</em> in the theme name. This word is not allowed, please remove it.',
