@@ -10,18 +10,29 @@
 WP_CLI::add_command( 'vip-scanner', 'VIPScanner_Command' );
 
 class VIPScanner_Command extends WP_CLI_Command {
+
 	/**
 	 * Perform checks on a theme
 	 *
+	 * [--theme=<theme>]
+	 * : Theme to scan. Defaults to current.
+	 *
+	 * [--scan_type=<scan_type>]
+	 * : Type of scan to perform. Defaults to "WP.org Theme Review"
+	 *
+	 * [--summary]
+	 * : Summarize the results.
+	 *
+	 * [--format=<format>]
+	 * : Output results to a given format: table, JSON, CSV. Defaults to table.
+	 *
 	 * @subcommand scan-theme
-	 * @synopsis --theme=<theme-name> [--scan_type=<scan-type>] [--format=<format>] [--summary=<summary>]
 	 */
 	public function scan_theme( $args, $assoc_args ) {
 		$defaults = array(
-			'theme'			=> null,
-			'scan_type' 	=> 'WP.org Theme Review',
-			'format' 		=> 'table',
-			'summary' 		=> false
+			'theme'         => get_option( 'stylesheet' ),
+			'scan_type'     => 'VIP Theme Review',
+			'format'        => 'table'
 		);
 
 		$args = wp_parse_args( $assoc_args, $defaults );
@@ -31,7 +42,7 @@ class VIPScanner_Command extends WP_CLI_Command {
 		if ( ! $scanner )
 			WP_CLI::error( sprintf( 'Scanning of %s failed', $args['theme'] ) );
 
-		if ( $args['summary'] ) {
+		if ( isset( $args['summary'] ) ) {
 			$results = $scanner->get_results();
 
 			$data = array();
