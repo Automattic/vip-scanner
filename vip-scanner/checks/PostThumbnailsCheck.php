@@ -73,12 +73,13 @@ class PostThumbnailsCheck extends BaseCheck {
 		}
 
 		/**
-		 * Check if the tags reflect the post thumbnails usage.
+		 * Check if the tags reflect the post thumbnails usage: either featured-images
+		 * or featured-image-header needs to be used.
 		 */
-		if ( $supports_thumbnails && ! in_array( 'featured-images', $tags ) ) {
+		if ( $supports_thumbnails && ! in_array( 'featured-images', $tags ) && ! in_array( 'featured-image-header', $tags ) ) {
 			$this->add_error(
 				'post-thumbnails',
-				'The theme has declared support for Post Thumbnails, but the <code>featured-images</code> tag does not exist.',
+				'The theme has declared support for Post Thumbnails, but the <code>featured-images</code> or <code>featured-image-header</code> tags do not exist.',
 				Basescanner::LEVEL_BLOCKER
 			);
 			$result = false;
