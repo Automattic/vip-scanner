@@ -36,7 +36,7 @@ class AtPackageCheck extends BaseCheck {
 			if ( false === stripos( $file_content, '@package' ) ) {
 				$this->add_error(
 					'atpackage',
-					'The file does not contain <code>@package</code> information. Every PHP file should have <code>@package Themename</code> in its header. The theme name must be one word with no spaces or newlines containing only letters, digits, and and "_", "-", "[" or "].',
+					'The file does not contain <code>@package</code> information. Every PHP file should have <code>@package Themename</code> in its header, with <code>Themename</code> being one word with no spaces or newlines containing only letters, digits, and and "_", "-", "[" or "].',
 					Basescanner::LEVEL_WARNING,
 					$this->get_filename( $file_path )
 				);
