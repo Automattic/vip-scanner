@@ -20,7 +20,7 @@ class jQueryCheck extends BaseCheck {
 			if ( false !== strpos( $file_content, '.live(' ) ) {
 				$this->add_error(
 					'jquery',
-					'The jQuery <code>.live()</code> method is deprecated.',
+					'The jQuery <code>.live()</code> method is deprecated. Use <code>.on()</code> instead to attach event handlers.',
 					Basescanner::LEVEL_BLOCKER,
 					$this->get_filename( $file_path )
 				);
