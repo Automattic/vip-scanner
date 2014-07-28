@@ -34,7 +34,7 @@ class jQueryCheck extends BaseCheck {
 		 */
 		$this->increment_check_count();
 		foreach( $js_files as $file_path => $file_content ) {
-			if ( ! preg_match( '/\$\(\s*document\s*\)\.on\(\s*[\'"]ready[\'"]\s*,\s*function\(\)/', $file_content ) ) {
+			if ( preg_match( '/\$\(\s*document\s*\)\.on\(\s*[\'"]ready[\'"]\s*,\s*function\(\)/', $file_content ) ) {
 				$this->add_error(
 					'jquery',
 					'The jQuery <code>$(document).on( "ready", handler )</code> handler is deprecated deprecated as of jQuery 1.8.',
