@@ -51,7 +51,7 @@ class MasonryCheck extends BaseCheck {
 					if ( false !== strpos( $file_content, $code . ':' ) ) {
 						$this->add_error(
 							'masonry',
-							'Found deprecated jQuery option. ' . $message,
+							'Found deprecated Masonry option. ' . $message,
 							Basescanner::LEVEL_BLOCKER,
 							$this->get_filename( $file_path )
 						);
