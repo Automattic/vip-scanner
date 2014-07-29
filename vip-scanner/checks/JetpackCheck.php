@@ -29,7 +29,7 @@ class JetpackCheck extends BaseCheck {
 		if ( in_array( 'responsive-layout', $tags ) ) {
 			if ( ! preg_match( '/[\s|]add_theme_support\((\s|)("|\')jetpack-responsive-videos("|\')(\s|)\)/m', $php_code ) ) {
 				$this->add_error(
-					'post-thumbnails',
+					'jetpack',
 					"The theme has not declared support for Jetpack Responsive Videos. Use <code>add_theme_support( 'jetpack-responsive-videos' );</code> in your <code>inc/jetpack.php</code> file",
 					Basescanner::LEVEL_WARNING
 				);
