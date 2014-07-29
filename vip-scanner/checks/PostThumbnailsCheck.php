@@ -40,7 +40,7 @@ class PostThumbnailsCheck extends BaseCheck {
 			$this->add_error(
 				'post-thumbnails',
 				'The theme has not declared support for Post Thumnbails.',
-				Basescanner::LEVEL_WARNING
+				Basescanner::LEVEL_NOTE
 			);
 
 			// Check for correct tags.
