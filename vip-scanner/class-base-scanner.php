@@ -24,6 +24,7 @@ class BaseScanner {
 		'txt' => array( 'txt', 'md', 'markdown' ),
 		'html' => array( 'html', 'htm' ),
 		'font' => array( 'woff', 'eot', 'ttf', 'otf' ),
+		'i18n' => array( 'pot', 'po', 'mo' ),
 	);
 	//these extensions are not allowed and will produce blocking errors
 	public $known_bad_extensions = array(
