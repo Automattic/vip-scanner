@@ -46,7 +46,7 @@ class LanguagePacksCheck extends BaseCheck {
 		$domain_path = array();
 		preg_match( '/Domain Path:(.*)$/mi', $css_code, $domain_path );
 
-		if ( '/languages/' != trim( $domain_path[1] ) ) {
+		if ( '/languages' != trim( $domain_path[1] ) ) {
 			$this->add_error(
 				'language-packs',
 				'You need to indicate a domain path in your <code>style.css</code> file header: <code>Domain Path: /languages/</code>.',
