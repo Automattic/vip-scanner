@@ -4,6 +4,7 @@ class PHPShortTagsTest extends WP_UnitTestCase {
 	protected $_PHPShortTagsCheck;
 
 	public function setUp() {
+		parent::setUp();
 		require_once VIP_SCANNER_DIR . '/checks/PHPShortTagsCheck.php';
 
 		$this->_PHPShortTagsCheck = new PHPShortTagsCheck();

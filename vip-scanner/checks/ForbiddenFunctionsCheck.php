@@ -22,6 +22,7 @@ class ForbiddenFunctionsCheck extends BaseCheck {
 			'add_meta_box',
 			'add_help_tab',
 			'query_posts',
+			'get_children',
 		);
 
 		$php = $this->merge_files( $files, 'php' );
