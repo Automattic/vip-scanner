@@ -4,6 +4,7 @@ class AnalyzedPHPFileTest extends WP_UnitTestCase {
 	protected $_PHPShortTagsCheck;
 
 	public function setUp() {
+		parent::setUp();
 		require_once VIP_SCANNER_DIR . '/class-analyzed-php-file.php';
 	}
 

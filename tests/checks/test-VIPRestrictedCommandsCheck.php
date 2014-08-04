@@ -4,6 +4,7 @@ class VIPRestrictedCommandsCheckTest extends WP_UnitTestCase {
 	protected $_VIPRestrictedCommandsCheck;
 
 	public function setUp() {
+		parent::setUp();
 		require_once VIP_SCANNER_DIR . '/checks/VIPRestrictedCommandsCheck.php';
 
 		$this->_VIPRestrictedCommandsCheck = new VIPRestrictedCommandsCheck();
