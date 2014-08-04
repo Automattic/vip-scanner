@@ -12,3 +12,5 @@ tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
 require $_tests_dir . '/includes/bootstrap.php';
 
+// Disable the deprecated warnings (problem with WP3.7.1 and php 5.5)
+PHPUnit_Framework_Error_Deprecated::$enabled = FALSE;
