@@ -7,6 +7,7 @@ class VIPRestrictedPatternsCheck extends BaseCheck
 
 		$checks = array(
 			"/(\\\$isIE)+/msiU" => array( "level" => "Warning", "note" => 'Using $isIE conflicts with full page caching' ),
+			"/(\\\$_REQUEST)+/msiU" => array( "level" => "Blocker", "note" => 'Using $_REQUEST is forbidden. You should use $_POST or $_GET' ),
 			"/WordPress VIP/msiU" => array( "level" => "Warning", "note" => 'Please use "WordPress.com VIP" rather than "WordPress VIP"' ),
 			"/(kses)+/msiU" => array ( "level" => "Warning", "note" => "Working with kses" ),
 			"/(\\\$wpdb->|mysql_)+.+(ALTER)+\s+/msiU" => array( "level" => "Blocker", "note" => "Possible database table alteration" ),
@@ -15,9 +16,9 @@ class VIPRestrictedPatternsCheck extends BaseCheck
 			"/(\\\$wpdb->|mysql_)+.+(DELETE)+\s+(FROM)+\s+/msiU" => array( "level" => "Note", "note" => "Direct database delete query" ),
 			"/(\\\$wpdb->|mysql_)+.+(SELECT)+\s.+/msiU" => array( "level" => "Note", "note" => "Direct Database select query" ),
 			"/(^GLOBAL)(\\\$wpdb->|mysql_)+/msiU" => array( "level" => "Warning", "note" => "Possible direct database query" ),
-			"/(echo|print|\<\?\=)+.+(\\\$GLOBALS|\\\$_SERVER|\\\$_GET|\\\$_REQUEST|\\\$_POST)+/msiU" => array( "level" => "Warning", "note" => "Possible output of restricted variables" ),
+			"/(echo|print|\<\?\=)+.+(\\\$GLOBALS|\\\$_SERVER|\\\$_GET|\\\$_POST)+/msiU" => array( "level" => "Warning", "note" => "Possible output of restricted variables" ),
 			"/(echo|print|\<\?\=)+.+(get_search_query)+/msiU" => array( "level" => "Warning", "note" => "Output of search query" ),
-			"/(\\\$GLOBALS|\\\$_SERVER|\\\$_GET|\\\$_REQUEST|\\\$_POST)+/msiU" => array( "level" => "Note", "note" => "Working with superglobals" ),
+			"/(\\\$GLOBALS|\\\$_SERVER|\\\$_GET|\\\$_POST)+/msiU" => array( "level" => "Note", "note" => "Working with superglobals" ),
 			"/(\\\$_SERVER\[(?!('|\"REQUEST_URI|SCRIPT_FILENAME|HTTP_HOST'|\"))([^]]+|)\])+/msiU" => array( "level" => "Blocker", "note" => 'Non whitelisted $_SERVER superglobals found in this file' ),
 		);
 
