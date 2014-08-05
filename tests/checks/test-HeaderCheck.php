@@ -2,6 +2,11 @@
 
 class HeaderTest extends WP_UnitTestCase {
 	protected $_HeaderCheck;
+	protected static $valid_header_file;
+
+	public static function setUpBeforeClass() {
+		self::$valid_header_file = file_get_contents( dirname( __FILE__ ) . '/../data/valid-header.php' );
+	}
 
 	public function setUp() {
 		parent::setUp();
@@ -10,35 +15,21 @@ class HeaderTest extends WP_UnitTestCase {
 		$this->_HeaderCheck = new HeaderCheck();
 	}
 
-	public function testValidTitle() {
-		$input = array(
-			'php' => array(
-				'test.php' => "<title><?php wp_title( '|', true, 'right' ); ?></title>"
-			)
-		);
+	public function runCheck( $file_contents ) {
+		$input = array( 'php' => array( 'test.php' => $file_contents ) );
 
 		$result = $this->_HeaderCheck->check( $input );
 		$errors = $this->_HeaderCheck->get_errors();
-		$error_slugs = wp_list_pluck( $errors, 'slug' );
 
-		$this->assertNotContains( 'header-title', $error_slugs );
+		return wp_list_pluck( $errors, 'slug' );
 	}
 
-	public function testInvalidTitle() {
-		$input = array(
-			'php' => array(
-				'test.php' => "<title>
-<?php wp_title(' '); ?>
-<?php if(wp_title(' ', false)) { echo '|'; } ?>
-<?php bloginfo('name'); ?>
-</title>"
-			)
-		);
+	/**
+	 * Test for valid HTML5 doctype.
+	 */
+	public function testValidTitleTags() {
+		$error_slugs = $this->runCheck( self::$valid_header_file );
 
-		$result = $this->_HeaderCheck->check( $input );
-		$errors = $this->_HeaderCheck->get_errors();
-		$error_slugs = wp_list_pluck( $errors, 'slug' );
-
-		$this->assertContains( 'header-title', $error_slugs );
+		$this->assertNotContains( 'header-doctype', $error_slugs );
 	}
 }
