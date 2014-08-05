@@ -39,7 +39,6 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 	'VCMergeConflictCheck',
 	// 'WhitespaceCheck',
 	'WidgetsCheck',
-	'WordPressCodingStandardsCheck',
 ), array(
 	'PHPAnalyzer',
 	'CustomResourceAnalyzer',
