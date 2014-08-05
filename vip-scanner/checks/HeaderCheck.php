@@ -34,7 +34,7 @@ class HeaderCheck extends BaseCheck {
              * First looks ahead to see of there's <title>...</title>
              * Then performs a negative look ahead for <title><?php wp_title(...); ?></title>
              */
-            if ( preg_match_all( '/(?=<title>(.*)<\/title>)(?!<title>\s*<\?php\s*wp_title\([^\)]*\);\s*\?>\s*<\/title>)/', $file_content, $matches ) ) {
+            if ( preg_match_all( '/(?=<title>(.*)<\/title>)(?!<title>\s*<\?php\s*wp_title\([^\)]*\);\s*\?>\s*<\/title>)/s', $file_content, $matches ) ) {
                 $errors = $matches[0];
 
 				foreach ( $errors as $error ) {
