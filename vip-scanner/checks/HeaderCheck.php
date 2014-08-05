@@ -39,7 +39,7 @@ class HeaderCheck extends BaseCheck {
 
 				foreach ( $errors as $error ) {
 					$this->add_error(
-						'header',
+						'header-title',
 						'Titles should contain nothing besides a call to <code>wp_title()</code>.',
 						BaseScanner::LEVEL_BLOCKER,
 						$this->get_filename( $file_path )
