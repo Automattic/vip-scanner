@@ -1,15 +1,15 @@
 <?php
 
-class YUICompressorTest extends WP_UnitTestCase {
-	protected $_YUICompressorCheck;
+class JavaScriptLintTest extends WP_UnitTestCase {
+	protected $_JavaScriptLintCheck;
 
 	public function setUp() {
 		parent::setUp();
-		require_once VIP_SCANNER_DIR . '/checks/YUICompressorCheck.php';
+		require_once VIP_SCANNER_DIR . '/checks/JavaScriptLintCheck.php';
 
-		$this->_YUICompressorCheck = new YUICompressorCheck();
+		$this->_JavaScriptLintCheck = new JavaScriptLintCheck();
 		// We should force the Check to use a ThemeScanner
-		$this->_YUICompressorCheck->set_scanner( new ThemeScanner("Tests", array() ) );
+		$this->_JavaScriptLintCheck->set_scanner( new ThemeScanner("Tests", array() ) );
 	}
 
 	public function testJavaScriptSyntaxError() {
@@ -31,10 +31,10 @@ alert("This is a test");
 			}
 		}
 
-		$result = $this->_YUICompressorCheck->check( $input );
+		$result = $this->_JavaScriptLintCheck->check( $input );
 		$this->assertFalse( $result );
 		
-		$errors = $this->_YUICompressorCheck->get_errors();
+		$errors = $this->_JavaScriptLintCheck->get_errors();
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 		$this->assertContains( 'yuicompressor', $error_slugs );
 
@@ -59,10 +59,10 @@ alert("This is a test");
 			}
 		}
 
-		$result = $this->_YUICompressorCheck->check( $input );
+		$result = $this->_JavaScriptLintCheck->check( $input );
 		$this->assertTrue( $result );
 		
-		$errors = $this->_YUICompressorCheck->get_errors();
+		$errors = $this->_JavaScriptLintCheck->get_errors();
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 		$this->assertNotContains( 'yuicompressor', $error_slugs );
 

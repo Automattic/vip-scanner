@@ -1,6 +1,6 @@
 <?php
 
-class YUICompressorCheck extends BaseCheck {
+class JavaScriptLintCheck extends BaseCheck {
 	const COMMAND = 'java';
 
 	/**
@@ -19,7 +19,7 @@ class YUICompressorCheck extends BaseCheck {
 			return $scanner;
 		
 		// First check if Java is installed on the system 
-		if ( ! self::isJavaInstalled() ) {
+		if ( ! self::is_java_installed() ) {
 			$this->add_error( 'yuicompressor', 'YUI Compressor', BaseScanner::LEVEL_WARNING, null, array( 'Java is not present on this system - as such, the YUI Compressor wasn\'t performed on this theme.') );
 			return true;
 		}
