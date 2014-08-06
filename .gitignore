@@ -4,6 +4,7 @@
 *.un~
 *.swp
 *.swo
+*.idea
 
 #############
 # OSX Ignores

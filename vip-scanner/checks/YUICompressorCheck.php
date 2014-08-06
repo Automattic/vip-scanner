@@ -9,7 +9,7 @@ class YUICompressorCheck extends BaseCheck {
 	 */
 	const USE_CSS = false;
 
-	protected $yui_file_name = "yuicompressor-2.4.8.jar";
+	const YUI_FILE_NAME = "yuicompressor-2.4.8.jar";
 
 	public function check( $files ) {
 		// If the scan is not a theme scan, skip (for example, diff scan)
@@ -25,8 +25,8 @@ class YUICompressorCheck extends BaseCheck {
 		}
 
 		// Then, check if the yuicompressor java binary is present
-		if( ! file_exists( VIP_SCANNER_BIN_DIR . '/' . $this->yui_file_name ) ) {
-			$this->add_error( 'yuicompressor', 'YUI Compressor', BaseScanner::LEVEL_WARNING, null, array( 'The filename ' . $this->yui_file_name . ' wasn\'t found on ' . VIP_SCANNER_BIN_DIR . ' directory.' ) );
+		if( ! file_exists( VIP_SCANNER_BIN_DIR . '/' . self::YUI_FILE_NAME ) ) {
+			$this->add_error( 'yuicompressor', 'YUI Compressor', BaseScanner::LEVEL_WARNING, null, array( 'The filename ' . self::YUI_FILE_NAME . ' wasn\'t found on ' . VIP_SCANNER_BIN_DIR . ' directory.' ) );
 			return true;
 		}
 		
@@ -40,7 +40,7 @@ class YUICompressorCheck extends BaseCheck {
 		$errors = array();
 		foreach ( $files as $file_path => $file_content ) {
 
-			$command = escapeshellcmd( self::COMMAND . ' -jar ' . VIP_SCANNER_BIN_DIR . '/' . $this->yui_file_name . ' ' . $file_path );
+			$command = escapeshellcmd( self::COMMAND . ' -jar ' . VIP_SCANNER_BIN_DIR . '/' . self::YUI_FILE_NAME . ' ' . $file_path );
 			// Force the STDERR to output on STDOUT by adding the 2>&1
 			$result = shell_exec( $command . " 2>&1");
 			
@@ -74,11 +74,11 @@ class YUICompressorCheck extends BaseCheck {
 		if( empty( $errors ) ) {
 			return true;
 		}
-		
+
 		return false;
 	}
 
-	public static function isJavaInstalled() {
+	public static function is_java_installed() {
 		$command = escapeshellarg( self::COMMAND );
 
 		$result = shell_exec( "which $command" );
