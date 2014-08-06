@@ -15,20 +15,13 @@ class JavaScriptLintTest extends WP_UnitTestCase {
 	public function testJavaScriptSyntaxError() {
 		$input = array( 
 			'js' => array(
-					'/tmp/test.js' => 'funtion test() { 
-alert("This is a test");
-}',
+					'tests/data/javascript-syntax-error.js' => '',
 				),
 
 		);
 
-		//Temporary create the files
-		foreach( $input as $files ) {
-			foreach ( $files as $file_name => $file_content ) {
-				$file = fopen( $file_name, 'w');
-				fwrite($file, $file_content);
-				fclose($file);
-			}
+		foreach($input['js'] as $filename => $content ) {
+			$this->assertFileExists( $filename );
 		}
 
 		$result = $this->_JavaScriptLintCheck->check( $input );
@@ -43,20 +36,13 @@ alert("This is a test");
 	public function testJavaScriptCorrectSyntax() {
 		$input = array( 
 			'js' => array(
-					'/tmp/test.js' => 'function test() { 
-alert("This is a test");
-}',
+					'tests/data/javascript-syntax-valid.js' => '',
 				),
 
 		);
 
-		//Temporary create the files
-		foreach( $input as $files ) {
-			foreach ( $files as $file_name => $file_content ) {
-				$file = fopen( $file_name, 'w');
-				fwrite($file, $file_content);
-				fclose($file);
-			}
+		foreach($input['js'] as $filename => $content ) {
+			$this->assertFileExists( $filename );
 		}
 
 		$result = $this->_JavaScriptLintCheck->check( $input );
