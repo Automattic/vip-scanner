@@ -40,11 +40,11 @@ class JavaScriptLintCheck extends BaseCheck {
 		$errors = array();
 		foreach ( $files as $file_path => $file_content ) {
 
-			$command = escapeshellarg( self::COMMAND );
-			$yui_path = VIP_SCANNER_BIN_DIR . '/' . escapeshellarg( self::YUI_FILE_NAME );
-			$file_path = escapeshellarg( $file_path);
+			$command = $this->escape_shell_argument( self::COMMAND, false ) ;
+			$yui_path = $this->escape_shell_argument( VIP_SCANNER_BIN_DIR . '/' . self::YUI_FILE_NAME );
+			$file_path =  $this->escape_shell_argument( $file_path );
 
-			$shell_command = sprintf( "%s -jar '%s' '%s'", $command, $yui_path, $file_path );
+			$shell_command = sprintf( "%s -jar %s %s", $command, $yui_path, $file_path );
 
 			// Force the STDERR to output on STDOUT by adding the 2>&1
 			$result = shell_exec( $shell_command . " 2>&1");
@@ -89,5 +89,19 @@ class JavaScriptLintCheck extends BaseCheck {
 		$result = shell_exec( "which $command" );
 
 		return ( empty( $result ) ? false : true );
+	}
+
+	private function escape_shell_argument( $argument, $quote = true ) {
+
+		// Remove the following possible arguments
+		$exploded_arg = explode(' -', $argument);
+		$argument = $exploded_arg[0];
+
+		// Apply escapeshellarg if $quote
+		if ( $quote )
+			return escapeshellarg( $argument );
+
+		return $argument;
+
 	}
 }
