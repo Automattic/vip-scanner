@@ -6,6 +6,7 @@
 define( 'VIP_SCANNER_DIR', dirname( __FILE__ ) );
 define( 'VIP_SCANNER_CHECKS_DIR', VIP_SCANNER_DIR . '/checks' );
 define( 'VIP_SCANNER_ANALYZERS_DIR', VIP_SCANNER_DIR . '/analyzers' );
+define( 'VIP_SCANNER_BIN_DIR', VIP_SCANNER_DIR . '/bin' );
 
 require_once( VIP_SCANNER_DIR . '/config-vip-scanner.php' );
 require_once( VIP_SCANNER_DIR . '/class-base-check.php' );
