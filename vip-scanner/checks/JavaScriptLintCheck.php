@@ -40,9 +40,14 @@ class JavaScriptLintCheck extends BaseCheck {
 		$errors = array();
 		foreach ( $files as $file_path => $file_content ) {
 
-			$command = escapeshellcmd( self::COMMAND . ' -jar ' . VIP_SCANNER_BIN_DIR . '/' . self::YUI_FILE_NAME . ' ' . $file_path );
+			$command = escapeshellarg( self::COMMAND );
+			$yui_path = VIP_SCANNER_BIN_DIR . '/' . escapeshellarg( self::YUI_FILE_NAME );
+			$file_path = escapeshellarg( $file_path);
+
+			$shell_command = sprintf( "%s -jar '%s' '%s'", $command, $yui_path, $file_path );
+
 			// Force the STDERR to output on STDOUT by adding the 2>&1
-			$result = shell_exec( $command . " 2>&1");
+			$result = shell_exec( $shell_command . " 2>&1");
 			
 			if ( ! $result )
 				return true;
