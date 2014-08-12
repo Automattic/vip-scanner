@@ -23,7 +23,7 @@ class CustomizerCheck extends BaseCheck {
 				foreach ( $errors as $error ) {
 					$this->add_error(
 						'customizer',
-						'The theme uses the <code>WP_Customize_Image_Control</code> class. Custom logo options should be implemented using the Custom Headers feature.',
+						'The theme uses the <code>WP_Customize_Image_Control</code> class. Custom logo options should be implemented using the <a href="http://en.support.wordpress.com/site-logo/">Site Logo</a> feature.',
 						BaseScanner::LEVEL_WARNING,
 						$this->get_filename( $file_path )
 					);
