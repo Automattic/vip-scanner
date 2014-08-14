@@ -9,7 +9,7 @@ VIP_Scanner::get_instance()->register_review( 'Undefined Function Check', array(
 	'UndefinedFunctionCheck',
 ) );
 
-VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
+VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', apply_filters( 'vip_scanner_include_checks', array(
 	'AtPackageCheck',
 	'BodyClassCheck',
 	'CDNCheck',
@@ -41,7 +41,7 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 	// 'WhitespaceCheck',
 	'WidgetsCheck',
 	'JavaScriptLintCheck',
-), array(
+) ), array(
 	'PHPAnalyzer',
 	'CustomResourceAnalyzer',
 	'ThemeAnalyzer',
