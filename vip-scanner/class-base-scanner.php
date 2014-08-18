@@ -21,10 +21,11 @@ class BaseScanner {
 		'jpg' => array( 'jpg', 'jpeg' ),
 		'png' => 'png',
 		'svg' => 'svg',
-		'txt' => array( 'txt', 'md', 'markdown' ),
+		'txt' => array( 'txt', 'md', 'markdown', 'text' ),
 		'html' => array( 'html', 'htm' ),
 		'font' => array( 'woff', 'eot', 'ttf', 'otf' ),
 		'i18n' => array( 'pot', 'po', 'mo' ),
+		'ico' => array( 'ico' ),
 	);
 	//these extensions are not allowed and will produce blocking errors
 	public $known_bad_extensions = array(
