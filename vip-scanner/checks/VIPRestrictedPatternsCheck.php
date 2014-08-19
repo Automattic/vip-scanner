@@ -9,7 +9,7 @@ class VIPRestrictedPatternsCheck extends BaseCheck
 			"/(\\\$isIE)+/msiU" => array( "level" => "Warning", "note" => 'Using $isIE conflicts with full page caching' ),
 			"/(\\\$_REQUEST)+/msiU" => array( "level" => "Blocker", "note" => 'Using $_REQUEST is forbidden. You should use $_POST or $_GET' ),
 			"/WordPress VIP/msiU" => array( "level" => "Warning", "note" => 'Please use "WordPress.com VIP" rather than "WordPress VIP"' ),
-			"/(kses)+/msiU" => array ( "level" => "Warning", "note" => "Working with kses" ),
+			"/(kses)+/msiU" => array ( "level" => "Note", "note" => "Working with kses" ),
 			"/(\\\$wpdb->|mysql_)+.+(ALTER)+\s+/msiU" => array( "level" => "Blocker", "note" => "Possible database table alteration" ),
 			"/(\\\$wpdb->|mysql_)+.+(CREATE)+\s+/msiU" => array( "level" => "Blocker", "note" => "Possible database table creation" ),
 			"/(\\\$wpdb->|mysql_)+.+(DROP)+\s+/msiU" => array( "level" => "Blocker", "note" => "Possible database table deletion" ),
