@@ -13,7 +13,7 @@ class AnalyzedCSSFile extends AnalyzedFile {
 	);
 	
 	protected $comments_regex = <<<EOT
-		(\/\*(?:(?!\*\/)[\s\S])*\*\/)			# match a multiline comment
+		(\/\*[\s\S]*?\*\/)			# match a multiline comment
 			|
 		(\/\/(?:(?!\n|\r)[\s\S])*)$				# match a single line comment
 EOT
