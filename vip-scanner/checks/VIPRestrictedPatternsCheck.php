@@ -20,6 +20,7 @@ class VIPRestrictedPatternsCheck extends BaseCheck
 			"/(echo|print|\<\?\=)+.+(get_search_query)+/msiU" => array( "level" => "Warning", "note" => "Output of search query" ),
 			"/(\\\$GLOBALS|\\\$_SERVER|\\\$_GET|\\\$_POST)+/msiU" => array( "level" => "Note", "note" => "Working with superglobals" ),
 			"/(\\\$_SERVER\[(?!('|\"REQUEST_URI|SCRIPT_FILENAME|HTTP_HOST'|\"))([^]]+|)\])+/msiU" => array( "level" => "Blocker", "note" => 'Non whitelisted $_SERVER superglobals found in this file' ),
+			"/pre_option_(blogname|siteurl|post_count)/msiU" => array( "level" => "Warning", "note" => "possible unsafe use of pre_option_* hook"),		
 		);
 
 		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
