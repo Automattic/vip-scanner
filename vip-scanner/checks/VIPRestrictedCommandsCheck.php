@@ -88,6 +88,10 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"var_dump" 		=> array( "level" => "Warning", "note" => "Unfiltered variable output" ),
 			"print_r" 		=> array( "level" => "Warning", "note" => "Unfiltered variable output" ),
 			"var_export" 	=> array( "level" => "Warning", "note" => "Unfiltered variable output" ),
+			"wp_debug_backtrace_summary" => array( "level" => "Blocker", "note" => "Unfiltered filesystem information output" ),
+			"debug_backtrace" => array( "level" => "Blocker", "note" => "Unfiltered filesystem information output" ),
+			"debug_print_backtrace" => array( "level" => "Blocker", "note" => "Unfiltered filesystem information output" ),
+
 
 			// other
 			"date_default_timezone_set" => array( "level" => "Blocker", "note" => "Timezone manipulation" ),
