@@ -122,7 +122,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			
 			//"file_exists" => array( "level" => "Warning", "note" => "Checks whether a file or directory exists" ),
 			"file_get_contents" => array( "level" => "Blocker", "note" => "Use wpcom_vip_file_get_contents() instead" ),
-			"file_put_contents" => array( "level" => "Blocker", "note" => "You can't write a string to a file" ),
+			"file_put_contents" => array( "level" => "Blocker", "note" => "Write a string to a file" ),
 			
 			"file" 		=> array( "level" => "Warning", "note" => "Reads entire file into an array" ),
 			"fileatime" => array( "level" => "Blocker", "note" => "Gets last access time of file" ),
