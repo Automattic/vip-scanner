@@ -825,6 +825,24 @@ EOT
 	public function test_foreach_loop() {
 		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
 <?php
+function test_function() {
+	foreach( $objects->value as $obj ) {
+	$a = "{$obj->ahojky}";
+	}
+	}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'test_function' ), array_keys( $functions[''] ) );
+
+	}
+
+	public function test_foreach_loop_inside_class() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
 class FirstClass extends ParentClass {
 
 	function test_function() {
