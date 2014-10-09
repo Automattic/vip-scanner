@@ -1073,7 +1073,7 @@ EOT
 		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
 	}
 
-	public function test_objects_in_function_call_args_array_of_objects() {
+	public function test_objects_in_function_call_args_array_of_objects_of_objects() {
 		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
 <?php
 class FirstClass extends ParentClass {

@@ -72,8 +72,14 @@ class TokenParser {
 		$this->inside_string = false;
 	}
 
-	function toggle_string() {
-		$this->inside_string = ( false === $this->inside_string ) ? true : false;
+	function maybe_toggle_string( $token ) {
+		if ( '"' === $token ) {
+			$this->inside_string = ( false === $this->inside_string ) ? true : false;
+		}
+	}
+
+	function is_inside_string() {
+		return $this->inside_string;
 	}
 
 	function closes_block( $closure, &$blocks, $true_on_empty = false ) {
@@ -181,9 +187,7 @@ class TokenParser {
 	}
 
 	/**
-	 * This method parses next global scope block - that's said, if you're already in a class, you should not enter this
-	 * method unless you finish the block. Á simili to global scope function etc.
-	 *
+	 * This method parses next global scope block or a method's body from within a class
 	 *
 	 * @param        $levels
 	 * @param string $break_on
@@ -486,14 +490,12 @@ class TokenParser {
 
 				//continue to functions themeselves
 				case T_FUNCTION:
-					$properties['class'] = true;
 					return $this->parse_function( $properties );
 
 				//and there are constants and variables of course as well
 				case T_CONST:
 				case T_VARIABLE:
 				case T_VAR:
-					$properties['class'] = true;
 					return $this->parse_variable( $properties );
 
 				//and documentation of course (if we are lucky)
@@ -527,7 +529,6 @@ class TokenParser {
 				'abstract' => '',
 				'args' => '',
 				'path' => $this->get_current_path_str(),
-				'class' => false
 			),
 			$properties
 		);
@@ -539,9 +540,7 @@ class TokenParser {
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
 
-			if ( '"' === $token ) {
-				$this->toggle_string();
-			}
+			$this->maybe_toggle_string( $token );
 
 			$this->parse_contents_line_breaks( $token_contents );
 
@@ -643,7 +642,7 @@ class TokenParser {
 		//This is quite interesting. If you are not tracking the string start, this breaks complex (curly) syntax
 		//if you ommit this completely, you'll loose anon functions
 		//see http://php.net/manual/en/language.types.string.php#language.types.string.parsing.complex
-		if ( false === $this->inside_string ) {
+		if ( false === $this->is_inside_string() ) {
 				$this->path_up();
 		}
 		return $properties;
@@ -766,6 +765,7 @@ class TokenParser {
 	}
 
 	function parse_function_call( $properties = array() ) {
+
 		$properties = array_merge(
 			array(
 				'type' => 'function_call',
@@ -784,6 +784,8 @@ class TokenParser {
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
 
+			$this->maybe_toggle_string( $token );
+
 			$this->parse_contents_line_breaks( $token_contents );
 
 			if ( T_WHITESPACE === $token ) {
@@ -795,7 +797,9 @@ class TokenParser {
 				if ( $state === self::FUNCTION_CALL_ARGS ) {
 					break;
 				} else {
-					$this->index -= 1;
+					if ( false === $this->is_inside_string() ) {
+						$this->index -= 1;
+					}
 					return;
 				}
 			}
