@@ -951,6 +951,31 @@ EOT
 		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
 	}
 
+	public function test_objects_in_function_call_args_with_object_in_object() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->value as $obj ) {
+			add_meta_box(
+				"post_{$direction}_{$obj->value->object}"
+			);
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
 	public function test_objects_in_function_call_args() {
 		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
 <?php
@@ -976,8 +1001,8 @@ EOT
 		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
 	}
 
-public function test_two_string_varnames() {
-	$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+	public function test_two_string_varnames() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
 <?php
 class FirstClass extends ParentClass {
 
@@ -989,12 +1014,12 @@ class FirstClass extends ParentClass {
 	function second_test_function() {}
 }
 EOT
-	);
+		);
 
-	$functions  = $analyzed_file->get_code_elements( 'functions' );
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
 
-	// Assert expected functions
-	$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
-	$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
-}
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
 }
