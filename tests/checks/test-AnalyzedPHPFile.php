@@ -826,12 +826,11 @@ EOT
 		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<EOT
 <?php
 class FirstClass extends ParentClass {
-	function test_function() {}
 
 	function test_function() {
-		foreach( $object->value as $obj ) {
+		foreach( \$objects->value as \$obj ) {
 			add_meta_box(
-				"post_{$direction}_{$obj->value}"
+				"post_{\$direction}_{\$obj->value}"
 			);
 		}
 	}
@@ -841,22 +840,10 @@ class FirstClass extends ParentClass {
 EOT
 		);
 
-		$classes    = $analyzed_file->get_code_elements( 'classes' );
 		$functions  = $analyzed_file->get_code_elements( 'functions' );
-
-		// Assert no namespaces
-		$this->assertEqualSets( array(), $functions );
-
-		// Assert expected classes
-		$this->assertEqualSets( array( '' ), array_keys( $classes ) );
-		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $classes[''] ) );
-
-		// Assert the presence of the parent class
-		$this->assert_object_property( $classes['']['FirstClass'], 'parentclass', 'ParentClass' );
 
 		// Assert expected functions
 		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
-		$this->assertEqualSets( array( 'FirstClass::test_function' ), array_keys( $functions['FirstClass'] ) );
-		$this->assertEqualSets( array( 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
 	}
 }
