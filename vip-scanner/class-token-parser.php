@@ -181,6 +181,14 @@ class TokenParser {
 		return $token;
 	}
 
+	/**
+	 * This method parses next global scope block - that's said, if you're already in a class, you should not enter this
+	 * method unless you finish the block. Á simili to global scope function etc.
+	 *
+	 *
+	 * @param        $levels
+	 * @param string $break_on
+	 */
 	function parse_next( &$levels, $break_on = '' ) {
 		$properties = array();
 
@@ -321,6 +329,13 @@ class TokenParser {
 		return $properties;
 	}
 
+	/**
+	 * As soon as you run into class, you should stay inside this method and leave it only if you finish parsing it
+	 *
+	 * @param array $properties
+	 *
+	 * @return array
+	 */
 	function parse_class( $properties = array() ) {
 		$properties = array_merge(
 			array(
@@ -334,6 +349,7 @@ class TokenParser {
 			$properties
 		);
 
+		//as we are about to enter a new class, let's flag it
 		$state  = self::CLASS_BEGIN;
 		$levels = array( '(' => 0, '{' => 0, 'path' => array() );
 
@@ -355,6 +371,7 @@ class TokenParser {
 			}
 
 			switch ( $state ) {
+				//First round just before we enter new class happens here
 				case self::CLASS_BEGIN:
 					if ( T_ABSTRACT === $token ) {
 						$properties['abstract'] = 'abstract';
@@ -366,6 +383,7 @@ class TokenParser {
 					}
 
 					$properties['line'] = $this->line;
+					//if we moved through abstraction (if applicable), we're ready to continue further - flag it!
 					$state = self::CLASS_OPEN;
 					break;
 
@@ -376,31 +394,39 @@ class TokenParser {
 
 					$properties['name'] = $this->get_name_with_path( $token_contents );
 					$this->add_to_path( $token_contents );
+					//we already know what type of class the class is and what's it's name - flag it!
 					$state = self::CLASS_DEFINITION;
 					break;
 
 				case self::CLASS_DEFINITION:
+					//does the class have a parent which we have to take into consideration?
 					switch ( $token ) {
 						case T_EXTENDS:
+							//if so, parse it and log it - flag new state!
 							$state = self::CLASS_PARSE_PARENT;
 							break;
 						case '{':
+							//if not, let's continue further to the body itself - flag it!
 							$state = self::CLASS_BODY;
 							break;
 					}
 					break;
 
+				//were you looking forward to class body parsing? We might need parse parent first...
 				case self::CLASS_PARSE_PARENT:
 					if ( T_STRING !== $token ) {
 						continue;
 					}
 
 					$properties['parentclass'] = $token_contents;
+					//and go back to previous case/state and try to continue from there
 					$state = self::CLASS_DEFINITION;
 					break;
 
+				//body, finally!
 				case self::CLASS_BODY:
 					if ( '}' !== $token ) {
+						//we'll take care of a class body in a separate method
 						$member = $this->parse_class_member( $levels );
 						if ( ! is_null( $member ) ) {
 							$properties['children'][] = $member;
@@ -417,6 +443,13 @@ class TokenParser {
 		return $properties;
 	}
 
+	/**
+	 * This method parses class body with all those properties and methods.
+	 * Watch out - you don't want to leave this method unless you're done - pay attention to string variables and
+	 * anon functions / closures...
+	 *
+	 * @param $levels
+	 */
 	function parse_class_member( &$levels ) {
 		$properties = array(
 			'type' => false,
@@ -437,6 +470,7 @@ class TokenParser {
 			}
 
 			switch ( $token ) {
+				//handle function's visibility first
 				case T_STATIC:
 					$properties['static'] = 'static';
 					break;
@@ -451,14 +485,17 @@ class TokenParser {
 					$properties['abstract'] = 'abstract';
 					break;
 
+				//continue to functions themeselves
 				case T_FUNCTION:
 					return $this->parse_function( $properties );
 
+				//and there are constants and variables of course as well
 				case T_CONST:
 				case T_VARIABLE:
 				case T_VAR:
 					return $this->parse_variable( $properties );
 
+				//and documentation of course (if we are lucky)
 				case T_DOC_COMMENT:
 					$properties['documentation'] = $this->clean_doc_string( $token_contents );
 					// lack of break on purpose
@@ -472,6 +509,13 @@ class TokenParser {
 		return;
 	}
 
+	/**
+	 * This method parses function inside a class as well as a function on a global scope
+	 *
+	 * @param array $properties
+	 *
+	 * @return array
+	 */
 	function parse_function( $properties = array() ) {
 		$properties = array_merge(
 			array(
@@ -487,6 +531,7 @@ class TokenParser {
 		);
 
 		$levels = array( '(' => 0, '{' => 0, 'path' => array() );
+		//this flag seems weird in case we are parsing function on a global scope level, but that's just a weird naming
 		$state = self::CLASS_MEMBER_OPEN;
 
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
@@ -593,6 +638,9 @@ class TokenParser {
 			}
 		}
 
+		//This is quite interesting. If you are not tracking the string start, this breaks complex (curly) syntax
+		//if you ommit this completely, you'll loose anon functions
+		//see http://php.net/manual/en/language.types.string.php#language.types.string.parsing.complex
 		if ( false === $this->inside_string ) {
 			$this->path_up();
 		}
@@ -669,7 +717,8 @@ class TokenParser {
 
 						case T_OBJECT_OPERATOR:
 						case T_DOUBLE_COLON:
-							// A T_OBJECT_OPERATOR before an assignment (=) means that this isn't a variable instantiation, but rather a function call on an object.
+							// A T_OBJECT_OPERATOR before an assignment (=) means that this isn't a variable
+							//instantiation, but rather a function call on an object.
 							return $this->parse_function_call( array( 'name' => $properties['name'] ) );
 
 						case '=':
