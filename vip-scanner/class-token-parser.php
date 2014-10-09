@@ -18,15 +18,14 @@ class TokenParser {
 	const NAMESPACE_DEFINITION		   = 11;
 	const POTENTIAL_FUNCTION_CALL	   = 12;
 	const FUNCTION_CALL_ARGS		   = 13;
-	const STRING_VARIABLE = 14;
 
-	private $path		  = array();
-	private $token_count  = 0;
-	private $tokens		  = array();
-	private $elements     = array();
-	private $index		  = 0;
-	private $in_namespace = false;
-	private $line		  = 1;
+	private $path		   = array();
+	private $token_count   = 0;
+	private $tokens		   = array();
+	private $elements      = array();
+	private $index		   = 0;
+	private $in_namespace  = false;
+	private $line		   = 1;
 	private $inside_string = false;
 
 	private $function_indicators = array(
@@ -63,13 +62,13 @@ class TokenParser {
 	}
 
 	function reset() {
-		$this->path         = array();
-		$this->in_namespace = false;
-		$this->index        = 0;
-		$this->token_count  = 0;
-		$this->token_count  = array();
-		$this->elements     = array();
-		$this->line			= 1;
+		$this->path          = array();
+		$this->in_namespace  = false;
+		$this->index         = 0;
+		$this->token_count   = 0;
+		$this->token_count   = array();
+		$this->elements      = array();
+		$this->line			 = 1;
 		$this->inside_string = false;
 	}
 
@@ -487,12 +486,14 @@ class TokenParser {
 
 				//continue to functions themeselves
 				case T_FUNCTION:
+					$properties['class'] = true;
 					return $this->parse_function( $properties );
 
 				//and there are constants and variables of course as well
 				case T_CONST:
 				case T_VARIABLE:
 				case T_VAR:
+					$properties['class'] = true;
 					return $this->parse_variable( $properties );
 
 				//and documentation of course (if we are lucky)
@@ -526,6 +527,7 @@ class TokenParser {
 				'abstract' => '',
 				'args' => '',
 				'path' => $this->get_current_path_str(),
+				'class' => false
 			),
 			$properties
 		);
@@ -642,7 +644,7 @@ class TokenParser {
 		//if you ommit this completely, you'll loose anon functions
 		//see http://php.net/manual/en/language.types.string.php#language.types.string.parsing.complex
 		if ( false === $this->inside_string ) {
-			$this->path_up();
+				$this->path_up();
 		}
 		return $properties;
 	}

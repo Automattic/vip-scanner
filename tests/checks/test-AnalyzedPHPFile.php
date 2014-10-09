@@ -1106,7 +1106,7 @@ class FirstClass extends ParentClass {
 	function test_function() {
 		foreach( $objects->value as $obj ) {
 			$b = "${a}";
-			$a = "{$obj->values[3]->name}"
+			$a = "{$obj->values[3]->name}";
 		}
 	}
 
@@ -1130,7 +1130,7 @@ class FirstClass extends ParentClass {
 	function test_function() {
 		foreach( $objects->value as $obj ) {
 			$b = "${a}";
-			$a = "{$arr[4][3]}"
+			$a = "{$arr[4][3]}";
 		}
 	}
 
