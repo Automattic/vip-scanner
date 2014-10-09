@@ -153,7 +153,7 @@ class TokenParser {
 		}
 		$index = $this->index;
 		//if there's a variable before current closing curly braced token
-		if ( T_VARIABLE === $this->tokens[$index - 1][0] ) {
+		if ( T_VARIABLE === $this->tokens[$index - 1][0] || T_VARIABLE === $this->tokens[$index - 3][0] ) {
 			//if it's a simple curly braced variable inside a string
 			if ( ( true === isset( $this->tokens[$index - 3][1] )
 			     && T_ENCAPSED_AND_WHITESPACE === $this->tokens[$index - 3][1] )
@@ -161,16 +161,16 @@ class TokenParser {
 			) {
 				return true;
 			}
-			/*
-			if ( T_OBJECT_OPERATOR === $this->tokens[$index - 2][0] ){
-				if ( T_VARIABLE === $this->tokens[$index - 3][0]
-			          && ( ( true === isset( $this->tokens[$index - 3][1] )
-			                 && T_ENCAPSED_AND_WHITESPACE === $this->tokens[$index - 4][1] )
-			               || '"' === $this->tokens[$this->index - 4] )
-			) {
-				return true;
+			//Let's check whether the curly braced variable is a object property
+			if ( T_OBJECT_OPERATOR === $this->tokens[$index - 2][0] ) {
+				//TODO: this needs a recursion which takes us to the beginning of a chain
+				if ( ( true === isset( $this->tokens[$index - 5][1] )
+				       && T_ENCAPSED_AND_WHITESPACE === $this->tokens[$index - 4][1] )
+				     || '"' === $this->tokens[$this->index - 5]
+				) {
+					return true;
+				}
 			}
-			}/**/
 		}
 		return false;
 	}
