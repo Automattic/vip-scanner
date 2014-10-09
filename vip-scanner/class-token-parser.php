@@ -18,6 +18,7 @@ class TokenParser {
 	const NAMESPACE_DEFINITION		   = 11;
 	const POTENTIAL_FUNCTION_CALL	   = 12;
 	const FUNCTION_CALL_ARGS		   = 13;
+	const STRING_VARIABLE = 14;
 
 	private $path		  = array();
 	private $token_count  = 0;
@@ -130,6 +131,10 @@ class TokenParser {
 				break;
 			}
 
+			if ( $this->is_curly_braced_variable( $matching ) ) {
+				return false;
+			}
+
 			$c = array_pop( $blocks['path'] );
 			--$blocks[$c];
 
@@ -140,6 +145,34 @@ class TokenParser {
 		}
 
 		return $closes || ( $true_on_empty && empty( $blocks['path'] ) );
+	}
+
+	function is_curly_braced_variable( $matching ) {
+		if ( '{' !== $matching ) {
+			return false;
+		}
+		$index = $this->index;
+		//if there's a variable before current closing curly braced token
+		if ( T_VARIABLE === $this->tokens[$index - 1][0] ) {
+			//if it's a simple curly braced variable inside a string
+			if ( ( true === isset( $this->tokens[$index - 3][1] )
+			     && T_ENCAPSED_AND_WHITESPACE === $this->tokens[$index - 3][1] )
+				|| '"' === $this->tokens[$this->index - 3]
+			) {
+				return true;
+			}
+			/*
+			if ( T_OBJECT_OPERATOR === $this->tokens[$index - 2][0] ){
+				if ( T_VARIABLE === $this->tokens[$index - 3][0]
+			          && ( ( true === isset( $this->tokens[$index - 3][1] )
+			                 && T_ENCAPSED_AND_WHITESPACE === $this->tokens[$index - 4][1] )
+			               || '"' === $this->tokens[$this->index - 4] )
+			) {
+				return true;
+			}
+			}/**/
+		}
+		return false;
 	}
 
 	function get_current_path_str() {
@@ -181,7 +214,7 @@ class TokenParser {
 
 			// Checks for an unexpected closing block
 			if ( $this->closes_block( $token, $levels, true ) ) {
-				return;
+					return;
 			}
 
 			switch ( $token ) {
@@ -612,6 +645,7 @@ class TokenParser {
 
 			// Checks for an unexpected closing block
 			if ( $this->closes_block( $token, $levels ) ) {
+
 				$this->index -= 1;
 
 				if ( false === $properties['type'] ) {
