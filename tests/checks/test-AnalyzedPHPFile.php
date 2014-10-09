@@ -976,3 +976,26 @@ EOT
 		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
 	}
 }
+
+public function test_two_string_varnames() {
+	$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		$a = "{$a}";
+		$b = "{$b}";
+	}
+
+	function second_test_function() {}
+}
+EOT
+	);
+
+	$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+	// Assert expected functions
+	$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+	$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+}
+}
