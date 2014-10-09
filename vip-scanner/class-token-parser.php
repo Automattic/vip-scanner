@@ -27,6 +27,7 @@ class TokenParser {
 	private $index		  = 0;
 	private $in_namespace = false;
 	private $line		  = 1;
+	private $inside_string = false;
 
 	private $function_indicators = array(
 		T_STRING,
@@ -69,9 +70,15 @@ class TokenParser {
 		$this->token_count  = array();
 		$this->elements     = array();
 		$this->line			= 1;
+		$this->inside_string = false;
+	}
+
+	function toggle_string() {
+		$this->inside_string = ( false === $this->inside_string ) ? true : false;
 	}
 
 	function closes_block( $closure, &$blocks, $true_on_empty = false ) {
+
 		switch ( $closure ) {
 			case '(':
 			case '{':
@@ -131,10 +138,6 @@ class TokenParser {
 				break;
 			}
 
-			if ( $this->is_curly_braced_variable( $matching ) ) {
-				return false;
-			}
-
 			$c = array_pop( $blocks['path'] );
 			--$blocks[$c];
 
@@ -145,36 +148,6 @@ class TokenParser {
 		}
 
 		return $closes || ( $true_on_empty && empty( $blocks['path'] ) );
-	}
-
-	function is_curly_braced_variable( $matching ) {
-		if ( '{' !== $matching ) {
-			return false;
-		}
-		$index = $this->index;
-
-		//if there's a variable before current closing curly braced token
-		if ( T_VARIABLE === $this->tokens[$index - 1][0] || T_VARIABLE === $this->tokens[$index - 3][0] ) {
-
-			//if it's a simple curly braced variable inside a string
-			if ( true === isset( $this->tokens[$index - 3][1] ) && T_ENCAPSED_AND_WHITESPACE == $this->tokens[$index - 3][0] ) {
-				return true;
-			}
-			if ( '"' === $this->tokens[$this->index - 3] ) {
-				return true;
-			}
-
-			//Let's check whether the curly braced variable is a object property
-			if ( T_OBJECT_OPERATOR === $this->tokens[$index - 2][0] ) {
-				if ( ( true === isset( $this->tokens[$index - 5][1] ) && T_ENCAPSED_AND_WHITESPACE == $this->tokens[$index - 5][0] )
-				     || '"' === $this->tokens[$this->index - 5]
-				) {
-					return true;
-				}
-			}
-
-		}
-		return false;
 	}
 
 	function get_current_path_str() {
@@ -519,6 +492,10 @@ class TokenParser {
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
 
+			if ( '"' === $token ) {
+				$this->toggle_string();
+			}
+
 			$this->parse_contents_line_breaks( $token_contents );
 
 			if ( T_WHITESPACE === $token ) {
@@ -616,7 +593,9 @@ class TokenParser {
 			}
 		}
 
-		$this->path_up();
+		if ( false === $this->inside_string ) {
+			$this->path_up();
+		}
 		return $properties;
 	}
 
