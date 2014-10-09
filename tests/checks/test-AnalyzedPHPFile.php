@@ -823,12 +823,13 @@ EOT
 	}
 
 	public function test_foreach_loop() {
-		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<EOT
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
 <?php
 class FirstClass extends ParentClass {
 
 	function test_function() {
-		foreach( \$objects->value as \$obj ) {
+		foreach( $objects->value as $obj ) {
+			$a = "{$obj->ahojky}";
 		}
 	}
 
@@ -845,14 +846,14 @@ EOT
 	}
 
 	public function test_objects_in_function_call_args() {
-		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<EOT
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
 <?php
 class FirstClass extends ParentClass {
 
 	function test_function() {
-		foreach( \$objects->value as \$obj ) {
+		foreach( $objects->value as $obj ) {
 			add_meta_box(
-				"post_{\$direction}_{\$obj->value}"
+				"post_{$direction}_{$obj->value}"
 			);
 		}
 	}
