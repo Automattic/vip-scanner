@@ -826,8 +826,8 @@ EOT
 		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
 <?php
 function test_function() {
-	foreach( $objects->value as $obj ) {
-	$a = "{$obj->ahojky}";
+	foreach( $objects as $obj ) {
+	$a = "{$ahojky}";
 	}
 	}
 EOT
@@ -840,13 +840,101 @@ EOT
 
 	}
 
-	public function test_foreach_loop_inside_class() {
+	public function test_foreach_loop_inside_class_without_objects() {
 		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
 <?php
 class FirstClass extends ParentClass {
 
 	function test_function() {
-		foreach( $objects->value as $obj ) {
+		foreach( $ahoj as $obj ) {
+			$a = "{$ahojky}";
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_foreach_loop_inside_class_with_object_in_loop_definition() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $object->ahoj as $obj ) {
+			$a = "{$ahojky}";
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_foreach_loop_inside_class_with_object_in_string_variable() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $ahoj as $obj ) {
+			$a = "{$obj->ahojky}";
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_foreach_loop_inside_class_without_object1() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->ahoj as $obj ) {
+			$a = "{$ahojky}";
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_foreach_loop_inside_class_with_object() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->ahoj as $obj ) {
 			$a = "{$obj->ahojky}";
 		}
 	}
