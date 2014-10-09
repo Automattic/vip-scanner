@@ -726,7 +726,7 @@ class TokenParser {
 
 			// Checks for an unexpected closing block
 			if ( $this->closes_block( $token, $levels, true ) ) {
-				if ( $state === self::FUNCTION_CALL_ARGS || $state === self::POTENTIAL_FUNCTION_CALL ) {
+				if ( $state === self::FUNCTION_CALL_ARGS ) {
 					break;
 				} else {
 					$this->index -= 1;
