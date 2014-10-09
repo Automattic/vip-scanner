@@ -975,7 +975,6 @@ EOT
 		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
 		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
 	}
-}
 
 public function test_two_string_varnames() {
 	$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
