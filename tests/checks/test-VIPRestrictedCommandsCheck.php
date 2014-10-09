@@ -51,17 +51,6 @@ class VIPRestrictedCommandsCheckTest extends WP_UnitTestCase {
 
 	public function testRestrictedWPCore() {
 		$restricted_commands = array(
-			'remove_filter',
-			'remove_action',
-			'add_filter',
-			'add_action',
-			'wp_cache_set',
-			'wp_cache_get',
-			'wp_cache_add',
-			'wp_cache_delete',
-			'set_transient',
-			'get_transient',
-			'delete_transient',
 			'update_post_caches',
 			'update_option',
 			'get_option',

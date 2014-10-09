@@ -9,20 +9,6 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			// WordPress Classes
 			"WP_User_Query" => array( 'level' => "Note", "note" => "Use of WP_User_Query" ),
 
-			// wordpress functions
-			"remove_filter" => array( "level" => "Note", "note" => "Removing filters" ),
-			"remove_action" => array( "level" => "Note", "note" => "Removing actions" ),
-			"add_filter" 	=> array( "level" => "Note", "note" => "Altering filters" ),
-			"add_action" 	=> array( "level" => "Note", "note" => "Altering actions" ),
-
-			"wp_cache_set" 		=> array( "level" => "Note", "note" => "Setting Cache Object" ),
-			"wp_cache_get" 		=> array( "level" => "Note", "note" => "Getting Cache Object" ),
-			"wp_cache_add" 		=> array( "level" => "Note", "note" => "Adding Cache Object" ),
-			"wp_cache_delete" 	=> array( "level" => "Note", "note" => "Deleting Cache Object" ),
-			"set_transient" 	=> array( "level" => "Note", "note" => "Setting transient Object" ),
-			"get_transient" 	=> array( "level" => "Note", "note" => "Getting transient Object" ),
-			"delete_transient" 	=> array( "level" => "Note", "note" => "Deleting transient Object" ),
-
 			"update_post_caches" => array( "level" => "Note", "note" => "Post cache alteration" ),
 
 			"update_option" => array( "level" => "Note", "note" => "Updating option" ),
@@ -30,7 +16,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"add_option" 	=> array( "level" => "Note", "note" => "Adding Option" ),
 			"delete_option" => array( "level" => "Note", "note" => "Deleting Option" ),
 
-			"wp_remote_get" => array( "level" => "Warning", "note" => "Remote operation" ),
+			"wp_remote_get" => array( "level" => "Warning", "note" => "Uncached Remote operation, please use one of these functions: http://vip.wordpress.com/documentation/best-practices/fetching-remote-data/" ),
 			"fetch_feed" 	=> array( "level" => "Warning", "note" => "Remote feed operation" ),
 
 			"wp_schedule_event" 		=> array( "level" => "Warning", "note" => "WP Cron usage" ),
@@ -51,15 +37,15 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			'wp_get_sites' 			=> array( 'level' => 'Blocker', 'note' => 'Querying network sites' ),
 			
 			// Uncached functions
-			'get_category_by_slug' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
-			'wp_get_post_categories' => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
-			'wp_get_post_tags' 		=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
-			'get_cat_ID' 			=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
-			'get_term_by' 			=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
+			'get_category_by_slug' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to wpcom_vip_get_category_by_slug()' ),
+			'wp_get_post_categories' => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to get_the_terms() along with wp_list_pluck() see: http://vip.wordpress.com/documentation/uncached-functions/' ),
+			'wp_get_post_tags' 		=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to get_the_terms() along with wp_list_pluck() see: http://vip.wordpress.com/documentation/uncached-functions/' ),
+			'get_cat_ID' 			=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to wpcom_vip_get_term_by()' ),
+			'get_term_by' 			=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to wpcom_vip_get_term_by()' ),
 			'get_page_by_title' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
-			'get_page_by_path' 		=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
+			'get_page_by_path' 		=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to wpcom_vip_get_page_by_title()' ),
 			'wp_get_object_terms' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
-			'wp_get_post_terms' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
+			'wp_get_post_terms' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to get_the_terms() along with wp_list_pluck() see: http://vip.wordpress.com/documentation/uncached-functions/' ),
 			'get_posts' 			=> array( 'level' => 'Warning', 'note' => 'Uncached function. Use WP_Query or ensure suppress_filters is false' ),
 			'wp_get_recent_posts' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Use WP_Query or ensure suppress_filters is false' ),
 
@@ -78,23 +64,27 @@ class VIPRestrictedCommandsCheck extends BaseCheck
  			"remove_cap" 	=> array( "level" => "Blocker", "note" => "Role modification; use helper functions http://lobby.vip.wordpress.com/best-practices/custom-user-roles/" ),
 
  			// User meta
-			"add_user_meta" 	=> array( "level" => "Blocker", "note" => "Using user meta" ),
-			"delete_user_meta" 	=> array( "level" => "Blocker", "note" => "Using user meta" ),
-			"get_user_meta" 	=> array( "level" => "Blocker", "note" => "Using user meta" ),
-			"update_user_meta" 	=> array( "level" => "Blocker", "note" => "Using user meta" ),
+			"add_user_meta" 	=> array( "level" => "Blocker", "note" => "Using user meta, consider user_attributes http://vip.wordpress.com/documentation/user_meta-vs-user_attributes/" ),
+			"delete_user_meta" 	=> array( "level" => "Blocker", "note" => "Using user meta, consider user_attributes http://vip.wordpress.com/documentation/user_meta-vs-user_attributes/" ),
+			"get_user_meta" 	=> array( "level" => "Blocker", "note" => "Using user meta, consider user_attributes http://vip.wordpress.com/documentation/user_meta-vs-user_attributes/" ),
+			"update_user_meta" 	=> array( "level" => "Blocker", "note" => "Using user meta, consider user_attributes http://vip.wordpress.com/documentation/user_meta-vs-user_attributes/" ),
 			
 			// debugging
 			"error_log" 	=> array( "level" => "Blocker", "note" => "Filesystem operation" ),
 			"var_dump" 		=> array( "level" => "Warning", "note" => "Unfiltered variable output" ),
 			"print_r" 		=> array( "level" => "Warning", "note" => "Unfiltered variable output" ),
 			"var_export" 	=> array( "level" => "Warning", "note" => "Unfiltered variable output" ),
+			"wp_debug_backtrace_summary" => array( "level" => "Blocker", "note" => "Unfiltered filesystem information output" ),
+			"debug_backtrace" => array( "level" => "Blocker", "note" => "Unfiltered filesystem information output" ),
+			"debug_print_backtrace" => array( "level" => "Blocker", "note" => "Unfiltered filesystem information output" ),
+
 
 			// other
 			"date_default_timezone_set" => array( "level" => "Blocker", "note" => "Timezone manipulation" ),
 			"error_reporting" 			=> array( "level" => "Blocker", "note" => "Settings alteration" ),
 			"filter_input" 				=> array( "level" => "Warning", "note" => "Using filter_input(), use sanitize_* functions instead" ),
 			'eval' 						=> array( 'level' => 'Blocker', "note" => "Meta programming" ),
-			'create_function' 			=> array( 'level' => 'Blocker', "note" => "Using create_function" ),
+			'create_function' 			=> array( 'level' => 'Blocker', "note" => "Using create_function, consider annonymous functions" ),
 			'extract' 					=> array( 'level' => 'Blocker', "note" => "Explicitly define variables rather than using extract()" ),
 			"ini_set" 					=> array( "level" => "Blocker", "note" => "Settings alteration" ),
 			"wp_is_mobile" 				=> array( "level" => "Warning", "note" => "wp_is_mobile() is not batcache-friendly, please use <a href=\"http://vip.wordpress.com/documentation/mobile-theme/#targeting-mobile-visitors\">jetpack_is_mobile()</a>" ),
@@ -319,10 +309,8 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"mysqli_dump_debug_info" 			=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_get_charset" 				=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_get_connection_stats"		=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
-			"mysqli_get_client_info" 			=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_get_client_stats" 			=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_get_cache_stats" 			=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
-			"mysqli_get_server_info" 			=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_get_warnings" 				=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_init" 						=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_kill" 						=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
@@ -379,7 +367,6 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"mysqli_stmt_get_warnings" 		=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_stmt_more_results" 		=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_stmt_next_result" 		=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
-			"mysqli_stmt_num_rows" 			=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_stmt_prepare" 			=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_stmt_reset" 			=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_stmt_result_metadata" 	=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
