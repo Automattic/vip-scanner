@@ -166,7 +166,6 @@ class TokenParser {
 
 			//Let's check whether the curly braced variable is a object property
 			if ( T_OBJECT_OPERATOR === $this->tokens[$index - 2][0] ) {
-				//TODO: this needs a recursion which takes us to the beginning of a chain
 				if ( ( true === isset( $this->tokens[$index - 5][1] ) && T_ENCAPSED_AND_WHITESPACE == $this->tokens[$index - 5][0] )
 				     || '"' === $this->tokens[$this->index - 5]
 				) {
