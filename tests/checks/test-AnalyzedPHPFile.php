@@ -1022,4 +1022,79 @@ EOT
 		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
 		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
 	}
+
+	public function test_objects_in_function_call_args_dollar_outside() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->value as $obj ) {
+			add_meta_box(
+				"post_{$direction}_${value}"
+			);
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_objects_in_function_call_args_array() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->value as $obj ) {
+			add_meta_box(
+				"post_{$direction}_{$b[0][1]['element']}"
+			);
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_objects_in_function_call_args_array_of_objects() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->value as $obj ) {
+			add_meta_box(
+				"post_{$direction}_{$obj->values[3]->name}"
+			);
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
 }
