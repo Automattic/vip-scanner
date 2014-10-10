@@ -961,6 +961,9 @@ class FirstClass extends ParentClass {
 			add_meta_box(
 				"post_{$direction}_{$obj->value->object}"
 			);
+			add_meta_box(
+				"post_{$direction}_{$obj->value->object}_{$hello->ahoj}"
+			);
 		}
 	}
 
