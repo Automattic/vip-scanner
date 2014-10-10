@@ -157,7 +157,7 @@ class BaseScanner {
 
 	public function is_adbuster( $file ) {
 
-		//parse file path to get last directory + filename
+		//parse file path to get filename
 		$filename = basename( $file );
 
 		//grab adbusters array
@@ -165,6 +165,8 @@ class BaseScanner {
 
 		//grab filenames only
 		$adbusters = array_map( array( $this, 'get_adbuster_filename' ), $adbusters );
+
+		//compare!
 		if ( true === in_array( $filename, $adbusters ) ) {
 			return true;
 		}
