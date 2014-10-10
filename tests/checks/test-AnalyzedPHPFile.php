@@ -821,4 +821,404 @@ EOT
 		$this->assert_object_property( $functions['{closure}']['{closure}::{closure}'], 'args', '$arg1' );
 		$this->assert_object_property( $functions['{closure}']['{closure}::{closure}'], 'line', 8 );
 	}
+
+	public function test_foreach_loop() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+function test_function() {
+	foreach( $objects as $obj ) {
+		$a = '{$ahojky}';
+	}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'test_function' ), array_keys( $functions[''] ) );
+
+	}
+
+	public function test_foreach_loop_inside_class_without_objects() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $ahoj as $obj ) {
+			$a = "{$ahojky}";
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_foreach_loop_inside_class_with_object_in_loop_definition() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $object->ahoj as $obj ) {
+			$a = "{$ahojky}";
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_foreach_loop_inside_class_with_object_in_string_variable() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $ahoj as $obj ) {
+			$a = "{$obj->ahojky}";
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_foreach_loop_inside_class_without_object() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->ahoj as $obj ) {
+			$a = "{$ahojky}";
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_foreach_loop_inside_class_with_object() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->ahoj as $obj ) {
+			$a = "{$obj->ahojky}";
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_objects_in_function_call_args_with_object_in_object() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->value as $obj ) {
+			add_meta_box(
+				"post_{$direction}_{$obj->value->object}"
+			);
+			add_meta_box(
+				"post_{$direction}_{$obj->value->object}_{$hello->ahoj}"
+			);
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_objects_in_function_call_args() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->value as $obj ) {
+			add_meta_box(
+				"post_{$direction}_{$obj->value}"
+			);
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_two_string_varnames() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		$a = "{$a}";
+		$b = "{$b}";
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_objects_in_function_call_args_dollar_outside() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->value as $obj ) {
+			add_meta_box(
+				"post_{$direction}_${value}"
+			);
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_objects_in_function_call_args_array() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->value as $obj ) {
+			add_meta_box(
+				"post_{$direction}_{$b[0][1]['element']}"
+			);
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_objects_in_function_call_args_array_of_objects_of_objects() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->value as $obj ) {
+			add_meta_box(
+				"post_{$direction}_{$obj->values[3]->name}"
+			);
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_array_of_objects_in_curly_braces() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->value as $obj ) {
+			$b = "${a}";
+			$a = "{$obj->values[3]->name}";
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_multidimensional_array_in_curly_braces() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->value as $obj ) {
+			$b = "${a}";
+			$a = "{$arr[4][3]}";
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_var_inside_var_in_curly_braces() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->value as $obj ) {
+			$b = "${a}";
+			$a = "{${$name}}";
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_object_method_call_in_curly_braces() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->value as $obj ) {
+			$b = "${a}";
+			$a = "{${$object->getName()}}"
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_variable_expansion_in_single_quoted_string() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->value as $obj ) {
+			$a = '{$obj->hello}';
+			$b = '{$obj->ahoj}';
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
 }
