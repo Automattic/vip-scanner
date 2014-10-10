@@ -51,6 +51,40 @@ class BaseScanner {
 		'^WS_FTP.*',
 	);
 
+	public function get_adbusters_array() {
+		return array(
+			'adcentric/ifr_b.html',              // AdCentric
+			'adinterax/adx-iframe-v2.html',      // AdInterax
+			'atlas/atlas_rm.htm',                // Atlas
+			'blogads/iframebuster-4.html',       // BlogAds
+			'checkm8/CM8IframeBuster.html',      // CheckM8
+			'comscore/cs-arIframe.htm',          // comScore
+			'doubleclick/DARTIframe.html',       // Google - DoubleClick
+			'doubleclick/fif.html',              // Flite
+			'eyeblaster/addineyeV2.html',        // MediaMind - EyeBlaster
+			'eyewonder/interim.html',            // EyeWonder
+			'flashtalking/ftlocal.html',         // Flashtalking
+			'flite/fif.html',                    // Flite
+			'gumgum/iframe_buster.html',         // gumgum
+			'interpolls/pub_interpolls.html',    // Interpolls
+			'jivox/jivoxIBuster.html',           // Jivox
+			'jpd/jpxdm.html',                    // Jetpack Digital
+			'mediamind/MMbuster.html',           // MediaMind - addineye (?)
+			'mixpo/framebust.html',              // Mixpo
+			'oggifinogi/oggiPlayerLoader.htm',   // Collective - OggiFinogi
+			'pictela/Pictela_iframeproxy.html',  // AOL - Pictela
+			'pointroll/PointRollAds.htm',        // PointRoll
+			'rubicon/rp-smartfile.html',         // Rubicon
+			'saymedia/iframebuster.html',        // Say Media
+			'smartadserver/iframeout.html',      // SmartAdserver
+			'undertone/iframe-buster.html',      // Intercept Interactive - Undertone
+			'undertone/UT_iframe_buster.html',   // Intercept Interactive - Undertone
+			'xaxis/InfinityIframe.html',         // Xaxis
+			'_uac/adpage.html',                  // AOL - atwola.com
+			'adcom/aceFIF.html',                 // Advertising.com (ad.com)
+		);
+	}
+
 
 	public function __construct( $files, $review ) {
 		// Given a set of files & a set of Checks
@@ -117,11 +151,45 @@ class BaseScanner {
 		}
 	}
 
+	public function get_adbuster_filename( $file ) {
+		$path_parts = pathinfo( $file );
+		return basename( $file );
+	}
+
+	public function is_adbuster( $file ) {
+
+		//parse file path to get last directory + filename
+		$filename = basename( $file );
+		$parent_directory = basename( dirname( $file ) );
+		$dir_and_file = "{$parent_directory}/{$filename}";
+
+		//grab adbusters array
+		$adbusters = $this->get_adbusters_array();
+
+		//grab filenames only
+		$adbusters = array_map( array( $this, 'get_adbuster_filename' ), $adbusters );
+		if ( true === in_array( $filename, $adbusters ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public function check_filename( $filename, $type ) {
 		if ( $this->has_bad_file_pattern( basename( $filename ) ) ) {
 			$this->add_error(
 				'badfile-error',
 				'Found a file with an extension that is not allowed in a theme.',
+				BaseScanner::LEVEL_BLOCKER,
+				basename( $filename )
+			);
+			return false;
+		}
+
+		if ( $this->is_adbuster( $filename ) ) {
+			$this->add_error(
+				'adbuster-error',
+				'Found a file which is an ad frame buster. Please use <a href="https://github.com/Automattic/Adbusters">Adbusters plugin</a> instead.',
 				BaseScanner::LEVEL_BLOCKER,
 				basename( $filename )
 			);
