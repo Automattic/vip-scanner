@@ -151,10 +151,6 @@ class BaseScanner {
 		}
 	}
 
-	public function get_adbuster_filename( $file ) {
-		return basename( $file );
-	}
-
 	public function is_adbuster( $file ) {
 
 		//parse file path to get filename
@@ -164,7 +160,7 @@ class BaseScanner {
 		$adbusters = $this->get_adbusters_array();
 
 		//grab filenames only
-		$adbusters = array_map( array( $this, 'get_adbuster_filename' ), $adbusters );
+		$adbusters = array_map( 'basename', $adbusters );
 
 		//compare!
 		if ( true === in_array( $filename, $adbusters ) ) {
