@@ -827,9 +827,9 @@ EOT
 <?php
 function test_function() {
 	foreach( $objects as $obj ) {
-	$a = "{$ahojky}";
+		$a = "{$ahojky}";
 	}
-	}
+}
 EOT
 		);
 
