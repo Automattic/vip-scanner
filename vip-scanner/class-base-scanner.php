@@ -52,6 +52,14 @@ class BaseScanner {
 	);
 
 	public function get_adbusters_array() {
+
+		if ( function_exists( 'wpcom_vip_load_plugin' ) ) {
+			wpcom_vip_load_plugin( 'Adbusters' );
+			if ( function_exists( 'wpcom_vip_get_ad_busters_array' ) ) {
+				return wpcom_vip_get_ad_busters_array();
+			}
+		}
+
 		return array(
 			'adcentric/ifr_b.html',              // AdCentric
 			'adinterax/adx-iframe-v2.html',      // AdInterax
