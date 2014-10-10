@@ -186,15 +186,6 @@ class TokenParser {
 		return $token;
 	}
 
-	function log() {
-		return;
-		$arguments = func_get_args();
-		foreach( $arguments as $arg ) {
-			print_r( $arg );
-			print_r( '<br/>' );
-		}
-	}
-
 	/**
 	 * This method parses next global scope block or a method's body from within a class
 	 *
@@ -206,8 +197,6 @@ class TokenParser {
 
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
-
-			$this->log( 'parse_next', $token, $token_contents, $levels );
 
 			// Checks for an unexpected closing block
 			if ( $this->closes_block( $token, $levels, true ) ) {
@@ -292,8 +281,6 @@ class TokenParser {
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
 
-			$this->log( 'parse_namespace', $token, $token_contents );
-
 			$this->parse_contents_line_breaks( $token_contents );
 
 			if ( T_WHITESPACE === $token ) {
@@ -372,8 +359,6 @@ class TokenParser {
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
 
-			$this->log( 'parse_class', $token, $token_contents, $levels, $state );
-
 			$this->parse_contents_line_breaks( $token_contents );
 			if ( T_WHITESPACE === $token ) {
 				continue;
@@ -387,8 +372,6 @@ class TokenParser {
 
 				return $properties;
 			}
-
-			$this->log( 'parse_class_after', $token, $token_contents, $levels, $state );
 
 			switch ( $state ) {
 				//First round just before we enter new class happens here
@@ -480,8 +463,6 @@ class TokenParser {
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
 
-			$this->log( 'parse_class_member', $token, $token_contents, $levels );
-
 			if ( T_WHITESPACE === $this->tokens[$this->index][0] ) {
 				$this->parse_contents_line_breaks( $token_contents );
 				continue;
@@ -558,8 +539,6 @@ class TokenParser {
 
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
-
-			$this->log( 'parse_function', $token, $token_contents, $levels );
 
 			$this->maybe_toggle_string( $token );
 
@@ -690,8 +669,6 @@ class TokenParser {
 
 			$this->maybe_toggle_string( $token );
 
-			$this->log( 'parse_variable', $token, $token_contents, $levels );
-
 			$this->parse_contents_line_breaks( $token_contents );
 
 			if ( T_WHITESPACE === $token ) {
@@ -712,8 +689,6 @@ class TokenParser {
 				$properties['name'] = $this->get_name_with_path( $properties['name'] );
 				return $properties;
 			}
-
-			$this->log( 'parse_variable_after', $token, $token_contents, $levels );
 
 			switch ( $state ) {
 				case self::CLASS_MEMBER_OPEN:
@@ -812,8 +787,6 @@ class TokenParser {
 
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
-
-			$this->log( 'parse_function_call', $token, $token_contents, $levels );
 
 			$this->maybe_toggle_string( $token );
 
