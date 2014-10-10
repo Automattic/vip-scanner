@@ -906,7 +906,7 @@ EOT
 		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
 	}
 
-	public function test_foreach_loop_inside_class_without_object1() {
+	public function test_foreach_loop_inside_class_without_object() {
 		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
 <?php
 class FirstClass extends ParentClass {
