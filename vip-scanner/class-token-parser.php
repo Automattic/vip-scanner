@@ -26,7 +26,7 @@ class TokenParser {
 	private $index		   = 0;
 	private $in_namespace  = false;
 	private $line		   = 1;
-	private $inside_string = false;
+	private $inside_double_quoted_string = false;
 
 	private $function_indicators = array(
 		T_STRING,
@@ -69,17 +69,17 @@ class TokenParser {
 		$this->token_count   = array();
 		$this->elements      = array();
 		$this->line			 = 1;
-		$this->inside_string = false;
+		$this->inside_double_quoted_string = false;
 	}
 
-	function maybe_toggle_string( $token ) {
+	function maybe_toggle_double_quoted_string( $token ) {
 		if ( '"' === $token ) {
-			$this->inside_string = ( false === $this->inside_string ) ? true : false;
+			$this->inside_double_quoted_string = ( false === $this->inside_double_quoted_string ) ? true : false;
 		}
 	}
 
-	function is_inside_string() {
-		return $this->inside_string;
+	function is_inside_double_quoted_string() {
+		return $this->inside_double_quoted_string;
 	}
 
 	function closes_block( $closure, &$blocks, $true_on_empty = false ) {
@@ -540,7 +540,7 @@ class TokenParser {
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
 
-			$this->maybe_toggle_string( $token );
+			$this->maybe_toggle_double_quoted_string( $token );
 
 			$this->parse_contents_line_breaks( $token_contents );
 
@@ -642,7 +642,7 @@ class TokenParser {
 		//This is quite interesting. If you are not tracking the string start, this breaks complex (curly) syntax
 		//if you ommit this completely, you'll loose anon functions
 		//see http://php.net/manual/en/language.types.string.php#language.types.string.parsing.complex
-		if ( false === $this->is_inside_string() ) {
+		if ( false === $this->is_inside_double_quoted_string() ) {
 				$this->path_up();
 		}
 		return $properties;
@@ -667,7 +667,7 @@ class TokenParser {
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
 
-			$this->maybe_toggle_string( $token );
+			$this->maybe_toggle_double_quoted_string( $token );
 
 			$this->parse_contents_line_breaks( $token_contents );
 
@@ -678,7 +678,7 @@ class TokenParser {
 			// Checks for an unexpected closing block
 			if ( $this->closes_block( $token, $levels ) ) {
 
-				if ( ! $this->is_inside_string() ) {
+				if ( ! $this->is_inside_double_quoted_string() ) {
 					$this->index -= 1;
 				}
 
@@ -788,7 +788,7 @@ class TokenParser {
 		for ( ; $this->index < $this->token_count; ++$this->index ) {
 			$this->get_token( $token, $token_contents );
 
-			$this->maybe_toggle_string( $token );
+			$this->maybe_toggle_double_quoted_string( $token );
 
 			$this->parse_contents_line_breaks( $token_contents );
 
@@ -800,7 +800,7 @@ class TokenParser {
 			if ( $this->closes_block( $token, $levels, true ) ) {
 				if ( $state === self::FUNCTION_CALL_ARGS ) {
 					break;
-				} else if ( true === $this->is_inside_string() ) {
+				} else if ( true === $this->is_inside_double_quoted_string() ) {
 						break;
 				} else {
 					$this->index -= 1;
