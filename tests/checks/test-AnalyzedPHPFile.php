@@ -827,7 +827,7 @@ EOT
 <?php
 function test_function() {
 	foreach( $objects as $obj ) {
-		$a = "{$ahojky}";
+		$a = '{$ahojky}';
 	}
 }
 EOT
@@ -1182,6 +1182,30 @@ class FirstClass extends ParentClass {
 		foreach( $objects->value as $obj ) {
 			$b = "${a}";
 			$a = "{${$object->getName()}}"
+		}
+	}
+
+	function second_test_function() {}
+}
+EOT
+		);
+
+		$functions  = $analyzed_file->get_code_elements( 'functions' );
+
+		// Assert expected functions
+		$this->assertEqualSets( array( 'FirstClass' ), array_keys( $functions ) );
+		$this->assertEqualSets( array( 'FirstClass::test_function', 'FirstClass::second_test_function' ), array_keys( $functions['FirstClass'] ) );
+	}
+
+	public function test_variable_expansion_in_single_quoted_string() {
+		$analyzed_file = new AnalyzedPHPFile( 'test.php', <<<'EOT'
+<?php
+class FirstClass extends ParentClass {
+
+	function test_function() {
+		foreach( $objects->value as $obj ) {
+			$a = '{$obj->hello}';
+			$b = '{$obj->ahoj}';
 		}
 	}
 
