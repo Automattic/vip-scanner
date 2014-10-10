@@ -152,7 +152,6 @@ class BaseScanner {
 	}
 
 	public function get_adbuster_filename( $file ) {
-		$path_parts = pathinfo( $file );
 		return basename( $file );
 	}
 
@@ -160,8 +159,6 @@ class BaseScanner {
 
 		//parse file path to get last directory + filename
 		$filename = basename( $file );
-		$parent_directory = basename( dirname( $file ) );
-		$dir_and_file = "{$parent_directory}/{$filename}";
 
 		//grab adbusters array
 		$adbusters = $this->get_adbusters_array();
