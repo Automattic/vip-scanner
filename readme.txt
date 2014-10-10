@@ -38,7 +38,7 @@ Once you selected a scan type, you can hit the "Scan" button and see results in 
 
 == WP-CLI ==
 
-If you prefer to use the wp-cli tool for your check, there's a ``vip-scanner`` command with two main actions
+If you prefer to use the wp-cli tool for your check, there's a ``vip-scanner`` command with two main actions:
 
 1. `analyze-theme`
 1. `scan-theme`
