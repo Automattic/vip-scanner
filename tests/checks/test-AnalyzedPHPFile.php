@@ -1157,7 +1157,7 @@ class FirstClass extends ParentClass {
 	function test_function() {
 		foreach( $objects->value as $obj ) {
 			$b = "${a}";
-			$a = "{${$name}}"
+			$a = "{${$name}}";
 		}
 	}
 
