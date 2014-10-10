@@ -19,13 +19,13 @@ class TokenParser {
 	const POTENTIAL_FUNCTION_CALL	   = 12;
 	const FUNCTION_CALL_ARGS		   = 13;
 
-	private $path		   = array();
-	private $token_count   = 0;
-	private $tokens		   = array();
-	private $elements      = array();
-	private $index		   = 0;
-	private $in_namespace  = false;
-	private $line		   = 1;
+	private $path		  = array();
+	private $token_count  = 0;
+	private $tokens		  = array();
+	private $elements     = array();
+	private $index		  = 0;
+	private $in_namespace = false;
+	private $line		  = 1;
 	private $inside_double_quoted_string = false;
 
 	private $function_indicators = array(
@@ -62,13 +62,13 @@ class TokenParser {
 	}
 
 	function reset() {
-		$this->path          = array();
-		$this->in_namespace  = false;
-		$this->index         = 0;
-		$this->token_count   = 0;
-		$this->token_count   = array();
-		$this->elements      = array();
-		$this->line			 = 1;
+		$this->path         = array();
+		$this->in_namespace = false;
+		$this->index        = 0;
+		$this->token_count  = 0;
+		$this->token_count  = array();
+		$this->elements     = array();
+		$this->line			= 1;
 		$this->inside_double_quoted_string = false;
 	}
 
