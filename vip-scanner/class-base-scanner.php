@@ -178,6 +178,58 @@ class BaseScanner {
 		return false;
 	}
 
+	public function maybe_adbuster( $file ) {
+
+		//checkout the file extension - we are looking for htm and html files only
+		$path_parts = pathinfo( $file );
+		$suspicious_extensions = array(
+			'html',
+			'htm'
+		);
+		$extension = mb_strtolower( $path_parts['extension'] );
+		if ( false === in_array( $extension, $suspicious_extensions ) ) {
+			return false;
+		}
+
+		//first - check on the file size, frame busters are usually small files
+		if ( filesize( $file ) > 1024 ) {
+			return false;
+		}
+
+		//"buster" in name is highly suspicious - let's flag such file
+		if ( false !== mb_strpos( mb_strtolower( $path_parts['basename'] ), 'buster' ) ) {
+			return true;
+		}
+
+		//ok, so the file is relatively small and it is a static HTML file - that's suspicious, let's do some more tests
+		return $this->adbuster_body_check( $file );
+	}
+
+	public function adbuster_body_check( $file ) {
+		$dom = new DOMDocument();
+		$dom->loadHTML( '<?xml encoding="UTF-8">' . file_get_contents( $file ) );
+		$scripts = $dom->getElementsByTagName('script');
+		//such iframebuster has to have a script tag, at least one
+		if ( 0 !== $scripts->length ) {
+			//examine body - body without content or body containing script nodes only is suspicious
+			$body = $dom->getElementsByTagName( 'body' );
+			if ( 0 !== $body->length ) {
+				//empty body - flag it!
+				if ( '' === trim( $body->item(0)->nodeValue, " \n\r\t\0\xC2\xA0") ) {
+					return true;
+				}
+				//todo: the empty body check above is not catching files with only script nodes in the body
+			}
+			//static HTML without styles is suspicious as well, flag it
+			$styles = $dom->getElementsByTagName('style');
+			if( 0 === $styles->length ) {
+				return true;
+			}
+		}
+		//looks good
+		return false;
+	}
+
 	public function check_filename( $filename, $type ) {
 		if ( $this->has_bad_file_pattern( basename( $filename ) ) ) {
 			$this->add_error(
@@ -194,6 +246,16 @@ class BaseScanner {
 				'adbuster-error',
 				'Found a file which is an ad frame buster. Please use <a href="https://github.com/Automattic/Adbusters">Adbusters plugin</a> instead.',
 				BaseScanner::LEVEL_BLOCKER,
+				basename( $filename )
+			);
+			return false;
+		}
+
+		if ( $this->maybe_adbuster( $filename ) ) {
+			$this->add_error(
+				'adbuster-error',
+				'Found a file which may be an ad frame buster. Please use <a href="https://github.com/Automattic/Adbusters">Adbusters plugin</a> instead.',
+				BaseScanner::LEVEL_WARNING,
 				basename( $filename )
 			);
 			return false;
