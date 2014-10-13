@@ -178,31 +178,46 @@ class BaseScanner {
 		return false;
 	}
 
-	public function maybe_adbuster( $file ) {
+	public function maybe_adbuster( $file, $filesize_check = true, $file_examination = true ) {
 
 		//checkout the file extension - we are looking for htm and html files only
 		$path_parts = pathinfo( $file );
+
+		if ( false === isset( $path_parts['extension'] ) ) {
+			return false;
+		}
+
 		$suspicious_extensions = array(
 			'html',
 			'htm'
 		);
+
 		$extension = mb_strtolower( $path_parts['extension'] );
 		if ( false === in_array( $extension, $suspicious_extensions ) ) {
 			return false;
 		}
 
 		//first - check on the file size, frame busters are usually small files
-		if ( filesize( $file ) > 1024 ) {
+		if ( true === $filesize_check && filesize( $file ) > 1024 ) {
 			return false;
 		}
 
-		//"buster" in name is highly suspicious - let's flag such file
-		if ( false !== mb_strpos( mb_strtolower( $path_parts['basename'] ), 'buster' ) ) {
-			return true;
+		//some strings in name are highly suspicious - let's flag such files
+		$suspicious_strings = array(
+			'buster'
+		);
+		foreach( $suspicious_strings as $string ) {
+			if ( false !== mb_strpos( mb_strtolower( $path_parts['basename'] ), $string ) ) {
+				return true;
+			}
 		}
 
-		//ok, so the file is relatively small and it is a static HTML file - that's suspicious, let's do some more tests
-		return $this->possible_adbuster_body_check( file_get_contents( $file ) );
+		if ( true === $file_examination ) {
+			//ok, so the file is relatively small and it is a static HTML file - that's suspicious, let's do some more tests
+			return $this->possible_adbuster_body_check( file_get_contents( $file ) );
+		}
+
+		return false;
 	}
 
 	public function possible_adbuster_body_check( $file_content ) {
