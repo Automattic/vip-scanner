@@ -202,12 +202,12 @@ class BaseScanner {
 		}
 
 		//ok, so the file is relatively small and it is a static HTML file - that's suspicious, let's do some more tests
-		return $this->possible_adbuster_body_check( $file );
+		return $this->possible_adbuster_body_check( file_get_contents( $file ) );
 	}
 
-	public function possible_adbuster_body_check( $file ) {
+	public function possible_adbuster_body_check( $file_content ) {
 		$dom = new DOMDocument();
-		$dom->loadHTML( '<?xml encoding="UTF-8">' . file_get_contents( $file ) );
+		$dom->loadHTML( '<?xml encoding="UTF-8">' . $file_content );
 		$scripts = $dom->getElementsByTagName('script');
 		//such iframebuster has to have a script tag, at least one
 		if ( 0 !== $scripts->length ) {
