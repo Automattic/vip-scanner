@@ -30,6 +30,12 @@ class BaseScannerTest extends WP_UnitTestCase {
 		}
 	}
 
+	public function test_get_html_file_type() {
+		//.htm should be translated to html file type
+		$filename = '/test-theme/file.htm';
+		$this->assertEquals( 'html', $this->_BaseScanner->get_file_type( $filename ) );
+	}
+
 	public function test_check_filename_for_swf_file() {
 		$filename = '/file.swf';
 		$this->assertFalse( $this->_BaseScanner->check_filename( $filename, $this->_BaseScanner->get_file_type( $filename ) ) );
