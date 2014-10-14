@@ -121,7 +121,7 @@ class VIPRestrictedPatternsTest extends WP_UnitTestCase {
 
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 
-		$this->assertContains( '/\$wp_query->query_vars/msiU', $error_slugs );
+		$this->assertContains( '/\$wp_query->query_vars\[/msiU', $error_slugs );
 		$this->assertFalse( $result );
 	}
 
