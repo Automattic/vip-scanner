@@ -7,9 +7,15 @@ class BaseScannerTest extends WP_UnitTestCase {
 		parent::setUp();
 		require_once VIP_SCANNER_DIR . '/class-base-scanner.php';
 
-		$files = array(
-			'/mytheme/adcentric/ifr_b.html'
-		);
+		$this->resetBaseScanner();
+	}
+
+	private function resetBaseScanner( $files = null ) {
+		if ( null === $files ) {
+			$files = array(
+				'index.php' => '<?php echo $ahoj;'
+			);
+		}
 		$this->_BaseScanner = new BaseScanner( $files, array() );
 	}
 
