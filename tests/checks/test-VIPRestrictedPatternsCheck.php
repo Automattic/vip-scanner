@@ -65,4 +65,33 @@ EOT;
 		$this->assertNotContains( '/(\$_REQUEST)+/msiU', $error_slugs );
 	}
 
+	public function testQueryVarsDirectAccessGet() {
+		$file_contents = <<<'EOT'
+			<?php
+
+			add_action( "init", function(){
+				global $wp_query;
+				$paged = $wp_query->query_vars["paged"];
+			} );
+EOT;
+
+		$error_slugs = $this->runCheck( $file_contents );
+
+		$this->assertContains( '/\$wp_query->query_vars\[.*?\][^=]*?\;/msi', $error_slugs );
+	}
+
+	public function testQueryVarsDirectAccessSet() {
+		$file_contents = <<<'EOT'
+			<?php
+
+			add_action( "init", function(){
+				global $wp_query;
+				$wp_query->query_vars["paged"] = 3;
+			} );
+EOT;
+
+		$error_slugs = $this->runCheck( $file_contents );
+
+		$this->assertContains( '/\$wp_query->query_vars\[.*?\]\s*?\=.*?\;/msi', $error_slugs );
+	}
 }
