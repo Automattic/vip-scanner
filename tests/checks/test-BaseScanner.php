@@ -41,5 +41,22 @@ class BaseScannerTest extends WP_UnitTestCase {
 		$this->assertFalse( $this->_BaseScanner->check_filename( $filename, $this->_BaseScanner->get_file_type( $filename ) ) );
 	}
 
+	public function test_catch_swf_file() {
+		$filename = 'file.swf';
+		$files = array(
+			$filename => 'somecontent'
+		);
+		$this->resetBaseScanner( $files );
+		$this->_BaseScanner->scan();
 
+		$this->assertTrue( $this->_BaseScanner->has_error( 'filetype-error' ) );
+
+		$error_levels = $this->_BaseScanner->get_error_levels();
+		$this->assertEqualSets( array( 'blocker' ),$error_levels );
+
+		$errors = $this->_BaseScanner->get_errors();
+		$this->assertEquals( 'Blocker', $errors[0]['level'] );
+
+		$this->assertEquals( $filename, $errors[0]['file'] );
+	}
 }
