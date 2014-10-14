@@ -140,6 +140,12 @@ class VIPRestrictedPatternsTest extends WP_UnitTestCase {
 
 		$result = $this->_VIPRestrictedPatternsCheck->check( $input );
 
+		$errors = $this->_VIPRestrictedPatternsCheck->get_errors();
+
+		$error_slugs = wp_list_pluck( $errors, 'slug' );
+
+		$this->assertContains( '/\$wp_query->query_vars\[.*?\]\s*?\=.*?\;/msi', $error_slugs );
+
 		$this->assertFalse( $result );
 	}
 
