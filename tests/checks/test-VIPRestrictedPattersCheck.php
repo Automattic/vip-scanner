@@ -102,4 +102,22 @@ class VIPRestrictedPatternsTest extends WP_UnitTestCase {
 		$this->assertTrue( $result );
 	}
 
+	public function testQueryVarsDirectAccess() {
+		$input = array(
+			'php' => array(
+				'test.php' => '<?php
+
+				add_action( "init", function(){
+					global $wp_query;
+					$paged = $wp_query->query_vars["paged"];
+				} );
+				'
+			)
+		);
+
+		$result = $this->_VIPRestrictedPatternsCheck->check( $input );
+		
+		$this->assertFalse( $result );
+	}
+
 }
