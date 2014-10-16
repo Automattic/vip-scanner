@@ -48,7 +48,7 @@ class VIPInitCheck extends BaseCheck {
 	}
 
 	public function vip_init_is_included( $file ) {
-		$matches = $this->preg_file( '/^require[_once]?.*?vip-init\.php/', $file );
+		$matches = $this->preg_file( '/\brequire[_once]?.*?vip-init\.php/', $file );
 
 		return ( count( $matches ) ) ? true : false;
 	}
