@@ -26,6 +26,39 @@ or
 
 Install using the Plugin Installer.
 
+=======
+Usage
+-----
+
+You can find the tool under Tools > VIP Scanner. There, you can choose what type of scan you'd like to perform - there's a select box on the right hand side, just next to the "Scan" button.
+
+The select box allows you to choose between three type of scan
+
+1. Undefined Function Check
+1. WP.com Theme Review
+1. VIP Theme Review
+
+Once you have selected a scan type, you can hit the "Scan" button and see results in the tabbed view below.
+
+WP-CLI
+------
+
+If you prefer to use the wp-cli tool for your check, there's a ``vip-scanner`` command with two main actions:
+
+1. ``analyze-theme``
+1. ``scan-theme``
+
+```
+$ wp vip-scanner
+usage: wp vip-scanner analyze-theme --theme=<theme-name> --scan_type=<scan-type> [--depth=<depth>]
+   or: wp vip-scanner scan-theme [--theme=<theme>] [--scan_type=<scan_type>] [--summary] [--format=<format>]
+```
+
+* ``--theme`` parameter expects you to enter theme's path relative to the WP themes directory, for example, ``vip/test-theme`` or ``pub/twentyfourteen``
+* ``--scan_type`` parameter expects one of following options: ``"Undefined Function Check"``, ``"WP.com Theme Review"`` or ``"VIP Theme Review"``. Defaults to "WP.org Theme Review"
+* ``--depth`` expects an integer. You can change the parameter to indicate how many levels of hierarchy you would like outputted. 0 (defaults) outputs everything
+* ``--summary`` gives you just an overview of how many files were checked, how many checks were done and how many errors, warnings and blockers were found
+* ``--format`` allows you to select a output format: ``table``, ``JSON``, ``CSV``. Defaults to ``table``
 
 Changelog
 ---------
