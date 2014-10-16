@@ -25,15 +25,6 @@ class TheamPubIndividualFiles extends BaseCheck {
 			}
 
 			if ( 'image.php' == $filename ) {
-				$this->increment_check_count();
-				if ( false === strpos( $code, 'the_content(' ) ) {
-					$this->add_error(
-						'template-image',
-						sprintf( '<var>$content_width</var> could not be found in %1$s. It is often best to set this variable directly in %1$s especially in cases where the sidebar is omited and the image fills the full width of the template.', esc_html( $filename ) ),
-						'blocker'
-					);
-				}
-
 				// NOT a blocker.
 				$this->increment_check_count();
 				if ( false === strpos( $code, '$content_width' ) ) {
