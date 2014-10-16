@@ -13,6 +13,7 @@ class VIPInitCheckTest extends WP_UnitTestCase {
 	}
 
 	public function testIsMainFunctions() {
+		$this->_VIPInitCheckTest->set_scanner( new DirectoryScanner( dirname( $this->_functions_file ), "VIP Theme Review" ) );
 		$this->assertTrue( $this->_VIPInitCheckTest->file_is_main_functions( $this->_functions_file ) );
 	}
 
