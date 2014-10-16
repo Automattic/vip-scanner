@@ -12,13 +12,22 @@ class VIPInitCheckTest extends WP_UnitTestCase {
 		$this->_functions_file = dirname(__FILE__) . '/../data/functions.php';
 	}
 
-	/*public function testIsMainFunctions() {
-		$this->_VIPInitCheckTest->set_scanner( new DirectoryScanner( dirname( $this->_functions_file ), "VIP Theme Review" ) );
-		$this->assertTrue( $this->_VIPInitCheckTest->file_is_main_functions( $this->_functions_file ) );
-	}/**/
-
 	public function testCheckRequire() {
 		$this->assertTrue( $this->_VIPInitCheckTest->vip_init_is_included( $this->_functions_file ) );
+	}
+
+	public function testScanner() {
+		$vipsccanner = VIP_Scanner::get_instance();
+		$vipsccanner->register_review( 'VIPInitCheck', array(
+				'VIPInitCheck'
+			), array(
+				'ThemeAnalyzer'
+			) );
+		$review = $vipsccanner->get_review( 'VIPInitCheck' );
+		$scanner = new ThemeScanner( dirname( $this->_functions_file ), $review );
+		$scanner->scan( array('checks') );
+
+		$this->assertFalse( $scanner->has_error( 'vip-init' ) );
 	}
 
 }
