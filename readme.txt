@@ -19,13 +19,11 @@ This plugin is based on code from the <a href="http://wordpress.org/extend/plugi
 
 1. Upload the plugin folder to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Tools > VIP Scanner
 
 or
 
 Install using the Plugin Installer.
 
-=======
 == Usage ==
 
 You can find the tool under Tools > VIP Scanner. There, you can choose what type of scan you'd like to perform - there's a select box on the right hand side, just next to the "Scan" button.
