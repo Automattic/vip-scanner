@@ -11,14 +11,16 @@ class AdBustersCheck extends BaseCheck {
 
 		$this->increment_check_count();
 
-		foreach ( $files as $file_path => $file_content ) {
+		$all_files = $this->get_all_files( $files );
+
+		foreach ( $all_files as $file_path => $file_contents ) {
 
 			if ( $this->is_adbuster( $file_path ) ) {
 				$this->add_error(
 					'adbuster-error',
 					'Found a file which is an ad frame buster. Please use <a href="https://github.com/Automattic/Adbusters">Adbusters plugin</a> instead.',
 					BaseScanner::LEVEL_BLOCKER,
-					basename( $filename )
+					basename( $file_path )
 				);
 				$result = false;
 			}
@@ -28,7 +30,7 @@ class AdBustersCheck extends BaseCheck {
 					'adbuster-error',
 					'Found a file which may be an ad frame buster. Please use <a href="https://github.com/Automattic/Adbusters">Adbusters plugin</a> instead.',
 					BaseScanner::LEVEL_WARNING,
-					basename( $filename )
+					basename( $file_path )
 				);
 				$result = false;
 			}
