@@ -9,7 +9,7 @@ class VIPInitCheckTest extends WP_UnitTestCase {
 		require_once VIP_SCANNER_DIR . '/checks/VIPInitCheck.php';
 
 		$this->_VIPInitCheckTest = new VIPInitCheck();
-		$this->_functions_file = dirname(__FILE__) . '/../data/functions.php';
+		$this->_functions_file = dirname(__FILE__) . '/../data/test-theme/functions.php';
 	}
 
 	public function testCheckRequire() {
