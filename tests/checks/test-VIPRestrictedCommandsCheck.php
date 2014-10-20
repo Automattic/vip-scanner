@@ -476,5 +476,13 @@ class VIPRestrictedCommandsCheckTest extends WP_UnitTestCase {
 
 		$this->checkCommands( $restricted_commands );
 	}
+
+	public function testSwitchTheme() {
+		$restricted_commands = array(
+			'switch_theme'
+		);
+
+		$this->checkCommands( $restricted_commands );
+	}
 }
 
