@@ -11,9 +11,9 @@ class AdBustersCheck extends BaseCheck {
 
 		$this->increment_check_count();
 
-		$all_files = $this->get_all_files( $files );
+		$html_files = $this->filter_files( $files, 'html' );
 
-		foreach ( $all_files as $file_path => $file_contents ) {
+		foreach ( $html_files as $file_path => $file_contents ) {
 
 			if ( $this->is_adbuster( $file_path ) ) {
 				$this->add_error(
