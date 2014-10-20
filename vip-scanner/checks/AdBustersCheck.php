@@ -23,9 +23,7 @@ class AdBustersCheck extends BaseCheck {
 					basename( $file_path )
 				);
 				$result = false;
-			}
-
-			if ( $this->maybe_adbuster( $file_path ) ) {
+			} else if ( $this->maybe_adbuster( $file_path ) ) {
 				$this->add_error(
 					'adbuster-error',
 					'Found a file which may be an ad frame buster. Please use <a href="https://github.com/Automattic/Adbusters">Adbusters plugin</a> instead.',
