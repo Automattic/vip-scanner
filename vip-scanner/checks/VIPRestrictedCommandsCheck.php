@@ -87,6 +87,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			'create_function' 			=> array( 'level' => 'Blocker', "note" => "Using create_function, consider annonymous functions" ),
 			'extract' 					=> array( 'level' => 'Blocker', "note" => "Explicitly define variables rather than using extract()" ),
 			"ini_set" 					=> array( "level" => "Blocker", "note" => "Settings alteration" ),
+			"switch_theme" 				=> array( "level" => "Blocker", "note" => "Switching theme programmatically is not allowed. Please make the update by hand after a deploy of your code" ),
 			"wp_is_mobile" 				=> array( "level" => "Warning", "note" => "wp_is_mobile() is not batcache-friendly, please use <a href=\"http://vip.wordpress.com/documentation/mobile-theme/#targeting-mobile-visitors\">jetpack_is_mobile()</a>" ),
 
 			// Restricted widgets
