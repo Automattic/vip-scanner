@@ -52,6 +52,7 @@ VIP_Scanner::get_instance()->register_review( 'VIP Theme Review', array(
 	'VIPRestrictedPatternsCheck',
 	'VIPRestrictedCommandsCheck',
 	'VIPInitCheck',
+	'VIPParametersCheck',
 	'PHPShortTagsCheck',
 	'PHPClosingTagsCheck',
 	'VCMergeConflictCheck',
