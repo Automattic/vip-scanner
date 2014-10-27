@@ -2,7 +2,7 @@
 Contributors: batmoo, automattic, tott, mfields, keoshi, betzster, mobius5150, nickdaugherty
 Tags: scanner, scan, files, security, theme check
 Requires at least: 3.4
-Tested up to: 3.9
+Tested up to: 4.0
 Stable tag: 0.7
 
 Scan all sorts of themes and files and things.
