@@ -65,6 +65,10 @@ To come...
 
 == Changelog ==
 
+= 0.8 =
+
+* Modified check for pre_option_* to also include option_*
+
 = 0.7 =
 
 * Modified analyzer to use PHP tokens rather than regular expressions
