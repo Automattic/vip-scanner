@@ -51,7 +51,6 @@ class BaseScanner {
 		'^WS_FTP.*',
 	);
 
-
 	public function __construct( $files, $review ) {
 		// Given a set of files & a set of Checks
 		// --- Group files by type
