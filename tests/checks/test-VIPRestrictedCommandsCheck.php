@@ -41,7 +41,7 @@ class VIPRestrictedCommandsCheckTest extends WP_UnitTestCase {
 
 	/**
 	 * Take a command's slug (the name of the function) and add on some parenthesis and a semi-colon to
-	 * make it vaild PHP for testing
+	 * make it valid PHP for testing
 	 * 
 	 * @param string $command The name of a function to add parenthesis to
 	 */
