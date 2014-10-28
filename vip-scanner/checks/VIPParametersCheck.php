@@ -14,13 +14,48 @@ class VIPParametersCheck extends BaseCheck {
 
 		$checks = array(
 			'wpcom_vip_load_plugin' => array(
-				'breadcrumb-navxt'     => array( 'level' => 'warning', 'note' => 'Deprecated VIP Plugin. Use breadcrumb-navxt-39 instead.' ),
-				'livefyre'             => array( 'level' => 'warning', 'note' => 'Deprecated VIP Plugin. Use livefyre3 instead.' ),
-				'feedwordpress'        => array( 'level' => 'blocker', 'note' => 'Deprecated VIP Plugin. No alternative available' ),
-				'wordtwit-1.3-mod'     => array( 'level' => 'warning', 'note' => 'Deprecated VIP Plugin. Use publicize instead.' ),
-				'uppsite'              => array( 'level' => 'blocker', 'note' => 'Deprecated VIP Plugin. Retired from Featured Partner Program.' ),
-				'wpcom-related-posts'  => array( 'level' => 'warning', 'note' => 'Deprecated VIP Plugin. Functionality included in Jetpack.' ),
-				'scrollkit-wp'         => array( 'level' => 'blocker', 'note' => 'Deprecated VIP Plugin. Scroll Kit has shut down.' ),
+				array(
+					'value' => 'breadcrumb-navxt',
+					'pos'   => 0,
+					'level' => 'warning',
+					'note'  => 'Deprecated VIP Plugin. Use breadcrumb-navxt-39 instead.'
+				),
+				array(
+					'value' => 'livefyre',
+					'pos'   => 0,
+					'level' => 'warning',
+					'note'  => 'Deprecated VIP Plugin. Use livefyre3 instead.'
+				),
+				array(
+					'value' => 'feedwordpress',
+					'pos'   => 0,
+					'level' => 'blocker',
+					'note'  => 'Deprecated VIP Plugin. No alternative available'
+				),
+				array(
+					'value' => 'wordtwit-1.3-mod',
+					'pos'   => 0,
+					'level' => 'warning',
+					'note'  => 'Deprecated VIP Plugin. Use publicize instead.'
+				),
+				array(
+					'value' => 'uppsite',
+					'pos'   => 0,
+					'level' => 'blocker',
+					'note'  => 'Deprecated VIP Plugin. Retired from Featured Partner Program.'
+				),
+				array(
+					'value' => 'wpcom-related-posts',
+					'pos'   => 0,
+					'level' => 'warning',
+					'note'  => 'Deprecated VIP Plugin. Functionality included in Jetpack.'
+				),
+				array(
+					'value' => 'scrollkit-wp',
+					'pos'   => 0,
+					'level' => 'blocker',
+					'note'  => 'Deprecated VIP Plugin. Scroll Kit has shut down.'
+				),
 			),
 		);
 
@@ -30,8 +65,9 @@ class VIPParametersCheck extends BaseCheck {
 			foreach ( $checks as $function => $data ) {
 
 				// Loop through the parameters and look for all function/parameter combinations.
-				foreach ( $data as $parameter => $parameter_data ) {
-					if ( preg_match( '/' . $function . '\(\s*("|\')?' . $parameter . '("|\')?\s*\)/', $file_content, $matches ) ) {
+				foreach ( $data as $parameter_data ) {
+					$previous_params = '(("|\')?(.+)("|\')?,\s){' . $parameter_data['pos'] . '}';
+					if ( preg_match( '/' . $function . '\(\s*' . ( $parameter_data['pos'] > 0 ? $previous_params : '' ) . '("|\')?' . $parameter_data['value'] . '("|\')?\s*/', $file_content, $matches ) ) {
 						$lines = $this->grep_content( $matches[0], $file_content );
 						$this->add_error(
 							'vipparametercheck',
