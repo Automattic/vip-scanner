@@ -14,13 +14,13 @@ class VIPParametersCheck extends BaseCheck {
 
 		$checks = array(
 			'wpcom_vip_load_plugin' => array(
-				'breadcrumb-navxt'     => 'Deprecated VIP Plugin. Use breadcrumb-navxt-39 instead.',
-				'livefyre'             => 'Deprecated VIP Plugin. Use livefyre3 instead.',
-				'feedwordpress'        => 'Deprecated VIP Plugin. No alternative available',
-				'wordtwit-1.3-mod'     => 'Deprecated VIP Plugin. Use publicize instead.',
-				'uppsite'              => 'Deprecated VIP Plugin. Retired from Featured Partner Program.',
-				'wpcom-related-posts'  => 'Deprecated VIP Plugin. Functionality included in Jetpack.',
-				'scrollkit-wp'         => 'Deprecated VIP Plugin. Scroll Kit has shut down.',
+				'breadcrumb-navxt'     => array( 'level' => 'warning', 'note' => 'Deprecated VIP Plugin. Use breadcrumb-navxt-39 instead.' ),
+				'livefyre'             => array( 'level' => 'warning', 'note' => 'Deprecated VIP Plugin. Use livefyre3 instead.' ),
+				'feedwordpress'        => array( 'level' => 'blocker', 'note' => 'Deprecated VIP Plugin. No alternative available' ),
+				'wordtwit-1.3-mod'     => array( 'level' => 'warning', 'note' => 'Deprecated VIP Plugin. Use publicize instead.' ),
+				'uppsite'              => array( 'level' => 'blocker', 'note' => 'Deprecated VIP Plugin. Retired from Featured Partner Program.' ),
+				'wpcom-related-posts'  => array( 'level' => 'warning', 'note' => 'Deprecated VIP Plugin. Functionality included in Jetpack.' ),
+				'scrollkit-wp'         => array( 'level' => 'blocker', 'note' => 'Deprecated VIP Plugin. Scroll Kit has shut down.' ),
 			),
 		);
 
@@ -30,13 +30,13 @@ class VIPParametersCheck extends BaseCheck {
 			foreach ( $checks as $function => $data ) {
 
 				// Loop through the parameters and look for all function/parameter combinations.
-				foreach ( $data as $parameter => $message ) {
+				foreach ( $data as $parameter => $parameter_data ) {
 					if ( preg_match( '/' . $function . '\(\s*("|\')?' . $parameter . '("|\')?\s*\)/', $file_content, $matches ) ) {
 						$lines = $this->grep_content( $matches[0], $file_content );
 						$this->add_error(
 							'vipparametercheck',
-							esc_html( $message ),
-							BaseScanner::LEVEL_WARNING,
+							esc_html( $parameter_data['note'] ),
+							$parameter_data['level'],
 							$this->get_filename( $file_path ),
 							$lines
 						);
