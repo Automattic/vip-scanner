@@ -102,4 +102,51 @@ class VIPRestrictedPatternsTest extends WP_UnitTestCase {
 		$this->assertTrue( $result );
 	}
 
+	public function testQueryVarsDirectAccessGet() {
+		$input = array(
+			'php' => array(
+				'test.php' => '<?php
+
+				add_action( "init", function(){
+					global $wp_query;
+					$paged = $wp_query->query_vars["paged"];
+				} );
+				'
+			)
+		);
+
+		$result = $this->_VIPRestrictedPatternsCheck->check( $input );
+
+		$errors = $this->_VIPRestrictedPatternsCheck->get_errors();
+
+		$error_slugs = wp_list_pluck( $errors, 'slug' );
+
+		$this->assertContains( '/\$wp_query->query_vars\[.*?\][^=]*?\;/msi', $error_slugs );
+		$this->assertFalse( $result );
+	}
+
+	public function testQueryVarsDirectAccessSet() {
+		$input = array(
+			'php' => array(
+				'test.php' => '<?php
+
+				add_action( "init", function(){
+					global $wp_query;
+					$wp_query->query_vars["paged"] = 3;
+				} );
+				'
+			)
+		);
+
+		$result = $this->_VIPRestrictedPatternsCheck->check( $input );
+
+		$errors = $this->_VIPRestrictedPatternsCheck->get_errors();
+
+		$error_slugs = wp_list_pluck( $errors, 'slug' );
+
+		$this->assertContains( '/\$wp_query->query_vars\[.*?\]\s*?\=.*?\;/msi', $error_slugs );
+
+		$this->assertFalse( $result );
+	}
+
 }

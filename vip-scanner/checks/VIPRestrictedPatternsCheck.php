@@ -19,6 +19,8 @@ class VIPRestrictedPatternsCheck extends BaseCheck
 			"/(\\\$GLOBALS|\\\$_SERVER|\\\$_GET|\\\$_POST|\\\$_REQUEST)+/msiU" => array( "level" => "Note", "note" => "Working with superglobals" ),
 			"/(\\\$_SERVER\[(?!('|\"REQUEST_URI|SCRIPT_FILENAME|HTTP_HOST'|\"))([^]]+|)\])+/msiU" => array( "level" => "Blocker", "note" => 'Non whitelisted $_SERVER superglobals found in this file' ),
 			"/pre_option_(blogname|siteurl|post_count)/msiU" => array( "level" => "Blocker", "note" => "possible unsafe use of pre_option_* hook"),
+			"/\\\$wp_query->query_vars\[.*?\][^=]*?\;/msi" => array( "level" => "Warning", "note" => "Possible direct query_vars access, should use get_query_var() function" ),
+			"/\\\$wp_query->query_vars\[.*?\]\s*?\=.*?\;/msi" => array( "level" => "Warning", "note" => "Possible direct query_vars modification, should use set_query_var() function" )
 		);
 
 		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
