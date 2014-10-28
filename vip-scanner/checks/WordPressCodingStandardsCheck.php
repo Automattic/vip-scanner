@@ -11,7 +11,7 @@ class WordPressCodingStandardsCheck extends BaseCheck {
 		'output_line'	=> '/\s+\S+\s+|\s+\S+\s+|\s+\S+\s*/',
 	);
 
-	protected $exclude_dir_regexes 	= array( '\.svn', '\.git' );
+	protected $exclude_dir_regexes 	= array( '\.svn', '\.git', '\node_modules' );
 	protected $exclude_file_regexes = array();
 	protected $include_extensions   = array( 'php' );
 

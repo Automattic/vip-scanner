@@ -18,7 +18,7 @@ class DirectoryScanner extends BaseScanner
 		if( is_dir( $directory ) ) {
 
 			// Skip source control
-			if ( in_array( basename( $directory ), array( '.svn', '.git' ) ) )
+			if ( in_array( basename( $directory ), array( '.svn', '.git', 'node_modules' ) ) )
 				return array();
 
 			if( ! is_readable( $directory ) ) {

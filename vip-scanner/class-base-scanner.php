@@ -51,7 +51,6 @@ class BaseScanner {
 		'^WS_FTP.*',
 	);
 
-
 	public function __construct( $files, $review ) {
 		// Given a set of files & a set of Checks
 		// --- Group files by type
@@ -209,13 +208,13 @@ class BaseScanner {
 		if ( 'analyzers' === $type ) {
 			$analyzed_files = array();
 
-			if ( is_array( $this->files['php'] ) ) {
+			if ( true === isset( $this->files['php'] ) && true === is_array( $this->files['php'] ) ) {
 				foreach ( $this->files['php'] as $filepath => $filecontents ) {
 					$analyzed_files[] = new AnalyzedPHPFile( $filepath, $filecontents );
 				}
 			}
 			
-			if ( is_array( $this->files['css'] ) ) {
+			if ( true === isset( $this->files['css'] ) && true === is_array( $this->files['css'] ) ) {
 				foreach ( $this->files['css'] as $filepath => $filecontents ) {
 					$analyzed_files[] = new AnalyzedCSSFile( $filepath, $filecontents );
 				}

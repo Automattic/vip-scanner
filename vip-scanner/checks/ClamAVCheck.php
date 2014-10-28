@@ -3,7 +3,7 @@
 class ClamAVCheck extends BaseCheck {
 	const COMMAND = 'clamscan';
 
-	protected $exclude_dir_regexes 	= array( '\.svn', '\.git' );
+	protected $exclude_dir_regexes 	= array( '\.svn', '\.git', '\node_modules' );
 	protected $exclude_file_regexes = array();
 
 	public function check( $files ) {
