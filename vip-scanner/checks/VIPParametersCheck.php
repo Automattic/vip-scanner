@@ -15,46 +15,46 @@ class VIPParametersCheck extends BaseCheck {
 		$checks = array(
 			'wpcom_vip_load_plugin' => array(
 				array(
-					'value' => 'breadcrumb-navxt',
-					'pos'   => 0,
-					'level' => 'warning',
-					'note'  => 'Deprecated VIP Plugin. Use breadcrumb-navxt-39 instead.'
+					'value'    => 'breadcrumb-navxt',
+					'position' => 0,
+					'level'    => 'warning',
+					'note'     => 'Deprecated VIP Plugin. Use breadcrumb-navxt-39 instead.'
 				),
 				array(
-					'value' => 'livefyre',
-					'pos'   => 0,
-					'level' => 'warning',
-					'note'  => 'Deprecated VIP Plugin. Use livefyre3 instead.'
+					'value'    => 'livefyre',
+					'position' => 0,
+					'level'    => 'warning',
+					'note'     => 'Deprecated VIP Plugin. Use livefyre3 instead.'
 				),
 				array(
-					'value' => 'feedwordpress',
-					'pos'   => 0,
-					'level' => 'blocker',
-					'note'  => 'Deprecated VIP Plugin. No alternative available'
+					'value'    => 'feedwordpress',
+					'position' => 0,
+					'level'    => 'blocker',
+					'note'     => 'Deprecated VIP Plugin. No alternative available'
 				),
 				array(
-					'value' => 'wordtwit-1.3-mod',
-					'pos'   => 0,
-					'level' => 'warning',
-					'note'  => 'Deprecated VIP Plugin. Use publicize instead.'
+					'value'    => 'wordtwit-1.3-mod',
+					'position' => 0,
+					'level'    => 'warning',
+					'note'     => 'Deprecated VIP Plugin. Use publicize instead.'
 				),
 				array(
-					'value' => 'uppsite',
-					'pos'   => 0,
-					'level' => 'blocker',
-					'note'  => 'Deprecated VIP Plugin. Retired from Featured Partner Program.'
+					'value'    => 'uppsite',
+					'position' => 0,
+					'level'    => 'blocker',
+					'note'     => 'Deprecated VIP Plugin. Retired from Featured Partner Program.'
 				),
 				array(
-					'value' => 'wpcom-related-posts',
-					'pos'   => 0,
-					'level' => 'warning',
-					'note'  => 'Deprecated VIP Plugin. Functionality included in Jetpack.'
+					'value'    => 'wpcom-related-posts',
+					'position' => 0,
+					'level'    => 'warning',
+					'note'     => 'Deprecated VIP Plugin. Functionality included in Jetpack.'
 				),
 				array(
-					'value' => 'scrollkit-wp',
-					'pos'   => 0,
-					'level' => 'blocker',
-					'note'  => 'Deprecated VIP Plugin. Scroll Kit has shut down.'
+					'value'    => 'scrollkit-wp',
+					'position' => 0,
+					'level'    => 'blocker',
+					'note'     => 'Deprecated VIP Plugin. Scroll Kit has shut down.'
 				),
 			),
 		);
@@ -66,8 +66,8 @@ class VIPParametersCheck extends BaseCheck {
 
 				// Loop through the parameters and look for all function/parameter combinations.
 				foreach ( $data as $parameter_data ) {
-					$previous_params = '(("|\')?(.+)("|\')?,\s){' . $parameter_data['pos'] . '}';
-					if ( preg_match( '/' . $function . '\(\s*' . ( $parameter_data['pos'] > 0 ? $previous_params : '' ) . '("|\')?' . $parameter_data['value'] . '("|\')?\s*/', $file_content, $matches ) ) {
+					$previous_params = '(("|\')?(.+)("|\')?,\s){' . $parameter_data['position'] . '}';
+					if ( preg_match( '/' . $function . '\(\s*' . ( $parameter_data['position'] > 0 ? $previous_params : '' ) . '("|\')?' . $parameter_data['value'] . '("|\')?\s*/', $file_content, $matches ) ) {
 						$lines = $this->grep_content( $matches[0], $file_content );
 						$this->add_error(
 							'vipparametercheck',
