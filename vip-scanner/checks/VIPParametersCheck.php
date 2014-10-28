@@ -1,6 +1,9 @@
 <?php
 /**
  * Checks for deprecated or potentially problematic parameters.
+ *
+ * Parameter value will be matched with or without quotes
+ * (e.g. 5, '5' will match 5 or 5, 'false' with match 'false' and false)
  */
 
 class VIPParametersCheck extends BaseCheck {
@@ -28,7 +31,7 @@ class VIPParametersCheck extends BaseCheck {
 
 				// Loop through the parameters and look for all function/parameter combinations.
 				foreach ( $data as $parameter => $message ) {
-					if ( preg_match( '/' . $function . '\(\s*("|\')' . $parameter . '("|\')\s*\)/', $file_content, $matches ) ) {
+					if ( preg_match( '/' . $function . '\(\s*("|\')?' . $parameter . '("|\')?\s*\)/', $file_content, $matches ) ) {
 						$lines = $this->grep_content( $matches[0], $file_content );
 						$this->add_error(
 							'vipparametercheck',
