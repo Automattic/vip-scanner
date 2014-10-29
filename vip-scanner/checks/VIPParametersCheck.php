@@ -76,7 +76,7 @@ class VIPParametersCheck extends BaseCheck {
 					if ( preg_match( '/' . $function . '\(\s*' . $previous_params . '("|\')?' . $parameter_data['value'] . '("|\')?\s*/', $file_content, $matches ) ) {
 						$lines = $this->grep_content( $matches[0], $file_content );
 						$this->add_error(
-							'vipparametercheck',
+							$parameter_data['value'],
 							esc_html( $parameter_data['note'] ),
 							$parameter_data['level'],
 							$this->get_filename( $file_path ),
