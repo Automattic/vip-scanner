@@ -73,7 +73,7 @@ class VIPParametersCheck extends BaseCheck {
 						$previous_params = '(.+)';
 					}
 
-					if ( preg_match( '/' . $function . '\(\s*' . $previous_params . '("|\')?' . $parameter_data['value'] . '("|\')?\s*/', $file_content, $matches ) ) {
+					if ( preg_match( '/' . $function . '\(\s*' . $previous_params . '("|\'|\s)' . $parameter_data['value'] . '("|\'|,|\s)\s*/', $file_content, $matches ) ) {
 						$lines = $this->grep_content( $matches[0], $file_content );
 						$this->add_error(
 							$parameter_data['value'],
