@@ -1,11 +1,11 @@
 <?php
+
 /**
  * Checks for deprecated or potentially problematic parameters.
  *
  * Parameter value will be matched with or without quotes
  * (e.g. 5, '5' will match 5 or 5, 'false' with match 'false' and false)
  */
-
 class VIPParametersCheck extends BaseCheck {
 
 	function check( $files ) {
@@ -60,14 +60,20 @@ class VIPParametersCheck extends BaseCheck {
 		);
 
 		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
-			
+
 			// Loop through all functions.
 			foreach ( $checks as $function => $data ) {
 
 				// Loop through the parameters and look for all function/parameter combinations.
 				foreach ( $data as $parameter_data ) {
-					$previous_params = '(("|\')?(.+)("|\')?,\s){' . $parameter_data['position'] . '}';
-					if ( preg_match( '/' . $function . '\(\s*' . ( $parameter_data['position'] > 0 ? $previous_params : '' ) . '("|\')?' . $parameter_data['value'] . '("|\')?\s*/', $file_content, $matches ) ) {
+					$previous_params = '';
+					if ( isset( $parameter_data['position'] ) && $parameter_data['position'] > 0 ) {
+						$previous_params = '(("|\')?(.+)("|\')?,\s*){' . $parameter_data['position'] . '}';
+					} elseif ( ! isset( $parameter_data['position'] ) ) {
+						$previous_params = '(.+)';
+					}
+
+					if ( preg_match( '/' . $function . '\(\s*' . $previous_params . '("|\')?' . $parameter_data['value'] . '("|\')?\s*/', $file_content, $matches ) ) {
 						$lines = $this->grep_content( $matches[0], $file_content );
 						$this->add_error(
 							'vipparametercheck',
