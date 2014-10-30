@@ -18,7 +18,8 @@ class VIPRestrictedPatternsCheck extends BaseCheck
 			"/(echo|print|\<\?\=)+.+(\\\$GLOBALS|\\\$_SERVER|\\\$_GET|\\\$_POST|\\\$_REQUEST)+/msiU" => array( "level" => "Warning", "note" => "Possible output of restricted variables" ),
 			"/(\\\$GLOBALS|\\\$_SERVER|\\\$_GET|\\\$_POST|\\\$_REQUEST)+/msiU" => array( "level" => "Note", "note" => "Working with superglobals" ),
 			"/(\\\$_SERVER\[(?!('|\"REQUEST_URI|SCRIPT_FILENAME|HTTP_HOST'|\"))([^]]+|)\])+/msiU" => array( "level" => "Blocker", "note" => 'Non whitelisted $_SERVER superglobals found in this file' ),
-			"/pre_option_(blogname|siteurl|post_count)/msiU" => array( "level" => "Blocker", "note" => "possible unsafe use of pre_option_* hook"),
+			"/(pre_)?option_(blogname|siteurl|post_count)/msiU" => array( "level" => "Blocker", "note" => "possible unsafe use of pre_option_* hook"),
+			'/(\xFE|\xFF|\xFE\xFF|\xFF\xFE|\xEF\xBB\xBF|\x2B\x2F\x76|\xF7\x64\x4C|\x0E\xFE\xFF|\xFB\xEE\x28|\x00\x00\xFE\xFF|\xDD\x73\x66\x73|\x84\x31\x95\x33)/' => array( 'level' => 'Blocker', 'note' => 'Byte-Order Marks should not be used in PHP files as they can cause undesired output' ),
 		);
 
 		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
