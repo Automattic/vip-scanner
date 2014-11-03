@@ -18,7 +18,7 @@ class VIPRestrictedPatternsCheck extends BaseCheck
 			"/(echo|print|\<\?\=)+.+(\\\$GLOBALS|\\\$_SERVER|\\\$_GET|\\\$_POST|\\\$_REQUEST)+/msiU" => array( "level" => "Warning", "note" => "Possible output of restricted variables" ),
 			"/(\\\$GLOBALS|\\\$_SERVER|\\\$_GET|\\\$_POST|\\\$_REQUEST)+/msiU" => array( "level" => "Note", "note" => "Working with superglobals" ),
 			"/(\\\$_SERVER\[(?!('|\"REQUEST_URI|SCRIPT_FILENAME|HTTP_HOST'|\"))([^]]+|)\])+/msiU" => array( "level" => "Blocker", "note" => 'Non whitelisted $_SERVER superglobals found in this file' ),
-			"/pre_option_(blogname|siteurl|post_count)/msiU" => array( "level" => "Blocker", "note" => "possible unsafe use of pre_option_* hook"),
+			"/(pre_)?option_(blogname|siteurl|post_count)/msiU" => array( "level" => "Blocker", "note" => "possible unsafe use of pre_option_* hook"),
 		);
 
 		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
