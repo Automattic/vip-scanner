@@ -65,10 +65,6 @@ To come...
 
 == Changelog ==
 
-= 0.8 =
-
-* Corrected typo in comment
-
 = 0.7 =
 
 * Modified analyzer to use PHP tokens rather than regular expressions
