@@ -65,9 +65,6 @@ To come...
 
 == Changelog ==
 
-= 0.8 =
-* Updated DeprecatedFunctionsCheck.php to add functions deprecated in WP 4.0
-
 = 0.7 =
 
 * Modified analyzer to use PHP tokens rather than regular expressions
