@@ -209,6 +209,9 @@ class DeprecatedFunctionsCheck extends BaseCheck {
 			'format_to_post'           => '',
 			'get_current_site_name'    => 'get_current_site()',
 			'wpmu_current_site'        => '',
+			// 4.0
+			'like_escape'               => '$wpdb->esc_like()',
+			'url_is_accessable_via_ssl' => '',
 			/**
 			 * wp-admin
 			 */
