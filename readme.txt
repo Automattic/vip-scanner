@@ -65,8 +65,6 @@ To come...
 
 == Changelog ==
 
-= 0.8 =
-
 * Added new class VIPParametersCheck to analyze function parameters for problematic items
 * Used VIPParametersCheck to identify deprecated VIP plugins in VIP Theme Review mode
 * Modified check for pre_option_* to also include option_*
