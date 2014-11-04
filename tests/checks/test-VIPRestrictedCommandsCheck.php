@@ -476,6 +476,14 @@ class VIPRestrictedCommandsCheckTest extends WP_UnitTestCase {
 
 		$this->checkCommands( $restricted_commands );
 	}
+	
+	public function testShowAdminBar() {
+		$restricted_commands = array(
+			'show_admin_bar'
+		);
+
+		$this->checkCommands( $restricted_commands );
+	}
 
 	public function testSwitchTheme() {
 		$restricted_commands = array(

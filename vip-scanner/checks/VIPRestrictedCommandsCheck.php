@@ -89,6 +89,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"ini_set" 					=> array( "level" => "Blocker", "note" => "Settings alteration" ),
 			"switch_theme" 				=> array( "level" => "Blocker", "note" => "Switching theme programmatically is not allowed. Please make the update by hand after a deploy of your code" ),
 			"wp_is_mobile" 				=> array( "level" => "Warning", "note" => "wp_is_mobile() is not batcache-friendly, please use <a href=\"http://vip.wordpress.com/documentation/mobile-theme/#targeting-mobile-visitors\">jetpack_is_mobile()</a>" ),
+			"show_admin_bar"            => array( "level" => "Blocker", "note" => "The WordPress.com admin bar cannot be removed as it’s integral to the user experience on WordPress.com" ),
 
 			// Restricted widgets
 			"WP_Widget_Tag_Cloud" => array( "level" => "Warning", "note" => "Using WP_Widget_Tag_Cloud, use WPCOM_Tag_Cloud_Widget instead" ),
