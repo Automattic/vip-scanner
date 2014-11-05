@@ -93,7 +93,7 @@ class TemplateForbiddenFunctionsCheck extends BaseCheck {
 			if ( false !== strpos( $file_content, $check ) ) {
 				$lines = $this->grep_content( $check, $file_content );
 				$this->add_error(
-					'template-forbidden-functions',
+					'template-forbidden-functions-' . $check,
 					sprintf( 'Redirection functions should not be called from template files' ),
 					'blocker',
 					$this->get_filename( $file_path ),
