@@ -27,7 +27,7 @@ class VIPParametersCheckTest extends WP_UnitTestCase {
 		$errors = $this->_VIPParametersCheck->get_errors();
 
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
-		$this->assertContains( 'livefyre', $error_slugs );
+		$this->assertContains( 'vip-parameters', $error_slugs );
 		$this->assertFalse( $result );
 	}
 
@@ -49,7 +49,7 @@ class VIPParametersCheckTest extends WP_UnitTestCase {
 
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 
-		$this->assertNotContains( 'livefyre3', $error_slugs );
+		$this->assertNotContains( 'vip-parameters', $error_slugs );
 		$this->assertTrue( $result );
 	}
 
@@ -71,7 +71,7 @@ class VIPParametersCheckTest extends WP_UnitTestCase {
 
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 
-		$this->assertNotContains( 'wp_title', $error_slugs );
+		$this->assertNotContains( 'vip-parameters', $error_slugs );
 		$this->assertTrue( $result );
 	}
 
@@ -123,7 +123,7 @@ class VIPParametersCheckTest extends WP_UnitTestCase {
 
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 
-		$this->assertContains( 'livefyre', $error_slugs );
+		$this->assertContains( 'vip-parameters', $error_slugs );
 		$this->assertFalse( $result );
 	}
 
@@ -153,7 +153,7 @@ class VIPParametersCheckTest extends WP_UnitTestCase {
 
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 
-		$this->assertNotContains( 'livefyre', $error_slugs );
+		$this->assertNotContains( 'vip-parameters', $error_slugs );
 		$this->assertTrue( $result );
 	}
 
@@ -182,7 +182,7 @@ class VIPParametersCheckTest extends WP_UnitTestCase {
 
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 
-		$this->assertContains( 'livefyre', $error_slugs );
+		$this->assertContains( 'vip-parameters', $error_slugs );
 		$this->assertFalse( $result );
 	}
 
@@ -212,7 +212,7 @@ class VIPParametersCheckTest extends WP_UnitTestCase {
 
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 
-		$this->assertContains( 5, $error_slugs );
+		$this->assertContains( 'vip-parameters', $error_slugs );
 		$this->assertFalse( $result );
 	}
 
@@ -242,7 +242,7 @@ class VIPParametersCheckTest extends WP_UnitTestCase {
 
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 
-		$this->assertContains( 'false', $error_slugs );
+		$this->assertContains( 'vip-parameters', $error_slugs );
 		$this->assertFalse( $result );
 	}
 }
