@@ -77,6 +77,7 @@ class TemplateForbiddenFunctionsCheck extends BaseCheck {
 						if ( false == $this->check_file_contents( $checks, $file_path, $file_content ) ) {
 							$result = false;
 						};
+						break;
 					}
 				}
 			}
