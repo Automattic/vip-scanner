@@ -218,7 +218,13 @@ class BaseScanner {
 
 			if ( true === isset( $this->files['php'] ) && true === is_array( $this->files['php'] ) ) {
 				foreach ( $this->files['php'] as $filepath => $filecontents ) {
-					$analyzed_files[] = new AnalyzedPHPFile( $filepath, $filecontents );
+					try {
+						$analyzed_files[] = new AnalyzedPHPFile( $filepath, $filecontents );
+					} catch ( PhpParser\Error $error ) {
+						$line_no = $error->getRawLine() - 1;
+						$lines = array( BaseCheck::get_line( $line_no, $filecontents ) );
+						$this->add_error( 'parse-error', esc_html( $error->getMessage() ), 'blocker', basename( $filepath ), $lines );
+					}
 				}
 			}
 			

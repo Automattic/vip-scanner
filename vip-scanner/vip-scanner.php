@@ -8,6 +8,16 @@ define( 'VIP_SCANNER_CHECKS_DIR', VIP_SCANNER_DIR . '/checks' );
 define( 'VIP_SCANNER_ANALYZERS_DIR', VIP_SCANNER_DIR . '/analyzers' );
 define( 'VIP_SCANNER_BIN_DIR', VIP_SCANNER_DIR . '/bin' );
 
+define( 'PHP_PARSER_BOOTSTRAP', VIP_SCANNER_DIR . '/../vendor/PHP-Parser/lib/bootstrap.php' );
+
+// Has PHP-Parser been already loaded, e.g. by another plugin?
+if ( class_exists( 'PhpParser\Parser' ) ) {
+	wp_die( 'A PHP-Parser instance was loaded before VIP-scanner. ' .
+			'If another plugin uses PHP-Parser, please deactivate it.' );
+} else {
+	require_once PHP_PARSER_BOOTSTRAP;
+}
+
 require_once( VIP_SCANNER_DIR . '/config-vip-scanner.php' );
 
 spl_autoload_register( function( $class_name ) {
