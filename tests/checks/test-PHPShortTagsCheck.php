@@ -1,23 +1,8 @@
 <?php
 
-class PHPShortTagsTest extends WP_UnitTestCase {
-	protected $_PHPShortTagsCheck;
+require_once( 'CheckTestBase.php' );
 
-	public function setUp() {
-		parent::setUp();
-		require_once VIP_SCANNER_DIR . '/checks/PHPShortTagsCheck.php';
-
-		$this->_PHPShortTagsCheck = new PHPShortTagsCheck();
-	}
-
-	public function runCheck( $file_contents ) {
-		$input = array( 'php' => array( 'test.php' => $file_contents ) );
-
-		$result = $this->_PHPShortTagsCheck->check( $input );
-		$errors = $this->_PHPShortTagsCheck->get_errors();
-
-		return wp_list_pluck( $errors, 'slug' );
-	}
+class PHPShortTagsTest extends CheckTestBase {
 
 	public function testValidTags() {
 		$file_contents = <<<'EOT'

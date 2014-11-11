@@ -1,15 +1,14 @@
 <?php
 
-class JavaScriptLintTest extends WP_UnitTestCase {
-	protected $_JavaScriptLintCheck;
+require_once( 'CheckTestBase.php' );
+
+class JavaScriptLintTest extends CheckTestBase {
 
 	public function setUp() {
 		parent::setUp();
-		require_once VIP_SCANNER_DIR . '/checks/JavaScriptLintCheck.php';
 
-		$this->_JavaScriptLintCheck = new JavaScriptLintCheck();
 		// We should force the Check to use a ThemeScanner
-		$this->_JavaScriptLintCheck->set_scanner( new ThemeScanner("Tests", array() ) );
+		$this->check->set_scanner( new ThemeScanner("Tests", array() ) );
 	}
 
 	public function testJavaScriptSyntaxError() {
@@ -24,10 +23,10 @@ class JavaScriptLintTest extends WP_UnitTestCase {
 			$this->assertFileExists( $filename );
 		}
 
-		$result = $this->_JavaScriptLintCheck->check( $input );
+		$result = $this->check->check( $input );
 		$this->assertFalse( $result );
 		
-		$errors = $this->_JavaScriptLintCheck->get_errors();
+		$errors = $this->check->get_errors();
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 		$this->assertContains( 'yuicompressor', $error_slugs );
 
@@ -45,10 +44,10 @@ class JavaScriptLintTest extends WP_UnitTestCase {
 			$this->assertFileExists( $filename );
 		}
 
-		$result = $this->_JavaScriptLintCheck->check( $input );
+		$result = $this->check->check( $input );
 		$this->assertTrue( $result );
 		
-		$errors = $this->_JavaScriptLintCheck->get_errors();
+		$errors = $this->check->get_errors();
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 		$this->assertNotContains( 'yuicompressor', $error_slugs );
 

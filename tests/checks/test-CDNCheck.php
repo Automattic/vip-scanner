@@ -1,14 +1,8 @@
 <?php
 
-class CDNTest extends WP_UnitTestCase {
-	protected $_CDNCheck;
+require_once( 'CheckTestBase.php' );
 
-	public function setUp() {
-		parent::setUp();
-		require_once VIP_SCANNER_DIR . '/checks/CDNCheck.php';
-
-		$this->_CDNCheck = new CDNCheck();
-	}
+class CDNTest extends CheckTestBase {
 
 	public function testForCDN() {
 		$cdn_list = array(
@@ -24,7 +18,7 @@ class CDNTest extends WP_UnitTestCase {
 			'respond-js',
 		);
 
-		$file_content = <<<'EOT'
+		$file_contents = <<<'EOT'
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
 <link href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/slate/bootstrap.min.css" rel="stylesheet">
@@ -37,16 +31,7 @@ class CDNTest extends WP_UnitTestCase {
 <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 EOT;
 
-		$input = array(
-			'php' => array(
-				'test.php' => $file_content
-			)
-		);
-
-		$result = $this->_CDNCheck->check( $input );
-
-		$errors = $this->_CDNCheck->get_errors();
-		$error_slugs = wp_list_pluck( $errors, 'slug' );
+		$error_slugs = $this->runCheck( $file_contents );
 
 		foreach( $cdn_list as $cdn ) {
 			$this->assertContains( 'cdn-' . $cdn, $error_slugs );

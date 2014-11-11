@@ -1,15 +1,8 @@
 <?php
 
-class VIPRestrictedCommandsCheckTest extends WP_UnitTestCase {
-	protected $_VIPRestrictedCommandsCheck;
+require_once( 'CheckTestBase.php' );
 
-	public function setUp() {
-		parent::setUp();
-		require_once VIP_SCANNER_DIR . '/checks/VIPRestrictedCommandsCheck.php';
-
-		$this->_VIPRestrictedCommandsCheck = new VIPRestrictedCommandsCheck();
-	}
-
+class VIPRestrictedCommandsTest extends CheckTestBase {
 
 	/**
 	 * Build input for the given commands, then perform a restricted commands check to ensure they are all flagged
@@ -19,19 +12,9 @@ class VIPRestrictedCommandsCheckTest extends WP_UnitTestCase {
 	public function checkCommands( $commands ) {
 		$commands_formatted = array_map( array( $this, 'add_parenthesis_to_command_name' ), $commands );
 
-		$test_input = '<?php ' . "\n\n" . implode( "\n\n", $commands_formatted );
+		$file_contents = '<?php ' . "\n\n" . implode( "\n\n", $commands_formatted );
 
-		$input = array( 
-			'php' => array(
-				'test.php' => $test_input
-			)
-		);
-
-		$result = $this->_VIPRestrictedCommandsCheck->check( $input );
-
-		$errors = $this->_VIPRestrictedCommandsCheck->get_errors();
-
-		$error_slugs = wp_list_pluck( $errors, 'slug' );
+		$error_slugs = $this->runCheck( $file_contents );
 
 		// Assert the scanner caught all commands
 		foreach( $commands as $command ) {

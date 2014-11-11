@@ -1,78 +1,49 @@
 <?php
 
-class VIPParametersCheckTest extends WP_UnitTestCase {
-	protected $_VIPParametersCheck;
+require_once( 'CheckTestBase.php' );
 
-	public function setUp() {
-		parent::setUp();
-		require_once VIP_SCANNER_DIR . '/checks/VIPParametersCheck.php';
-
-		$this->_VIPParametersCheck = new VIPParametersCheck();
-	}
+class VIPParametersTest extends CheckTestBase {
 
 	public function testUseDeprecatedVIPPlugin() {
-		$input = array( 
-			'php' => array(
-				'test.php' => '<?php
+		$file_contents = <<<'EOT'
+				<?php
 
 				wpcom_vip_load_plugin( "livefyre" );
 
 				?>
-				'
-			)
-		);
+EOT;
 
-		$result = $this->_VIPParametersCheck->check( $input );
+		$error_slugs = $this->runCheck( $file_contents );
 
-		$errors = $this->_VIPParametersCheck->get_errors();
-
-		$error_slugs = wp_list_pluck( $errors, 'slug' );
 		$this->assertContains( 'vip-parameters-livefyre', $error_slugs );
-		$this->assertFalse( $result );
 	}
 
 	public function testNoDeprecatedVIPPlugins() {
-		$input = array(
-			'php' => array(
-				'test.php' => '<?php
+		$file_contents = <<<'EOT'
+				<?php
 
 				wpcom_vip_load_plugin( "livefyre3" );
 
 				?>
-				'
-			)
-		);
+EOT;
 
-		$result = $this->_VIPParametersCheck->check( $input );
-
-		$errors = $this->_VIPParametersCheck->get_errors();
-
-		$error_slugs = wp_list_pluck( $errors, 'slug' );
+		$error_slugs = $this->runCheck( $file_contents );
 
 		$this->assertNotContains( 'vip-parameters-livefyre3', $error_slugs );
-		$this->assertTrue( $result );
 	}
 
 	public function testNoTargetFunctionCall() {
-		$input = array(
-			'php' => array(
-				'test.php' => '<?php
+		$file_contents = <<<'EOT'
+				<?php
 
 				add_filter( "wp_title", "twentyfourteen_wp_title", 10, 2 );
 
 				?>
-				'
-			)
-		);
+EOT;
 
-		$result = $this->_VIPParametersCheck->check( $input );
-
-		$errors = $this->_VIPParametersCheck->get_errors();
-
-		$error_slugs = wp_list_pluck( $errors, 'slug' );
+		$error_slugs = $this->runCheck( $file_contents );
 
 		$this->assertNotContains( 'vip-parameters-wp_title', $error_slugs );
-		$this->assertTrue( $result );
 	}
 
 	public function testCorrectErrorLevel() {
@@ -87,9 +58,9 @@ class VIPParametersCheckTest extends WP_UnitTestCase {
 			)
 		);
 
-		$result = $this->_VIPParametersCheck->check( $input );
+		$result = $this->check->check( $input );
 
-		$errors = $this->_VIPParametersCheck->get_errors();
+		$errors = $this->check->get_errors();
 
 		$error_slugs = wp_list_pluck( $errors, 'level' );
 
@@ -99,12 +70,13 @@ class VIPParametersCheckTest extends WP_UnitTestCase {
 
 	public function testTargetParameterInSecondPosition() {
 		$file_path     = 'test.php';
-		$file_contents = '<?php
+		$file_contents = <<<'EOT'
+				<?php
 
 				wpcom_vip_load_plugin( "dummy", "livefyre" );
 
 				?>
-				';
+EOT;
 
 		$checks = array(
 			'wpcom_vip_load_plugin' => array(
@@ -117,9 +89,9 @@ class VIPParametersCheckTest extends WP_UnitTestCase {
 			),
 		);
 
-		$result = $this->_VIPParametersCheck->check_file_contents( $checks, $file_path, $file_contents );
+		$result = $this->check->check_file_contents( $checks, $file_path, $file_contents );
 
-		$errors = $this->_VIPParametersCheck->get_errors();
+		$errors = $this->check->get_errors();
 
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 
@@ -147,9 +119,9 @@ class VIPParametersCheckTest extends WP_UnitTestCase {
 			),
 		);
 
-		$result = $this->_VIPParametersCheck->check_file_contents( $checks, $file_path, $file_contents );
+		$result = $this->check->check_file_contents( $checks, $file_path, $file_contents );
 
-		$errors = $this->_VIPParametersCheck->get_errors();
+		$errors = $this->check->get_errors();
 
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 
@@ -176,9 +148,9 @@ class VIPParametersCheckTest extends WP_UnitTestCase {
 			),
 		);
 
-		$result = $this->_VIPParametersCheck->check_file_contents( $checks, $file_path, $file_contents );
+		$result = $this->check->check_file_contents( $checks, $file_path, $file_contents );
 
-		$errors = $this->_VIPParametersCheck->get_errors();
+		$errors = $this->check->get_errors();
 
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 
@@ -206,9 +178,9 @@ class VIPParametersCheckTest extends WP_UnitTestCase {
 			),
 		);
 
-		$result = $this->_VIPParametersCheck->check_file_contents( $checks, $file_path, $file_contents );
+		$result = $this->check->check_file_contents( $checks, $file_path, $file_contents );
 
-		$errors = $this->_VIPParametersCheck->get_errors();
+		$errors = $this->check->get_errors();
 
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 
@@ -236,9 +208,9 @@ class VIPParametersCheckTest extends WP_UnitTestCase {
 			),
 		);
 
-		$result = $this->_VIPParametersCheck->check_file_contents( $checks, $file_path, $file_contents );
+		$result = $this->check->check_file_contents( $checks, $file_path, $file_contents );
 
-		$errors = $this->_VIPParametersCheck->get_errors();
+		$errors = $this->check->get_errors();
 
 		$error_slugs = wp_list_pluck( $errors, 'slug' );
 
