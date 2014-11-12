@@ -524,7 +524,7 @@ class TokenParser {
 			array(
 				'type' => false,
 				'name' => '',
-				'chlidren' => array(),
+				'children' => array(),
 				'visibility' => 'public',
 				'abstract' => '',
 				'args' => '',
