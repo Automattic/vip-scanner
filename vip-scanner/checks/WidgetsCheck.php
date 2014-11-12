@@ -77,7 +77,7 @@ class WidgetsCheck extends BaseCheck {
          */
 		$this->increment_check_count();
 
-		if ( false !== strpos( $php, 'register_widget' ) ) {
+		if ( 0 !== preg_match_all( '/\sregister_widget\s*\(/', $php, $matches ) ) {
 			$this->add_error(
 				'widgets',
 				'The theme uses <code>register_widget()</code> to register a new widget.',
