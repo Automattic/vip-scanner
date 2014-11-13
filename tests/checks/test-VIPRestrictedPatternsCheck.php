@@ -1,105 +1,68 @@
 <?php
 
-class VIPRestrictedPatternsTest extends WP_UnitTestCase {
-	protected $_VIPRestrictedPatternsCheck;
+require_once( 'CheckTestBase.php' );
 
-	public function setUp() {
-		parent::setUp();
-		require_once VIP_SCANNER_DIR . '/checks/VIPRestrictedPatternsCheck.php';
-
-		$this->_VIPRestrictedPatternsCheck = new VIPRestrictedPatternsCheck();
-	}
+class VIPRestrictedPatternsTest extends CheckTestBase {
 
 	public function testAssigningREQUESTVariable() {
-		$input = array( 
-			'php' => array(
-				'test.php' => '<?php
+		$file_contents = <<<'EOT'
+				<?php
 
 				$normal = "Hey";
 
 				$_REQUEST["lol"] = "dont do this";
 
 				?>
-				'
-			)
-		);
+EOT;
 
-		$result = $this->_VIPRestrictedPatternsCheck->check( $input );
+		$error_slugs = $this->runCheck( $file_contents );
 
-		$errors = $this->_VIPRestrictedPatternsCheck->get_errors();
-
-		$error_slugs = wp_list_pluck( $errors, 'slug' );
 		$this->assertContains( '/(\$_REQUEST)+/msiU', $error_slugs );
-		$this->assertFalse( $result );
 	}
 
 	public function testAssignedNormalVariables() {
-		$input = array( 
-			'php' => array(
-				'test.php' => '<?php
+		$file_contents = <<<'EOT'
+				<?php
 
 				$bbq = "is so tasty";
 
 				?>
-				'
-			)
-		);
+EOT;
 
-		$result = $this->_VIPRestrictedPatternsCheck->check( $input );
-
-		$errors = $this->_VIPRestrictedPatternsCheck->get_errors();
-
-		$error_slugs = wp_list_pluck( $errors, 'slug' );
+		$error_slugs = $this->runCheck( $file_contents );
 
 		$this->assertNotContains( '/(\$_REQUEST)+/msiU', $error_slugs );
-		$this->assertTrue( $result );
 	} 
 
 	public function testReadingREQUESTVariables() {
-		$input = array( 
-			'php' => array(
-				'test.php' => '<?php
+		$file_contents = <<<'EOT'
+				<?php
 
 				if( $_REQUEST["lol"] == "hey" )
 					echo "how are you?";
 
 				?>
-				'
-			)
-		);
+EOT;
 
-		$result = $this->_VIPRestrictedPatternsCheck->check( $input );
-
-		$errors = $this->_VIPRestrictedPatternsCheck->get_errors();
-
-		$error_slugs = wp_list_pluck( $errors, 'slug' );
+		$error_slugs = $this->runCheck( $file_contents );
 
 		$this->assertContains( '/(\$_REQUEST)+/msiU', $error_slugs );
-		$this->assertFalse( $result );
 	}
 
 
 	public function testReadingNormalVariables() {
-		$input = array( 
-			'php' => array(
-				'test.php' => '<?php
+		$file_contents = <<<'EOT'
+				'<?php
 
 				if( $imnormal == "hey" )
 					echo "how are you?";
 
 				?>
-				'
-			)
-		);
+EOT;
 
-		$result = $this->_VIPRestrictedPatternsCheck->check( $input );
-
-		$errors = $this->_VIPRestrictedPatternsCheck->get_errors();
-
-		$error_slugs = wp_list_pluck( $errors, 'slug' );
+		$error_slugs = $this->runCheck( $file_contents );
 
 		$this->assertNotContains( '/(\$_REQUEST)+/msiU', $error_slugs );
-		$this->assertTrue( $result );
 	}
 
 }

@@ -1,23 +1,8 @@
 <?php
 
-class TitleTest extends WP_UnitTestCase {
-	protected $_TitleCheck;
+require_once( 'CheckTestBase.php' );
 
-	public function setUp() {
-		parent::setUp();
-		require_once VIP_SCANNER_DIR . '/checks/TitleCheck.php';
-
-		$this->_TitleCheck = new TitleCheck();
-	}
-
-	public function runCheck( $file_contents ) {
-		$input = array( 'php' => array( 'test.php' => $file_contents ) );
-
-		$result = $this->_TitleCheck->check( $input );
-		$errors = $this->_TitleCheck->get_errors();
-
-		return wp_list_pluck( $errors, 'slug' );
-	}
+class TitleTest extends CheckTestBase {
 
 	/**
 	 * Test for the presence of <title> and </title> tags.

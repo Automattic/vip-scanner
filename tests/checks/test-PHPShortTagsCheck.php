@@ -1,71 +1,43 @@
 <?php
 
-class PHPShortTagsTest extends WP_UnitTestCase {
-	protected $_PHPShortTagsCheck;
+require_once( 'CheckTestBase.php' );
 
-	public function setUp() {
-		parent::setUp();
-		require_once VIP_SCANNER_DIR . '/checks/PHPShortTagsCheck.php';
-
-		$this->_PHPShortTagsCheck = new PHPShortTagsCheck();
-	}
+class PHPShortTagsTest extends CheckTestBase {
 
 	public function testValidTags() {
-		$input = array( 
-			'php' => array(
-				'test.php' => '<?php
+		$file_contents = <<<'EOT'
+				<?php
 
 				echo "doing things";
 
 				?>
-				'
-			)
-		);
+EOT;
 
-		$result = $this->_PHPShortTagsCheck->check( $input );
-
-		$errors = $this->_PHPShortTagsCheck->get_errors();
-
-		$error_slugs = wp_list_pluck( $errors, 'slug' );
+		$error_slugs = $this->runCheck( $file_contents );
 
 		$this->assertNotContains( 'php-shorttags', $error_slugs );
 	}
 
 	public function testOpeningShortTags() {
-		$input = array( 
-			'php' => array(
-				'test.php' => '<?
+		$file_contents = <<<'EOT'
+				<?
 
 				echo "doing things";
-				'
-			)
-		);
+EOT;
 
-		$result = $this->_PHPShortTagsCheck->check( $input );
-
-		$errors = $this->_PHPShortTagsCheck->get_errors();
-
-		$error_slugs = wp_list_pluck( $errors, 'slug' );
+		$error_slugs = $this->runCheck( $file_contents );
 
 		$this->assertContains( 'php-shorttags', $error_slugs );
 	}
 
 	public function testOutputShortTags() {
-		$input = array( 
-			'php' => array(
-				'test.php' => '
-					$foo = "bar";
+		$file_contents = <<<'EOT'
+					<?php $foo = "bar"; ?>
 
 					<?=$foo; ?>
-				'
-			)
-		);
+EOT;
 
-		$result = $this->_PHPShortTagsCheck->check( $input );
-
-		$errors = $this->_PHPShortTagsCheck->get_errors();
-
-		$error_slugs = wp_list_pluck( $errors, 'slug' );
+		$error_slugs = $this->runCheck( $file_contents );
 
 		$this->assertContains( 'php-shorttags', $error_slugs );
 	}

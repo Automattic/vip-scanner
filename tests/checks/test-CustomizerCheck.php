@@ -1,23 +1,8 @@
 <?php
 
-class CustomizerTest extends WP_UnitTestCase {
-	protected $_CustomizerCheck;
+require_once( 'CheckTestBase.php' );
 
-	public function setUp() {
-		require_once VIP_SCANNER_DIR . '/checks/CustomizerCheck.php';
-
-		$this->_CustomizerCheck = new CustomizerCheck();
-	}
-
-	public function runCheck( $file_contents ) {
-		$input = array( 'php' => array( 'test.php' => $file_contents ) );
-
-		$result = $this->_CustomizerCheck->check( $input );
-
-		$errors = $this->_CustomizerCheck->get_errors();
-
-		return wp_list_pluck( $errors, 'slug' );
-	}
+class CustomizerTest extends CheckTestBase {
 
 	public function testValidSanitizeCallback() {
 		$file = <<<'EOT'
