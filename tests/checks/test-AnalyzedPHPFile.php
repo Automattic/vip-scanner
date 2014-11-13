@@ -409,7 +409,7 @@ EOT
 	}
 
 	/**
-	 * Test that a number of special function are recognized. These functions are
+	 * Test that a number of special functions are recognized. These functions are
 	 * considered part of the PHP language, and have specific tokens.
 	 */
 	public function test_special_function_call_detection() {
@@ -423,18 +423,18 @@ EOT
 			'require',
 			'require_once',
 			'isset',
-			'list',
 			'print',
 			'unset',
-
-			// Halt compiler needs to be last -- it doesn't play nice with the other kids.
-			'__halt_compiler',
 		);
 
 		$content = '<?php';
 		foreach ( $special_functions as $special_function ) {
-			$content .= "\n$special_function();";
+			$content .= "\n$special_function( \$dummy );";
 		}
+		// list() must be assigned to:
+		$content .= "\n" . 'list( , $press ) = array( "word", "press" );';
+		// Halt compiler needs to be last -- it doesn't play nice with the other kids.
+		$content .= "\n__halt_compiler();";
 
 		$analyzed_file = new AnalyzedPHPFile( 'test.php', $content );
 
@@ -645,7 +645,7 @@ class FileClass extends BaseFileClass {
 		if(is_dir($dir)) {
 			if($handle = opendir($dir)) {
 				while(($file = readdir($handle)) !== false) {
-					if($file != "." &amp;&amp; $file != ".." &amp;&amp; $file != "Thumbs.db"/*pesky windows, images..*/) {
+					if($file != "." && $file != ".." && $file != "Thumbs.db"/*pesky windows, images..*/) {
 						echo '<a target="_blank" href="'.$dir.$file.'">'.$file.'</a><br>'."\n";
 					}
 				}
@@ -1180,7 +1180,7 @@ class FirstClass extends ParentClass {
 	function test_function() {
 		foreach( $objects->value as $obj ) {
 			$b = "${a}";
-			$a = "{${$object->getName()}}"
+			$a = "{${$object->getName()}}";
 		}
 	}
 
