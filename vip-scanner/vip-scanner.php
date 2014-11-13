@@ -6,6 +6,7 @@
 define( 'VIP_SCANNER_DIR', dirname( __FILE__ ) );
 define( 'VIP_SCANNER_CHECKS_DIR', VIP_SCANNER_DIR . '/checks' );
 define( 'VIP_SCANNER_ANALYZERS_DIR', VIP_SCANNER_DIR . '/analyzers' );
+define( 'VIP_SCANNER_RENDERERS_DIR', VIP_SCANNER_DIR . '/renderers' );
 define( 'VIP_SCANNER_BIN_DIR', VIP_SCANNER_DIR . '/bin' );
 
 require_once( VIP_SCANNER_DIR . '/config-vip-scanner.php' );
@@ -18,17 +19,18 @@ require_once( VIP_SCANNER_DIR . '/class-content-scanner.php' );
 require_once( VIP_SCANNER_DIR . '/class-diff-scanner.php' );
 require_once( VIP_SCANNER_DIR . '/class-preg-file.php' );
 
-require_once( VIP_SCANNER_DIR . '/class-analyzer-renderer.php' );
 require_once( VIP_SCANNER_DIR . '/class-analyzed-file.php' );
 require_once( VIP_SCANNER_DIR . '/class-analyzed-php-file.php' );
 require_once( VIP_SCANNER_DIR . '/class-analyzed-css-file.php' );
-require_once( VIP_SCANNER_DIR . '/class-resource-renderer.php' );
-require_once( VIP_SCANNER_DIR . '/class-renderer-group.php' );
-require_once( VIP_SCANNER_DIR . '/class-file-renderer.php' );
-require_once( VIP_SCANNER_DIR . '/class-namespace-renderer.php' );
-require_once( VIP_SCANNER_DIR . '/class-class-renderer.php' );
-require_once( VIP_SCANNER_DIR . '/class-function-renderer.php' );
 require_once( VIP_SCANNER_DIR . '/class-base-analyzer.php' );
+
+require_once( VIP_SCANNER_RENDERERS_DIR . '/class-analyzer-renderer.php' );
+require_once( VIP_SCANNER_RENDERERS_DIR . '/class-resource-renderer.php' );
+require_once( VIP_SCANNER_RENDERERS_DIR . '/class-renderer-group.php' );
+require_once( VIP_SCANNER_RENDERERS_DIR . '/class-file-renderer.php' );
+require_once( VIP_SCANNER_RENDERERS_DIR . '/class-namespace-renderer.php' );
+require_once( VIP_SCANNER_RENDERERS_DIR . '/class-class-renderer.php' );
+require_once( VIP_SCANNER_RENDERERS_DIR . '/class-function-renderer.php' );
 
 if ( is_admin() ) {
 	require_once( VIP_SCANNER_DIR . '/class-async-directory-scanner.php' );
