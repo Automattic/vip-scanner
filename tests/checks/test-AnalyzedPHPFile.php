@@ -528,7 +528,7 @@ EOT
 		$this->assertEqualSets( array( '' ), array_keys( $functions ) );
 		$this->assertEqualSets( array( 'test_function' ), array_keys( $functions[''] ) );
 
-		// Assert expectec function calls
+		// Assert expected function calls
 		$this->assertEqualSets( array( 'test_function' ), array_keys( $function_calls ) );
 		$this->assertEqualSets( array( 'self::do_func', 'SomeObj::do_other_func' ), array_keys( $function_calls['test_function'] ) );
 		$this->assertEmpty( $function_calls['test_function']['self::do_func']['args'] );
