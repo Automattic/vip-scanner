@@ -2,23 +2,24 @@
 
 class PHPAnalyzer extends BaseAnalyzer {
 	protected $hierarchy_metas = array(
-		'namespaces'    => 'NamespaceCodeElement',
-		'classes'       => 'ClassCodeElement',
-		'functions'     => 'FunctionCodeElement',
+		'namespaces' => 'NamespaceCodeElement',
+		'classes'    => 'ClassCodeElement',
+		'methods'    => 'MethodCodeElement',
+		'functions'  => 'FunctionCodeElement',
 	);
 
 	protected $check_hierarchy = array(
 		'php' => array(
 			'namespaces' => array(
 				'classes' => array(
-					'functions' => array(),
-					'members'   => array(),
+					'methods' => array(),
+					'members' => array(),
 				),
 			),
 
 			'classes' => array(
-				'functions' => array(),
-				'members'	=> array(),
+				'methods' => array(),
+				'members' => array(),
 			),
 
 			'functions' => array(),
