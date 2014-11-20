@@ -1,15 +1,7 @@
 <?php
 
-abstract class AnalyzerRenderer {
-	/**
-	 * @var array<AnalyzerRenderer>
-	 */
-	protected $children = array();
-	protected $name = '';
-	protected $attributes = array();
-	protected $stats = array();
-	protected $singular = 'item';
-	protected $plural = 'items';
+class ElementRenderer {
+	protected $element;
 	protected $spacing_char = "\t";
 	protected $display_args = array();
 	protected $bash_color_codes = array(
@@ -22,42 +14,9 @@ abstract class AnalyzerRenderer {
 		'white'   => 37,
 		'black'   => 30,
 	);
-	
-	function __construct( $name, $attributes = array() ) {
-		$this->name = $name;
-		$this->attributes = $attributes;
-	}
 
-	/**
-	 * Gets the name of this element.
-	 * @return string
-	 */
-	function name() {
-		return $this->name;
-	}
-	
-	/**
-	 * Gets a string that should be relatively unique for this element.
-	 * @return array
-	 */
-	function identifier() {
-		return $this->name();
-	}
-	
-	/**
-	 * Gets the singular noun for this class.
-	 * @return string
-	 */
-	function singular() {
-		return $this->singular;
-	}
-	
-	/**
-	 * Gets the plural noun for this class.
-	 * @return string
-	 */
-	function plural() {
-		return $this->plural;
+	function __construct( $element ) {
+		$this->element = $element;
 	}
 	
 	/**
@@ -79,25 +38,24 @@ abstract class AnalyzerRenderer {
 
 		$this->display_args = $args;
 
-		$use_prefixes = isset( $this->analyzed_prefixes );
-		if ( $use_prefixes ) {
-			$colours = $this->randColor( $this->num_prefixes );
-		}
-
 		// Output the header. Don't escape here because we expect the header to contain html.
-		$header_text = $this->process_header_args( $this->display_header( $args ), $args );
+		$header_text = $this->display_header( $this->element->get_header() );
+		if ( $this->element->get_child_summary() ) {
+			$header_text .= ' ' . $this->stylize_text( '(' . $this->display_child_summary( $this->element->get_child_summary() ) . ')',
+					array( 'small' => true) );
+		}
 		if ( ! $args['bare'] ) {
 			$header_classes = array( 'renderer-group-header' );
 			if ( isset( $args['body_classes'] ) ) {
 				$header_classes = array_merge( $header_classes, $args['body_classes'] );
 			}
 
-			if ( $this->is_empty() ) {
+			if ( $this->element->is_empty() ) {
 				$header_classes[] = 'renderer-group-empty';
 			}
 
 			$output .= '<h3 class="' . esc_attr( implode( ' ', $header_classes ) ) . '">' . $header_text . '</h3>';
-			
+
 			$body_classes = array( 'renderer-group-body' );
 			if ( isset( $args['body_classes'] ) ) {
 				$body_classes = array_merge( $body_classes, $args['body_classes'] );
@@ -112,16 +70,9 @@ abstract class AnalyzerRenderer {
 		}
 
 		if ( 0 === $args['depth'] || $args['level'] < $args['depth'] ) {
-			foreach ( $this->children as $child ) {
-				$name = $child->name();
-				if ( $use_prefixes && array_key_exists( $name, $this->analyzed_prefixes ) ) {
-					$args['highlight_substrs'] = array( array(
-						'str'   => $this->analyzed_prefixes[$name],
-						'color' => $colours[array_search( $this->analyzed_prefixes[$name], $this->prefixes )],
-					) );
-				}
-
-				$output .= $child->display( false, $args );
+			foreach ( $this->element->get_children( array( $this, 'randColor' ) ) as $child ) {
+				$r = new ElementRenderer( $child );
+				$output .= $r->display( false, $args );
 			}
 		}
 
@@ -147,7 +98,7 @@ abstract class AnalyzerRenderer {
 			return $output;
 		}
 	}
-	
+
 	/**
 	 * Gets the HTML for displaying this renderers' stats.
 	 * @param array $args
@@ -155,8 +106,8 @@ abstract class AnalyzerRenderer {
 	 */
 	function display_stats( $args ) {
 		$output = '';
-		if ( !empty( $this->stats ) ) {
-			$skip_stats = $this->skip_stats();
+		if ( $this->element->get_stats() ) {
+			$skip_stats = $this->element->skip_stats();
 			if ( ! isset( $args['bare'] ) || ! $args['bare'] ) {
 				$classes = array( 'renderer-group-stats' );
 				if ( isset( $args['stats_classes'] ) ) {
@@ -164,14 +115,14 @@ abstract class AnalyzerRenderer {
 				}
 
 				$output .= '<div class="' . implode( ' ', $classes ) . '"><ul>';
-				foreach ( $this->stats as $slug => $stat ) {
+				foreach ( $this->element->get_stats() as $slug => $stat ) {
 					if ( ! in_array( $slug, $skip_stats ) ) {
 						$output .= sprintf( '<li><strong>%s</strong>: %s</li>', esc_html( $slug ), number_format( $stat ) ); 
 					}
 				}
 				$output .= '</ul></div>';
 			} else {
-				foreach ( $this->stats as $slug => $stat ) {
+				foreach ( $this->element->get_stats() as $slug => $stat ) {
 					if ( ! in_array( $slug, $skip_stats ) ) {
 						$output .= sprintf( "%s> %s: %s\n", str_repeat( $this->spacing_char, $args['level'] ), $slug, number_format( $stat ) );
 					}
@@ -188,8 +139,8 @@ abstract class AnalyzerRenderer {
 	 */
 	function display_attributes( $args ) {
 		$output = '';
-		if ( !empty( $this->attributes ) ) {
-			$skip_attributes = $this->skip_attributes();
+		if ( $this->element->get_attributes() ) {
+			$skip_attributes = $this->element->skip_attributes();
 			if ( ! $args['bare'] ) {
 				$classes = array( 'renderer-group-attributes' );
 				if ( isset( $args['attributes_classes'] ) ) {
@@ -197,14 +148,14 @@ abstract class AnalyzerRenderer {
 				}
 
 				$output .= '<div class="' . implode( ' ', $classes ) . '"><ul>';
-				foreach ( $this->attributes as $slug => $attribute ) {
+				foreach ( $this->element->get_attributes() as $slug => $attribute ) {
 					if ( ! in_array( $slug, $skip_attributes ) && ! empty( $attribute ) ) {
 						$output .= $this->display_html_attribute( $slug, $attribute, $args );
 					}
 				}
 				$output .= '</ul></div>';
 			} else {
-				foreach ( $this->attributes as $slug => $attribute ) {
+				foreach ( $this->element->get_attributes() as $slug => $attribute ) {
 					if ( ! in_array( $slug, $skip_attributes ) && ! empty( $attribute ) ) {
 						if ( is_string( $attribute ) ) {
 							$output .= sprintf( "%s> %s: %s\n", str_repeat( $this->spacing_char, $args['level'] ), $slug, $attribute );
@@ -240,39 +191,52 @@ abstract class AnalyzerRenderer {
 			return sprintf( $fstring, esc_html( $slug ), "<ul>$output</ul>" );
 		}
 	}
-	
-	/**
-	 * Transforms the $header text as specified by the $args.
-	 * 
-	 * Setting `highlight_substrs` is used to highlight parts of a string with a colour.
-	 * 
-	 * @param array $args
-	 * @return string
-	 */
-	function process_header_args( $header, $args ) {
-		if ( isset( $args['highlight_substrs'] ) ) {
-			foreach ( $args['highlight_substrs'] as $highlight_arg ) {
-					$escaped_str = esc_html( $highlight_arg['str'] );
-					$header = str_replace(
-						$escaped_str,
-						$this->stylize_text( $escaped_str, array( 'color' => $highlight_arg['color'] ) ),
-						$header
-					);
-			}
-		}
-
-		return $header;
-	}
 
 	/**
 	 * Gets the header to display. This should include any important attributes.
 	 * 
 	 * @return string
 	 */
-	function display_header() {
-		return $this->name();
+	function display_header( $header, $level = 0 ) {
+		$output = '';
+		foreach( $header as $piece ) {
+			if ( ! is_array( $piece ) ) {
+				$output .= $piece . ' ';
+				continue;
+			}
+
+			if ( isset ( $piece['content'] ) && is_array( $piece['content'] ) ) {
+				$content = $this->display_header( $piece['content'], $level+1 );
+			} else {
+				$content = $piece['content'];
+			}
+
+			if ( empty( $piece['style'] ) ) {
+				$output .= $content;
+			} else {
+				$output .= $this->stylize_text( $content, $piece['style'] );
+			}
+			if ( $level === 0 ) {
+				$output .= ' ';
+			}
+		}
+		return rtrim( $output );
 	}
-	
+
+	/**
+	 * Display an aggregate summary of this analyzer's children
+	 * @see BaseElement::get_child_summary()
+	 * @param array $summary the summary to display
+	 */
+	function display_child_summary( $summary ) {
+		$summary_string = array();
+		foreach ( $summary as $singular => $info ) {
+			$summary_string[] = sprintf( '%s %s', number_format( $info['count'] ), $info['count'] == 1 ? $singular : $info['plural'] );
+		}
+
+		return implode( ', ', $summary_string );
+	}
+
 	/**
 	 * Applies styling to text depending on which output system is being used. If
 	 * we're rendering a web UI it will return text with HTML. If we are outputting
@@ -333,142 +297,43 @@ abstract class AnalyzerRenderer {
 				return '<span classes="' . $classes . '" style="' . implode( ' ', $styles ) . '">' . $text . '</span>';
 			}
 		}
-		
+	
 		return $text;
 	}
-	
-	/**
-	 * Adds a child AnalyzerRenderer to this object.
-	 * 
-	 * @param AnalyzerRenderer $child
-	 */
-	function add_child( $child ) {
-		$this->children[$child->identifier()] = $child;
-	}
-	
-	/**
-	 * Gets this objects the children.
-	 * @return array<AnalyzerRenderer>
-	 */
-	function get_children() {
-		return $this->children;
-	}
-	
-	/**
-	 * Gets a textual summary of all of the children of this item
-	 * @return string
-	 */
-	function get_child_summary() {
-		$summary = array();
 
-		// Count children of each type
-		foreach ( $this->get_children() as $child ) {
-			$singular = $child->singular();
-			if ( !array_key_exists( $singular, $summary ) ) {
-				$summary[$singular] = array(
-					'count'  => 0,
-					'plural' => $child->plural(),
-				);
+	/**
+	 * Generates $numColors random colours. Used to highlight prefixes.
+	 * @param int $numColors
+	 * @return array
+	 */
+	function randColor( $numColors ) {
+		if ( $this->display_args['bare'] ) {
+			$code = 0;
+			$keys = array_keys( $this->bash_color_codes );
+			$numColors = count( $keys );
+			$codes = array();
+
+			for ( $i = 0; $i < $numColors; $i++ ) {
+				$codes[] = $keys[$code++ % $numColors];
+				//				$code[] = $keys[1];
 			}
 
-			$summary[$singular]['count']++;
+			return $codes;
+		} else {
+			$base = array( 200, 200, 200 );
+			$str = array();
+
+			for( $i = 0; $i < $numColors; $i++ ) {
+				$colour = array(
+						( $base[0] + rand( 0, 255 ) ) / 2,
+						( $base[1] + rand( 0, 255 ) ) / 2,
+						( $base[2] + rand( 0, 255 ) ) / 2,
+				);
+
+				$str[$i] = sprintf( 'rgb( %d, %d, %d )', $colour[0], $colour[1], $colour[2] );
+			}
 		}
 
-		// Build the string
-		$summary_string = array();
-		foreach ( $summary as $singular => $info ) {
-			$summary_string[] = sprintf( '%s %s', number_format( $info['count'] ), $info['count'] == 1 ? $singular : $info['plural'] );
-		}
-
-		return implode( ', ', $summary_string );
-	}
-	
-	/**
-	 * Adds a statistic to this item.
-	 * @param string $name
-	 * @param number $stat
-	 */
-	function add_stat( $name, $stat ) {
-		$this->stats[$name] = $stat;
-	}
-	
-	/**
-	 * Gets a statistic from this item. If the stat is not set returns 0.
-	 * @param string $name
-	 * @return int
-	 */
-	function get_stat( $name ) {
-		if ( isset( $this->stats[$name] ) ) {
-			return $this->stats[$name];
-		} else {
-			return 0;
-		}
-	}
-	
-	/**
-	 * Gets the attributes for this item.
-	 * @return array
-	 */
-	function get_attributes() {
-		return $this->attributes;
-	}
-	
-	/**
-	 * Gets a single attribute.
-	 * @param string $name The name of the attribute to get
-	 * @return string
-	 */
-	function get_attribute( $name ) {
-		if ( isset( $this->attributes[$name] ) ) {
-			return $this->attributes[$name];
-		} else {
-			return '';
-		}
-	}
-	
-	/**
-	 * Sets the attributes for this item. $attributes should be in the form:
-	 *	array( 'attribute_name' => 'attribute_value' );
-	 * 
-	 * @param array $attributes
-	 */
-	function set_attributes( $attributes ) {
-		$this->attributes = $attributes;
-	}
-	
-	/**
-	 * Adds the specified attribute on this item.
-	 * 
-	 * @param string $name
-	 * @param mixed $attribute
-	 */
-	function add_attribute( $name, $attribute ) {
-		$this->attributes[$name] = $attribute;
-	}
-	
-	/**
-	 * Checks whether this renderer has anything to display. True if it is empty
-	 * of false if it has contents.
-	 * 
-	 * @return boolean
-	 */
-	function is_empty() {
-		return empty( $this->children ) && empty( $this->attributes ) && empty( $this->stats );
-	}
-	
-	/**
-	 * Returns an array of attribute names that should not be displayed in the ui.
-	 * @return array
-	 */
-	protected function skip_attributes() {
-		return array( 'contents', 'name', 'children' );
-	}
-	
-	/**
-	 * Returns an array of attribute names that should not be displayed in the ui.
-	 * @return array
-	 */
-	protected function skip_stats() {
-		return array();
+		return $str;
 	}
 }

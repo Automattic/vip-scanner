@@ -1,11 +1,10 @@
 <?php
 
 class PHPAnalyzer extends BaseAnalyzer {
-	protected $renderers = array();
 	protected $hierarchy_metas = array(
-		'namespaces' => 'NamespaceRenderer',
-		'classes'    => 'ClassRenderer',
-		'functions'  => 'FunctionRenderer',
+		'namespaces'    => 'NamespaceCodeElement',
+		'classes'       => 'ClassCodeElement',
+		'functions'     => 'FunctionCodeElement',
 	);
 
 	protected $check_hierarchy = array(
@@ -28,15 +27,15 @@ class PHPAnalyzer extends BaseAnalyzer {
 	);
 
 	function __construct() {
-		$this->renderers = array(
-			'files'		 => new RendererGroup( __( 'Files', 'theme-check' ), __( 'File', 'theme-check' ) ),
-			'namespaces' => new RendererGroup( __( 'Namespaces', 'theme-check' ), __( 'Namespace', 'theme-check' ) ),
-			'classes'	 => new RendererGroup( __( 'Classes', 'theme-check' ), __( 'Class', 'theme-check' ) ),
-			'functions'  => new RendererGroup( __( 'Functions', 'theme-check' ), __( 'Function', 'theme-check' ) ),
-			'totals'     => new RendererGroup( __( 'Totals', 'theme-check' ), __( 'Total', 'theme-check' ) ),
+		$this->elements = array(
+			'files'		 => new ElementGroup( __( 'Files', 'theme-check' ), __( 'File', 'theme-check' ) ),
+			'namespaces' => new ElementGroup( __( 'Namespaces', 'theme-check' ), __( 'Namespace', 'theme-check' ) ),
+			'classes'	 => new ElementGroup( __( 'Classes', 'theme-check' ), __( 'Class', 'theme-check' ) ),
+			'functions'  => new ElementGroup( __( 'Functions', 'theme-check' ), __( 'Function', 'theme-check' ) ),
+			'totals'     => new ElementGroup( __( 'Totals', 'theme-check' ), __( 'Total', 'theme-check' ) ),
 		);
 	}
-	
+
 	/**
 	 * Runs the analyzer on the given $files.
 	 * 
@@ -50,21 +49,21 @@ class PHPAnalyzer extends BaseAnalyzer {
 				continue;
 			}
 
-			$file_meta = new FileRenderer( $file );
-			$this->add_renderers( $file, $file_meta );
-			$this->renderers['files']->add_child( $file_meta );
-			$total_lines += (int) $file_meta->get_stat( 'line_count' );
+			$element = new FileElement( $file );
+			$this->add_elements( $file, $element );
+			$this->elements['files']->add_child( $element );
+			$total_lines += (int) $element->get_stat( 'line_count' );
 		}
 		
-		$this->renderers['totals']->add_stat( 'total_lines', $total_lines );
+		$this->elements['totals']->add_stat( 'total_lines', $total_lines );
 	}
 
 	/**
 	 * 
 	 * @param AnalyzedFile $file
-	 * @param AnalyzerRenderer $renderer
+	 * @param BaseElement $element
 	 */
-	public function add_renderers( $file, &$renderer, $path = '', $hierarchy = null ) {
+	public function add_elements( $file, &$element, $path = '', $hierarchy = null ) {
 		if ( is_null( $hierarchy ) ) {
 			$hierarchy = $this->check_hierarchy;
 		}
@@ -72,28 +71,21 @@ class PHPAnalyzer extends BaseAnalyzer {
 		foreach ( $hierarchy as $level => $hierarchy_children ) {
 			$code_elements = $file->get_code_elements( $level, $path );
 			if ( empty( $code_elements ) ) {
-				$this->add_renderers( $file, $renderer, $path, $hierarchy_children );
+				$this->add_elements( $file, $element, $path, $hierarchy_children );
 				
 			} else {
 				foreach ( $code_elements as $child_name => $child_element ) {
 					if ( array_key_exists( $level, $this->hierarchy_metas ) ) {
-						$child_meta = new $this->hierarchy_metas[ $level ]( $child_name );
-						$child_meta->add_attribute( 'file', $file->get_filename() );
+						$child_element = new $this->hierarchy_metas[ $level ]( $child_element );
+						$this->add_elements( $file, $child_element, $child_name, $hierarchy_children );
+						$element->add_child( $child_element );
 
-						foreach ( $child_element as $prop_name => $prop_value ) {
-							$child_meta->add_attribute( $prop_name, $prop_value );
-						}
-
-						$this->add_renderers( $file, $child_meta, $child_name, $hierarchy_children );
-
-						$renderer->add_child( $child_meta );
-						
 						// If the path is empty add this to the list of root metas
 						if ( empty( $path ) ) {
-							$this->renderers[$level]->add_child( $child_meta );
+							$this->elements[ $level ]->add_child( $child_element );
 						}
 					} else {
-						$this->add_renderers( $file, $renderer, $child_name, $hierarchy_children );
+						$this->add_elements( $file, $element, $child_name, $hierarchy_children );
 					}
 				}
 			}

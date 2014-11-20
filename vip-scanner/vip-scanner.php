@@ -35,7 +35,7 @@ spl_autoload_register( function( $class_name ) {
 		'VIP_Scanner_Async' => 'vip-scanner-async.php',
 		'AnalyzedPHPFile'   => 'class-analyzed-php-file.php',
 		'AnalyzedCSSFile'   => 'class-analyzed-css-file.php',
-		'RendererGroup'     => 'renderers/class-renderer-group.php',
+		'ElementGroup'      => 'elements/class-element-group.php',
 	);
 
 	if ( array_key_exists( $class_name, $other ) ) {

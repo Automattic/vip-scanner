@@ -10,7 +10,7 @@ class BaseScanner {
 	public $analyzers = array();
 	public $total_checks = 0;
 	public $errors = array();
-	public $renderers = array();
+	public $elements = array();
 	public $stats = array();
 	//recognized extensions
 	public $known_extensions = array(
@@ -272,7 +272,7 @@ class BaseScanner {
 			} elseif ( 'analyzers' === $type && $check instanceof BaseAnalyzer ) {
 				$check->set_scanner( $this );
 				$check->analyze( $analyzed_files );
-				$this->renderers = array_merge( $check->get_renderers(), $this->renderers );
+				$this->elements = array_merge( $check->get_elements(), $this->elements );
 				$this->stats = array_merge( $check->get_stats(), $this->stats );
 			}
 		}

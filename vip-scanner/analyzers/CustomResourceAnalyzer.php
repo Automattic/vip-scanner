@@ -1,14 +1,6 @@
 <?php
 
 class CustomResourceAnalyzer extends BaseAnalyzer {
-	protected $remove_chars = array(
-		'\'',
-		'"',
-		'.',
-		' ',
-		"\t",
-	);
-
 	protected $resource_types = array(
 		array(
 			'func_name' => array( 'apply_filters' ),
@@ -68,7 +60,7 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 	
 	function __construct() {
 		foreach ( $this->resource_types as $resource ) {
-			$this->renderers[$resource['plural']] = new RendererGroup( $resource['plural'], $resource['singular'] );
+			$this->elements[ $resource['plural'] ] = new ElementGroup( $resource['plural'], $resource['singular'] );
 		}
 	}
 	
@@ -78,7 +70,7 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 	 */
 	public function analyze( $files ) {
 		// First we get the list of file metas
-		$file_metas = $this->scanner->renderers['files']->get_children();
+		$file_metas = $this->scanner->elements['files']->get_children();
 		
 		foreach ( $files as $file ) {
 			if ( $file->get_filetype() !== 'php' ) {
@@ -103,9 +95,9 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 	 * Creates meta objects for everything that we find.
 	 * 
 	 * @param AnalyzedFile $file The file to scan
-	 * @param FileRenderer $file_renderer The meta object for this file.
+	 * @param FileElement $file_element The meta object for this file.
 	 */
-	public function scan_file( $file, $file_renderer ) {
+	public function scan_file( $file, $file_element ) {
 		$function_calls = $file->get_code_elements( 'function_calls' );
 
 		foreach ( $this->resource_types as $resource ) {
@@ -113,20 +105,17 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 				foreach ( $function_calls as $call_path => $functions ) {
 					// check and see if this function was called
 					if ( array_key_exists( $function_name, $functions ) ) {
-						if ( isset( $functions[$function_name]['args'] ) ) {
-							$calls = array( $functions[$function_name] );
+						if ( ! is_array( $functions[ $function_name ] ) ) {
+							$calls = array( $functions[ $function_name ] );
 						} else {
-							$calls = $functions[$function_name];
+							$calls = $functions[ $function_name ];
 						}
 
 						foreach( $calls as $call ) {
-							$child_renderer = new ResourceRenderer( str_replace( $this->remove_chars, '', $call['args'][0] ) );
-							$child_renderer->set_resource_type( $resource['singular'], $resource['plural'] );
-							$child_renderer->add_attribute( 'file', $file->get_filename() );
-							$child_renderer->add_attribute( 'args', $call['args'] );
-
-							$file_renderer->add_child( $child_renderer );
-							$this->renderers[$resource['plural']]->add_child( $child_renderer );
+							$analyzer = new ResourceCodeElement( $call );
+							$analyzer->set_resource_type( $resource['singular'], $resource['plural'] );
+							$file_element->add_child( $analyzer );
+							$this->elements[ $resource['plural'] ]->add_child( $analyzer );
 						}
 					}
 				}
