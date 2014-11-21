@@ -69,7 +69,6 @@ abstract class AnalyzerRenderer {
 	 */
 	function display( $echo = true, $args = array() ) {
 		$output = '';
-		
 		$defaults = array(
 			'bare'  => false,
 			'level' => 0,
@@ -80,27 +79,32 @@ abstract class AnalyzerRenderer {
 
 		$this->display_args = $args;
 
+		$use_prefixes = isset( $this->analyzed_prefixes );
+		if ( $use_prefixes ) {
+			$colours = $this->randColor( $this->num_prefixes );
+		}
+
 		// Output the header. Don't escape here because we expect the header to contain html.
 		$header_text = $this->process_header_args( $this->display_header( $args ), $args );
 		if ( ! $args['bare'] ) {
 			$header_classes = array( 'renderer-group-header' );
-			if ( $this->is_empty() ) {
-				$header_classes[] = 'renderer-group-empty';
-			}
-
 			if ( isset( $args['body_classes'] ) ) {
 				$header_classes = array_merge( $header_classes, $args['body_classes'] );
 			}
 
+			if ( $this->is_empty() ) {
+				$header_classes[] = 'renderer-group-empty';
+			}
+
 			$output .= '<h3 class="' . esc_attr( implode( ' ', $header_classes ) ) . '">' . $header_text . '</h3>';
 			
-			$classes = array( 'renderer-group-body' );
-			if ( isset( $args['classes'] ) ) {
-				$classes = array_merge( $classes, $args['classes'] );
+			$body_classes = array( 'renderer-group-body' );
+			if ( isset( $args['body_classes'] ) ) {
+				$body_classes = array_merge( $body_classes, $args['body_classes'] );
 			}
 
 			// Output the body container div
-			$output .= '<div class="' . implode( ' ', $classes ) . '">';
+			$output .= '<div class="' . esc_attr( implode( ' ', $body_classes ) ) . '">';
 			$output .= '<div class="renderer-group-children">';
 		} else {
 			$output .= str_repeat( $this->spacing_char, $args['level'] ) . $header_text . "\n";
@@ -109,6 +113,14 @@ abstract class AnalyzerRenderer {
 
 		if ( 0 === $args['depth'] || $args['level'] < $args['depth'] ) {
 			foreach ( $this->children as $child ) {
+				$name = $child->name();
+				if ( $use_prefixes && array_key_exists( $name, $this->analyzed_prefixes ) ) {
+					$args['highlight_substrs'] = array( array(
+						'str'   => $this->analyzed_prefixes[$name],
+						'color' => $colours[array_search( $this->analyzed_prefixes[$name], $this->prefixes )],
+					) );
+				}
+
 				$output .= $child->display( false, $args );
 			}
 		}
@@ -119,12 +131,14 @@ abstract class AnalyzerRenderer {
 
 		// Output attributes
 		$output .= $this->display_attributes( $args );
-		
+
 		// Output stats
 		$output .= $this->display_stats( $args );
 
 		if ( ! $args['bare'] ) {
 			$output .= '</div>';
+		} else {
+			$output .= "\n";
 		}
 
 		if ( $echo ) {
