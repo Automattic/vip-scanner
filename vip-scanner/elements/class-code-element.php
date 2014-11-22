@@ -44,7 +44,7 @@ abstract class CodeElement extends BaseElement {
 		if ( $this->node->hasAttribute( 'comments' ) ) {
 			foreach ( $this->node->getAttribute( 'comments' ) as $comment ) {
 				if ( $comment instanceof PhpParser\Comment\Doc ) {
-					$this->attributes['documentation'] = $comment->getText();
+					$this->attributes['documentation'] = $this->clean_doc_string( $comment->getText() );
 					return;
 				}
 			}
@@ -61,5 +61,26 @@ abstract class CodeElement extends BaseElement {
 		$this->attributes['path'] = $this->node->getAttribute( 'scope' );
 		$this->set_lines_attribute();
 		$this->set_doc_attribute();
+	}
+
+	/**
+	 * Remove leading and trailing slashes and asterisks from a PHPDoc string
+	 * @param string $docstring a given PHPDoc string
+	 * @return string the cleaned string
+	 */
+	private function clean_doc_string( $docstring ) {
+		// Remove the leading /** and trailing */
+		$docstring = substr( $docstring, 3, strlen( $docstring ) - 6 );
+
+		// Remove line beginnings
+		$docstring = preg_replace( '/(\r|\n)+\h*\**\h?/', "\n",  $docstring );
+
+		// Remove empty lines at the start
+		$docstring = preg_replace( '/\A(\r|\n)+\s*/', '', $docstring );
+
+		// Remove empty lines at the end
+		$docstring = preg_replace( '/(\r|\n)+\s*(\r|\n)*\Z/', '', $docstring );
+
+		return $docstring;
 	}
 }
