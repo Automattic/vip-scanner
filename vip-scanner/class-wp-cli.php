@@ -18,7 +18,7 @@ class VIPScanner_Command extends WP_CLI_Command {
 	 * : Theme to scan. Defaults to current.
 	 *
 	 * [--scan_type=<scan_type>]
-	 * : Type of scan to perform. Defaults to "WP.org Theme Review"
+	 * : Type of scan to perform. Defaults to "VIP Theme Review"
 	 *
 	 * [--summary]
 	 * : Summarize the results.
