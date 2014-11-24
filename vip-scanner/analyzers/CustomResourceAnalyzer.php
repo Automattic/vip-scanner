@@ -4,18 +4,21 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 	protected $resource_types = array(
 		array(
 			'func_name' => array( 'apply_filters' ),
+			'call_type' => 'function_calls',
 			'plural'	=> 'filters',
 			'singular'  => 'filter',
 		),
 		
 		array(
 			'func_name' => array( 'do_action' ),
+			'call_type' => 'function_calls',
 			'plural'	=> 'actions',
 			'singular'  => 'action',
 		),
 		
 		array(
-			'func_name'	=> array( '->add_cap' ),
+			'func_name'	=> array( 'add_cap' ),
+			'call_type' => 'method_calls',
 			'plural'	=> 'capabilities',
 			'singular'  => 'capability',
 			'regexes'   => array(  ),
@@ -23,36 +26,42 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 		
 		array(
 			'func_name' => array( 'add_role' ),
+			'call_type' => 'function_calls',
 			'plural'	=> 'roles',
 			'singular'  => 'role',
 		),
 		
 		array(
 			'func_name' => array( 'add_shortcode' ),
+			'call_type' => 'function_calls',
 			'plural'    => 'shortcodes',
 			'singular'  => 'shortcode',
 		),
 		
 		array(
 			'func_name' => array( 'register_post_type' ),
+			'call_type' => 'function_calls',
 			'plural'    => 'custom post types',
 			'singular'  => 'custom post type',
 		),
 		
 		array(
 			'func_name' => array( 'register_taxonomy' ),
+			'call_type' => 'function_calls',
 			'plural'    => 'taxonomies',
 			'singular'  => 'taxonomy',
 		),
 		
 		array(
 			'func_name' => array( 'wp_enqueue_script', 'wp_register_script' ),
+			'call_type' => 'function_calls',
 			'plural'    => 'scripts',
 			'singular'  => 'script',
 		),
 		
 		array(
 			'func_name' => array( 'wp_enqueue_style', 'wp_register_style' ),
+			'call_type' => 'function_calls',
 			'plural'    => 'styles',
 			'singular'  => 'style',
 		),
@@ -98,11 +107,10 @@ class CustomResourceAnalyzer extends BaseAnalyzer {
 	 * @param FileElement $file_element The meta object for this file.
 	 */
 	public function scan_file( $file, $file_element ) {
-		$function_calls = $file->get_code_elements( 'function_calls' );
-
 		foreach ( $this->resource_types as $resource ) {
 			foreach ( $resource['func_name'] as $function_name ) {
-				foreach ( $function_calls as $call_path => $functions ) {
+				$calls = $file->get_code_elements( $resource['call_type'] );
+				foreach ( $calls as $call_path => $functions ) {
 					// check and see if this function was called
 					if ( array_key_exists( $function_name, $functions ) ) {
 						if ( ! is_array( $functions[ $function_name ] ) ) {
