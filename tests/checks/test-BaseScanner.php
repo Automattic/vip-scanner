@@ -5,7 +5,7 @@ class BaseScannerTest extends WP_UnitTestCase {
 
 	public function setUp() {
 		parent::setUp();
-		require_once VIP_SCANNER_DIR . '/class-base-scanner.php';
+		require_once VIP_SCANNER_SCANNERS_DIR . '/class-base-scanner.php';
 
 		$this->resetBaseScanner();
 	}

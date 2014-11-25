@@ -75,16 +75,16 @@ class PHPAnalyzer extends BaseAnalyzer {
 				$this->add_renderers( $file, $renderer, $path, $hierarchy_children );
 				
 			} else {
-				foreach ( $code_elements as $child_path => $child_element ) {
+				foreach ( $code_elements as $child_name => $child_element ) {
 					if ( array_key_exists( $level, $this->hierarchy_metas ) ) {
-						$child_meta = new $this->hierarchy_metas[$level]( $child_path );
+						$child_meta = new $this->hierarchy_metas[ $level ]( $child_name );
 						$child_meta->add_attribute( 'file', $file->get_filename() );
 
 						foreach ( $child_element as $prop_name => $prop_value ) {
 							$child_meta->add_attribute( $prop_name, $prop_value );
 						}
 
-						$this->add_renderers( $file, $child_meta, $child_path, $hierarchy_children );
+						$this->add_renderers( $file, $child_meta, $child_name, $hierarchy_children );
 
 						$renderer->add_child( $child_meta );
 						
@@ -93,7 +93,7 @@ class PHPAnalyzer extends BaseAnalyzer {
 							$this->renderers[$level]->add_child( $child_meta );
 						}
 					} else {
-						$this->add_renderers( $file, $renderer, $child_path, $hierarchy_children );
+						$this->add_renderers( $file, $renderer, $child_name, $hierarchy_children );
 					}
 				}
 			}
