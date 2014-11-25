@@ -18,7 +18,7 @@ class VIPScanner_Command extends WP_CLI_Command {
 	 * : Theme to scan. Defaults to current.
 	 *
 	 * [--scan_type=<scan_type>]
-	 * : Type of scan to perform. Defaults to "WP.org Theme Review"
+	 * : Type of scan to perform. Defaults to "VIP Theme Review"
 	 *
 	 * [--summary]
 	 * : Summarize the results.
@@ -117,18 +117,24 @@ class VIPScanner_Command extends WP_CLI_Command {
 
 	/**
 	 * Runs the analyzers for the given review on the theme.
-	 * 
-	 * You can change the <depth> parameter to indicate how many levels of hierarchy
-	 * you would like outputted. 0 outputs everything.
+	 *
+	 * [--theme=<theme>]
+	 * : Theme to scan. Defaults to current.
+	 *
+	 * [--scan_type=<scan_type>]
+	 * : Type of scan to perform. Defaults to "VIP Theme Review"
+	 *
+	 * [--depth=<depth>]
+	 * : Number of levels of hierarchy to output. 0 outputs everything.
+	 * Defaults to 1.
 	 * 
 	 * @subcommand analyze-theme
-	 * @synopsis --theme=<theme-name> --scan_type=<scan-type> [--depth=<depth>]
 	 */
 	public function analyze_theme( $args, $assoc_args ) {
 		$defaults = array(
-			'theme'		=> null,
-			'scan_type' => 'WP.org Theme Review',
-			'depth'		=> 1,
+			'theme'	    => get_option( 'stylesheet' ),
+			'scan_type' => 'VIP Theme Review',
+			'depth'	    => 1,
 		);
 
 		$args = wp_parse_args( $assoc_args, $defaults );
