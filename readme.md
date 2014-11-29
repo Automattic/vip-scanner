@@ -30,6 +30,10 @@ Install using the Plugin Installer.
 Changelog
 ---------
 
+__0.8__
+
+* Modified check for `pre_option_*` to also include `option_*`
+
 __0.7__
 
 * Modified analyzer to use PHP tokens rather than regular expressions
