@@ -148,7 +148,7 @@ class VIPScanner_Command extends WP_CLI_Command {
 		$empty = array();
 		$display_args = array(
 			'bare'  => true,
-			'depth' => $args['depth'],
+			'depth' => intval( $args['depth'] ),
 		);
 
 		foreach ( $scanner->renderers as $renderer ) {
