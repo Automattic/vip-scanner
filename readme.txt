@@ -11,7 +11,7 @@ Scan all sorts of themes and files and things.
 
 Scan all sorts of themes and files and things.
 
-The plugin itself is simple a UI for the VIP Scanner library, which does all the heavy lifting. The library allows you to create arbitrary "Checks" (e.g. UndefinedFunctionCheck), group them together as Reviews (WordPress.org Theme Review), and run them against themes, plugins, directories, single files, and even diffs.
+The plugin itself is simple a UI for the VIP Scanner library, which does all the heavy lifting. The library allows you to create arbitrary "Checks" (e.g. UndefinedFunctionCheck), group them together as Reviews (e.g. WP.com Theme Review), and run them against themes, plugins, directories, single files, and even diffs.
 
 This plugin is based on code from the <a href="http://wordpress.org/extend/plugins/theme-check/">Theme Check</a> (written by Pross and Otto42) and <a href="http://wordpress.org/extend/plugins/exploit-scanner/">Exploit Scanner</a> (written by donncha) plugins.
 

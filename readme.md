@@ -10,7 +10,7 @@ Requires WordPress version 3.4 or greater.
 About
 -----
 
-The plugin itself is simply a UI for the VIP Scanner library, which does all the heavy lifting. The library allows you to create arbitrary "Checks" (e.g. UndefinedFunctionCheck), group them together as Reviews (WordPress.org Theme Review), and run them against themes, plugins, directories, single files, and even diffs.
+The plugin itself is simply a UI for the VIP Scanner library, which does all the heavy lifting. The library allows you to create arbitrary "Checks" (e.g. UndefinedFunctionCheck), group them together as Reviews (e.g. WP.com Theme Review), and run them against themes, plugins, directories, single files, and even diffs.
 
 This plugin is based on code from the [Theme Check](http://wordpress.org/extend/plugins/theme-check/) (written by [Pross](http://profiles.wordpress.org/pross/) and [Otto42](http://profiles.wordpress.org/otto42/)) and [Exploit Scanner](http://wordpress.org/extend/plugins/exploit-scanner/)  (written by [donncha](http://profiles.wordpress.org/donncha/)) plugins.
 
