@@ -320,7 +320,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"mysqli_multi_query" 				=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_next_result" 				=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_options" 					=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
-			"mysqli_set_opt()" 					=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
+			"mysqli_set_opt" 					=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_ping" 						=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_prepare" 					=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_query" 						=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),

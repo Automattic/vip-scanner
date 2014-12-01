@@ -385,7 +385,7 @@ class VIPRestrictedCommandsTest extends CheckTestBase {
 			'mysqli_multi_query',
 			'mysqli_next_result',
 			'mysqli_options',
-			'mysqli_set_opt()',
+			'mysqli_set_opt',
 			'mysqli_ping',
 			'mysqli_prepare',
 			'mysqli_query',
