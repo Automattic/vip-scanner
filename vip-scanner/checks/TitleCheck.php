@@ -1,6 +1,7 @@
 <?php
 /**
  * Checks for the title:
+ * Don't run tests when the theme has declared title tag support, added in 4.1.
  * Are there <title> and </title> tags?
  * Is there a call to wp_title()?
  * There can't be any hardcoded text in the <title> tag.
@@ -13,6 +14,14 @@ class TitleCheck extends BaseCheck {
 
 		$php_code  = $this->merge_files( $files, 'php' );
 		$php_files = $this->filter_files( $files, 'php' );
+		
+		/**
+		 * Don't run tests when the theme has declared title tag support.
+		 */
+		if ( preg_match( '/add_theme_support\(\s*["|\']title-tag["|\']\s*\)/', $php_code ) ) {
+			return $result;
+		}
+		
 
 		/**
 		 * Look for <title> and </title> tags.

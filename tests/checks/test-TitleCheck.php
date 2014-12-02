@@ -3,6 +3,38 @@
 require_once( 'CheckTestBase.php' );
 
 class TitleTest extends CheckTestBase {
+	/**
+	 * Test that themes with title support get not flagged for having no <title> tag.
+	 */
+	public function testTitleTagSupportNoTitleTags() {
+		$file_contents = <<<'EOT'
+function theme_slug_setup() {
+	add_theme_support( 'title-tag' );
+}
+add_action( 'after_setup_theme', 'theme_slug_setup' );
+EOT;
+
+		$error_slugs = $this->runCheck( $file_contents );
+
+		$this->assertNotContains( 'title-no-title-tags', $error_slugs );
+	}
+	
+	/**
+	 * Test that themes with title support get not flagged for having no call to wp_title().
+	 */
+	public function testTitleTagSupportNoCallToTitleFunction() {
+		$file_contents = <<<'EOT'
+function theme_slug_setup() {
+	add_theme_support( 'title-tag' );
+}
+add_action( 'after_setup_theme', 'theme_slug_setup' );
+EOT;
+
+		$error_slugs = $this->runCheck( $file_contents );
+
+		$this->assertNotContains( 'title-no-wp_title', $error_slugs );
+	}
+	
 
 	/**
 	 * Test for the presence of <title> and </title> tags.
