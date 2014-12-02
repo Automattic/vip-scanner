@@ -38,7 +38,7 @@ class UndefinedFunctionCheck extends BaseCheck {
 								sprintf( 'Undefined function found in file: %s', $token_text ),
 								'blocker',
 								$file_path,
-								array( "$line" => esc_html( $this->get_line( $line, $file_content ) ) )
+								array( "$line" => esc_html( self::get_line( $line, $file_content ) ) )
 							);
 						}
 
