@@ -43,7 +43,6 @@ class ThemeNameCheck extends BaseCheck {
 
 		$forbidden_words = array(
 			'blog',
-			'creative',
 			'css3',
 			'css 3',
 			'framework',
