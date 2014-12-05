@@ -1,16 +1,14 @@
 <?php
 
-require_once( 'CheckTestBase.php' );
+require_once( 'CodeCheckTestBase.php' );
 
-class VIPRestrictedClassesTest extends CheckTestBase {
+class VIPRestrictedClassesTest extends CodeCheckTestBase {
 
-	public function testWPClasses() {
-		$class_name = 'WP_User_Query';
-
-		$file_contents = '<?php $dummy = new ' . $class_name . '( $args )';
-
-		$error_slugs = $this->runCheck( $file_contents );
-
-		$this->assertContains( $class_name, $error_slugs );
+	public function testVIPRestrictedClasses() {
+		$expected_errors = array(
+			array( 'slug' => 'WP_User_Query', 'level' => 'Note', 'description' => 'Use of WP_User_Query', 'file' => 'VIPRestrictedClassesTest.inc', 'lines' => 5 ),
+		);
+		$actual_errors = $this->checkFile( 'VIPRestrictedClassesTest.inc' );
+		$this->assertEqualErrors( $expected_errors, $actual_errors );
 	}
 }
