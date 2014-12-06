@@ -6,9 +6,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 		$result = true;
 
 		$checks = array(
-			// WordPress Classes
-			"WP_User_Query" => array( 'level' => "Note", "note" => "Use of WP_User_Query" ),
-
+			// Restricted WP core functions
 			"update_post_caches" => array( "level" => "Note", "note" => "Post cache alteration" ),
 
 			"update_option" => array( "level" => "Note", "note" => "Updating option" ),
@@ -320,7 +318,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"mysqli_multi_query" 				=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_next_result" 				=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_options" 					=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
-			"mysqli_set_opt()" 					=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
+			"mysqli_set_opt" 					=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_ping" 						=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_prepare" 					=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),
 			"mysqli_query" 						=> array( "level" => "Blocker", "note" => "Direct MySQL usage, use WP APIs instead" ),

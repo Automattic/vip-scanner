@@ -49,6 +49,7 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 
 VIP_Scanner::get_instance()->register_review( 'VIP Theme Review', array(
 	'VIPWhitelistCheck',
+	'VIPRestrictedClassesCheck',
 	'VIPRestrictedPatternsCheck',
 	'VIPRestrictedCommandsCheck',
 	'VIPInitCheck',
