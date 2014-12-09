@@ -48,8 +48,8 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 	'WidgetsCheck',
 	'JavaScriptLintCheck',
 ), array(
-	'PHPAnalyzer',
-	'CustomResourceAnalyzer',
+	'CodeAnalyzer',
+	'ResourceAnalyzer',
 	'ThemeAnalyzer',
 ) );
 
@@ -74,7 +74,7 @@ VIP_Scanner::get_instance()->register_review( 'VIP Theme Review', array(
 	'ClamAVCheck', // Pass null to lookup the check normally
 	'AdBustersCheck',
 ), array(
-	'PHPAnalyzer',
-	'CustomResourceAnalyzer',
+	'CodeAnalyzer',
+	'ResourceAnalyzer',
 	'ThemeAnalyzer',
 ) );

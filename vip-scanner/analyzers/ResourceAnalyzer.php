@@ -1,6 +1,6 @@
 <?php
 
-class CustomResourceAnalyzer extends BaseAnalyzer {
+class ResourceAnalyzer extends BaseAnalyzer {
 	protected $resource_types = array(
 		array(
 			'func_name' => array( 'apply_filters' ),

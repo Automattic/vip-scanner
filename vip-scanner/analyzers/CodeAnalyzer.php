@@ -1,6 +1,6 @@
 <?php
 
-class PHPAnalyzer extends BaseAnalyzer {
+class CodeAnalyzer extends BaseAnalyzer {
 	protected $hierarchy_metas = array(
 		'namespaces' => 'NamespaceCodeElement',
 		'classes'    => 'ClassCodeElement',
