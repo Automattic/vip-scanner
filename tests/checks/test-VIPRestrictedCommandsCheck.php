@@ -271,7 +271,7 @@ class VIPRestrictedCommandsTest extends CheckTestBase {
 			'session_encode',
 			'session_get_cookie_params',
 			'session_id',
-			'ssession_is_registered',
+			'session_is_registered',
 			'session_module_name',
 			'session_name',
 			'session_regenerate_id',

@@ -215,7 +215,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"session_encode" 			=> array( "level" => "Blocker", "note" => "Using session function" ),
 			"session_get_cookie_params" => array( "level" => "Blocker", "note" => "Using session function" ),
 			"session_id" 				=> array( "level" => "Blocker", "note" => "Using session function" ),
-			"ssession_is_registered" 	=> array( "level" => "Blocker", "note" => "Using session function" ),
+			"session_is_registered" 	=> array( "level" => "Blocker", "note" => "Using session function" ),
 			"session_module_name" 		=> array( "level" => "Blocker", "note" => "Using session function" ),
 			"session_name" 				=> array( "level" => "Blocker", "note" => "Using session function" ),
 			"session_regenerate_id" 	=> array( "level" => "Blocker", "note" => "Using session function" ),
