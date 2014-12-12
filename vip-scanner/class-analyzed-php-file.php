@@ -40,6 +40,7 @@ class AnalyzedPHPFile extends AnalyzedFile {
 		// Pre-process the parsed elements for further usage
 		$traverser = new PhpParser\NodeTraverser;
 		$traverser->addVisitor( new ScopeVisitor );
+		$traverser->addVisitor( new InAssignmentVisitor );
 		$this->node_tree = $traverser->traverse( $this->node_tree );
 	}
 
