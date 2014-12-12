@@ -5,7 +5,7 @@ abstract class CodeElement extends BaseElement {
 	/**
 	 * @var PhpParser\Node
 	 */
-	protected $node;
+	public $node;
 
 	/**
 	 * Construct this CodeElement around a Node obtained from PHP-Parser
