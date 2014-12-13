@@ -6,36 +6,46 @@
 define( 'VIP_SCANNER_DIR', dirname( __FILE__ ) );
 define( 'VIP_SCANNER_CHECKS_DIR', VIP_SCANNER_DIR . '/checks' );
 define( 'VIP_SCANNER_ANALYZERS_DIR', VIP_SCANNER_DIR . '/analyzers' );
-define( 'VIP_SCANNER_RENDERERS_DIR', VIP_SCANNER_DIR . '/renderers' );
-define( 'VIP_SCANNER_SCANNERS_DIR', VIP_SCANNER_DIR . '/scanners' );
 define( 'VIP_SCANNER_BIN_DIR', VIP_SCANNER_DIR . '/bin' );
 
 require_once( VIP_SCANNER_DIR . '/config-vip-scanner.php' );
-require_once( VIP_SCANNER_DIR . '/class-base-check.php' );
-require_once( VIP_SCANNER_DIR . '/class-preg-file.php' );
-require_once( VIP_SCANNER_DIR . '/class-analyzed-file.php' );
-require_once( VIP_SCANNER_DIR . '/class-analyzed-php-file.php' );
-require_once( VIP_SCANNER_DIR . '/class-analyzed-css-file.php' );
-require_once( VIP_SCANNER_DIR . '/class-base-analyzer.php' );
 
-require_once( VIP_SCANNER_SCANNERS_DIR . '/class-base-scanner.php' );
-require_once( VIP_SCANNER_SCANNERS_DIR . '/class-directory-scanner.php' );
-require_once( VIP_SCANNER_SCANNERS_DIR . '/class-zip-scanner.php' );
-require_once( VIP_SCANNER_SCANNERS_DIR . '/class-theme-scanner.php' );
-require_once( VIP_SCANNER_SCANNERS_DIR . '/class-content-scanner.php' );
-require_once( VIP_SCANNER_SCANNERS_DIR . '/class-diff-scanner.php' );
+spl_autoload_register( function( $class_name ) {
 
-require_once( VIP_SCANNER_RENDERERS_DIR . '/class-analyzer-renderer.php' );
-require_once( VIP_SCANNER_RENDERERS_DIR . '/class-resource-renderer.php' );
-require_once( VIP_SCANNER_RENDERERS_DIR . '/class-renderer-group.php' );
-require_once( VIP_SCANNER_RENDERERS_DIR . '/class-file-renderer.php' );
-require_once( VIP_SCANNER_RENDERERS_DIR . '/class-namespace-renderer.php' );
-require_once( VIP_SCANNER_RENDERERS_DIR . '/class-class-renderer.php' );
-require_once( VIP_SCANNER_RENDERERS_DIR . '/class-function-renderer.php' );
+	// Class names that are in files that aren't found by our scheme below.
+	$other = array(
+		'VIP_PregFile'      => 'class-preg-file.php',
+		'VIP_Scanner_Async' => 'vip-scanner-async.php',
+		'AnalyzedPHPFile'   => 'class-analyzed-php-file.php',
+		'AnalyzedCSSFile'   => 'class-analyzed-css-file.php',
+		'RendererGroup'     => 'renderers/class-renderer-group.php',
+	);
+
+	if ( array_key_exists( $class_name, $other ) ) {
+		require VIP_SCANNER_DIR . '/' . $other[ $class_name ];
+		return;
+	}
+
+	// Example: $class_name === 'ThemeScanner'
+	$hyphenated_name = strtolower( preg_replace('/([a-z])([A-Z])/', '$1-$2', $class_name ) ); // Example: theme-scanner
+	$category = substr( strrchr( $hyphenated_name, '-' ), 1 ); // Example: scanner
+	$plural = substr( $category, -1 ) === 'y' ? substr( $category, 0, -1 ) . 'ies' : $category . 's'; // Example: scanners
+
+	$possible_locations = array(
+		VIP_SCANNER_DIR . '/' . $plural . '/class-' . $hyphenated_name . '.php', // Example: vip-scanner/scanners/class-theme-scanner.php
+		VIP_SCANNER_DIR . '/class-' . $hyphenated_name . '.php', // Example: vip-scanner/class-theme-scanner.php
+	);
+
+	foreach( $possible_locations as $location ) {
+		if ( file_exists( $location ) ) {
+			require $location ;
+			return;
+		}
+	}
+} );
 
 if ( is_admin() ) {
-	require_once( VIP_SCANNER_SCANNERS_DIR . '/class-async-directory-scanner.php' );
-	require_once( VIP_SCANNER_DIR . '/vip-scanner-async.php' );
+	VIP_Scanner_Async::get_instance();
 }
 
 class VIP_Scanner {
