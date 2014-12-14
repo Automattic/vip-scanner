@@ -10,11 +10,18 @@ define( 'VIP_SCANNER_BIN_DIR', VIP_SCANNER_DIR . '/bin' );
 
 define( 'PHP_PARSER_BOOTSTRAP', VIP_SCANNER_DIR . '/../vendor/PHP-Parser/lib/bootstrap.php' );
 
+register_activation_hook( dirname( VIP_SCANNER_DIR ) . '/vip-scanner.php', function() {
+	if ( ! file_exists( PHP_PARSER_BOOTSTRAP ) ) {
+		wp_die( 'VIP-Scanner could not find PHP-Parser, which it requires to run. ' .
+				'Please refer to the "Requirements" section in readme.md.' );
+	}
+} );
+
 // Has PHP-Parser been already loaded, e.g. by another plugin?
 if ( class_exists( 'PhpParser\Parser' ) ) {
 	wp_die( 'A PHP-Parser instance was loaded before VIP-scanner. ' .
 			'If another plugin uses PHP-Parser, please deactivate it.' );
-} else {
+} elseif ( file_exists( PHP_PARSER_BOOTSTRAP ) ) {
 	require_once PHP_PARSER_BOOTSTRAP;
 }
 
