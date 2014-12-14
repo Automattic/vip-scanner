@@ -43,75 +43,9 @@ class VIPScanner_Command extends WP_CLI_Command {
 			WP_CLI::error( sprintf( 'Scanning of %s failed', $args['theme'] ) );
 
 		if ( isset( $args['summary'] ) ) {
-			$results = $scanner->get_results();
-
-			$data = array();
-
-			$data[] = array(
-				'key' 	=> __( 'Result' ),
-				'value' => $results['result']
-			);
-
-			$data[] = array(
-				'key' 	=> __( 'Total Files' ),
-				'value' => $results['total_files']
-			);
-
-			$data[] = array(
-				'key' 	=> __( 'Total Checks' ),
-				'value' => $results['total_checks']
-			);
-
-			$data[] = array(
-				'key' 	=> __( 'Total Errors' ),
-				'value' => count( $results['errors'] )
-			);
-
-			foreach ( $scanner->get_error_levels() as $level ) {
-				$label 			= __( ucfirst( $level ) . 's' );
-				$error_count 	= count( $scanner->get_errors( array( $level ) ) );
-
-				$data[] = array(
-					'key' 	=> $label,
-					'value' => $error_count
-				);
-			}
-
-			WP_CLI\Utils\format_items( $args['format'], $data, array( 'key', 'value' ) );
+			$this->display_summary( $scanner, $args['format'] );
 		} else {
-			$data = array();
-
-			foreach ( $scanner->get_error_levels() as $level ) {
-				$errors 	= $scanner->get_errors( array( $level ) );
-
-				foreach ( $errors as $error ) {
-					$lines = array();
-
-					// Not all errors have lines -- assign a null line if we lack lines entirely
-					$lines =  ( isset( $error['lines'] ) ) ? $error['lines'] : array( '' );
-
-					// In JSON output, group the lines together
-					if ( 'json' == $args['format'] ) {
-						$data[] = array( 
-							'level' 		=> $error['level'],
-							'description' 	=> $error['description'],
-							'lines' 		=> $lines,
-							'file'			=> $error['file']
-						);
-					} else { // In other output, each line gets its own entry
-						foreach ( $lines as $line ) {
-							$data[] = array( 
-								'level' 		=> $error['level'],
-								'description' 	=> $error['description'],
-								'lines' 		=> $line,
-								'file'			=> $error['file']
-							);
-						}
-					}
-				}
-			}
-
-			WP_CLI\Utils\format_items( $args['format'], $data, array( 'level', 'description', 'lines', 'file' ) );
+			$this->display_errors( $scanner, $args['format'] );
 		}
 	}
 
@@ -168,5 +102,89 @@ class VIPScanner_Command extends WP_CLI_Command {
 		foreach ( $empty as $renderer ) {
 			$renderer->display( true, $display_args );
 		}
+	}
+
+	/**
+	 * Display a summary of the errors found by the given scanner
+	 * @param BaseScanner $scanner the scanner whose errors to display
+	 * @param string $format 'table', 'JSON', or 'CSV'
+	 */
+	protected function display_summary( $scanner, $format ) {
+		$results = $scanner->get_results();
+
+		$data = array();
+
+		$data[] = array(
+				'key' 	=> __( 'Result' ),
+				'value' => $results['result']
+		);
+
+		$data[] = array(
+				'key' 	=> __( 'Total Files' ),
+				'value' => $results['total_files']
+		);
+
+		$data[] = array(
+				'key' 	=> __( 'Total Checks' ),
+				'value' => $results['total_checks']
+		);
+
+		$data[] = array(
+				'key' 	=> __( 'Total Errors' ),
+				'value' => count( $results['errors'] )
+		);
+
+		foreach ( $scanner->get_error_levels() as $level ) {
+			$label 			= __( ucfirst( $level ) . 's' );
+			$error_count 	= count( $scanner->get_errors( array( $level ) ) );
+
+			$data[] = array(
+					'key' 	=> $label,
+					'value' => $error_count
+			);
+		}
+
+		WP_CLI\Utils\format_items( $format, $data, array( 'key', 'value' ) );
+	}
+
+	/**
+	 * Display errors found by the given scanner
+	 * @param BaseScanner $scanner the scanner whose errors to display
+	 * @param string $format 'table', 'JSON', or 'CSV'
+	 */
+	protected function display_errors( $scanner, $format ) {
+		$data = array();
+
+		foreach ( $scanner->get_error_levels() as $level ) {
+			$errors 	= $scanner->get_errors( array( $level ) );
+
+			foreach ( $errors as $error ) {
+				$lines = array();
+
+				// Not all errors have lines -- assign a null line if we lack lines entirely
+				$lines =  ( isset( $error['lines'] ) ) ? $error['lines'] : array( '' );
+
+				// In JSON output, group the lines together
+				if ( 'json' == $format ) {
+					$data[] = array(
+							'level' 		=> $error['level'],
+							'description' 	=> $error['description'],
+							'lines' 		=> $lines,
+							'file'			=> $error['file']
+					);
+				} else { // In other output, each line gets its own entry
+					foreach ( $lines as $line ) {
+						$data[] = array(
+								'level' 		=> $error['level'],
+								'description' 	=> $error['description'],
+								'lines' 		=> $line,
+								'file'			=> $error['file']
+						);
+					}
+				}
+			}
+		}
+
+		WP_CLI\Utils\format_items( $format, $data, array( 'level', 'description', 'lines', 'file' ) );
 	}
 }
