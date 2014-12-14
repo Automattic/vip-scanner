@@ -14,6 +14,16 @@ The plugin itself is simply a UI for the VIP Scanner library, which does all the
 
 This plugin is based on code from the [Theme Check](http://wordpress.org/extend/plugins/theme-check/) (written by [Pross](http://profiles.wordpress.org/pross/) and [Otto42](http://profiles.wordpress.org/otto42/)) and [Exploit Scanner](http://wordpress.org/extend/plugins/exploit-scanner/)  (written by [donncha](http://profiles.wordpress.org/donncha/)) plugins.
 
+Requirements
+------------
+
+For parsing PHP files, VIP Scanner uses [PHP-Parser](https://github.com/nikic/PHP-Parser),
+which it includes as a git submodule. When cloning VIP Scanner's git repo, use
+the `--recursive` parameter to include PHP-Parser, i.e.
+`git clone --recursive git@github.com:Automattic/vip-scanner.git`
+If you have already cloned the repo without the `--recursive` parameter and
+find yourself with an empty `vendor/PHP-Parser` directory, run
+`git submodule update --init --recursive`.
 
 Installation
 ------------
