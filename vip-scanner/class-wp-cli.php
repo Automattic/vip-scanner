@@ -138,9 +138,15 @@ class VIPScanner_Command extends WP_CLI_Command {
 				'value' => count( $results['errors'] )
 		);
 
+		$plurals = array(
+			BaseScanner::LEVEL_BLOCKER => __( 'Blockers' ),
+			BaseScanner::LEVEL_WARNING => __( 'Warnings' ),
+			BaseScanner::LEVEL_NOTE    => __( 'Notes' ),
+		);
+
 		foreach ( $scanner->get_error_levels() as $level ) {
-			$label 			= __( ucfirst( $level ) . 's' );
-			$error_count 	= count( $scanner->get_errors( array( $level ) ) );
+			$label       = $plurals[ $level ];
+			$error_count = count( $scanner->get_errors( array( $level ) ) );
 
 			$data[] = array(
 					'key' 	=> $label,
