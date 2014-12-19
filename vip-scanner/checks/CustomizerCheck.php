@@ -6,88 +6,77 @@
  * Does every setting have a sanitization callback?
  */
 
-class CustomizerCheck extends BaseCheck {
-	function check( $files ) {
-		$result = true;
-		$php_files = $this->filter_files( $files, 'php' );
-
-		/**
-		 * Does the theme create a WP_Customize_Image_Control?
-		 */
-		$this->increment_check_count();
-
-		foreach ( $php_files as $file_path => $file_content ) {
-			if ( preg_match_all( '/\s*WP_Customize_Image_Control\s*/', $file_content, $matches ) ) {
-				$errors = $matches[0];
-
-				foreach ( $errors as $error ) {
+class CustomizerCheck extends CodeCheck {
+	function __construct() {
+		parent::__construct( array(
+			/**
+			 * Does the theme create a WP_Customize_Image_Control?
+			 */
+			'PhpParser\Node\Expr\New_' => function( $node ) {
+				$class_name = $node->class->toString();
+				if ( 'WP_Customize_Image_Control' === $class_name ) {
 					$this->add_error(
 						'customizer',
 						'The theme uses the <code>WP_Customize_Image_Control</code> class. Custom logo options should be implemented using the <a href="http://en.support.wordpress.com/site-logo/">Site Logo</a> feature.',
-						BaseScanner::LEVEL_WARNING,
-						$this->get_filename( $file_path )
+						BaseScanner::LEVEL_WARNING
 					);
-					$result = false;
 				}
-			}
-		}
-
-		/**
-		 * Does the theme create a new Customizer Control?
-		 */
-		$this->increment_check_count();
-
-		foreach ( $php_files as $file_path => $file_content ) {
-			if ( preg_match_all( '/extends\s+WP_Customize_Control\s{/', $file_content, $matches ) ) {
-				$errors = $matches[0];
-
-				foreach ( $errors as $error ) {
+			},
+			/**
+			 * Does the theme create a new Customizer Control?
+			 */
+			'PhpParser\Node\Stmt\Class_' => function( $node ) {
+				if ( isset( $node->extends ) && 'WP_Customize_Control' === $node->extends->toString() ) {
 					$this->add_error(
 						'customizer',
 						'The theme creates a new Customizer control by extending <code>WP_Customize_Control</code>.',
-						BaseScanner::LEVEL_WARNING,
-						$this->get_filename( $file_path )
+						BaseScanner::LEVEL_WARNING
 					);
-					$result = false;
 				}
-			}
-		}
+			},
+			/**
+			 * Check whether every Customizer setting has a sanitization callback set.
+			 */
+			'PhpParser\Node\Expr\MethodCall' => function( $node ) {
+				if ( 'wp_customize' !== $node->var->name || 'add_setting' !== $node->name || count( $node->args ) < 2 ) {
+					return;
+				}
 
-		/**
-		* Check whether every Customizer setting has a sanitization callback set.
-		*/
-		$this->increment_check_count();
+				// Get the second argument passed to the add_setting method
+				$args = $node->args[1]->value;
+				$found_sanitize_callback = false;
+				if ( ! $args instanceof PhpParser\Node\Expr\Array_ ) {
+					return;
+				}
 
-		foreach ( $php_files as $file_path => $file_content ) {
-			// Get the arguments passed to the add_setting method
-			if ( preg_match_all( '/\$wp_customize->add_setting\(([^;]+)/', $file_content, $matches ) ) {
-				// The full match is in [0], the match group in [1]
-				foreach ( $matches[1] as $match ) {
-					// Check if we have sanitize_callback or sanitize_js_callback
-					if ( false === strpos( $match, 'sanitize_callback' ) && false === strpos( $match, 'sanitize_js_callback' ) ) {
-						$this->add_error(
-							'customizer',
-							'Found a Customizer setting that did not have a sanitization callback function. Every call to the <code>add_setting()</code> method needs to have a sanitization callback function passed.',
-							BaseScanner::LEVEL_BLOCKER,
-							$this->get_filename( $file_path )
-						);
-						$result = false;
-					} else {
-						// There's a callback, check that no empty parameter is passed.
-						if ( preg_match( '/[\'"](?:sanitize_callback|sanitize_js_callback)[\'"]\s*=>\s*[\'"]\s*[\'"]/', $match ) ) {
-							$this->add_error(
-								'customizer',
-								'Found a Customizer setting that had an empty value passed as sanitization callback. You need to pass a function name as sanitization callback.',
-								BaseScanner::LEVEL_BLOCKER,
-								$this->get_filename( $file_path )
-							);
-							$result = false;
+				foreach( $args->items as $arg ) {
+					if ( $arg->key instanceof PhpParser\Node\Scalar\String ) {
+						$key = $arg->key->value;
+						// Check if we have sanitize_callback or sanitize_js_callback
+						if ( 'sanitize_callback' === $key || 'sanitize_js_callback' === $key ) {
+							$found_sanitize_callback = true;
+							// There's a callback, check that no empty parameter is passed.
+							if ( $arg->value instanceof PhpParser\Node\Scalar\String ) {
+								$value = trim( $arg->value->value );
+								if ( empty( $value ) ) {
+									$this->add_error(
+										'customizer',
+										'Found a Customizer setting that had an empty value passed as sanitization callback. You need to pass a function name as sanitization callback.',
+										BaseScanner::LEVEL_BLOCKER
+									);
+								}
+							}
 						}
 					}
 				}
-			}
-		}
-
-		return $result;
+				if ( ! $found_sanitize_callback ) {
+					$this->add_error(
+							'customizer',
+							'Found a Customizer setting that did not have a sanitization callback function. Every call to the <code>add_setting()</code> method needs to have a sanitization callback function passed.',
+							BaseScanner::LEVEL_BLOCKER
+					);
+				}
+			},
+		) );
 	}
 }
