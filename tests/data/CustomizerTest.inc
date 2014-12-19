@@ -33,3 +33,9 @@ $wp_customize->add_setting( 'setting', array(
 $wp_customize->add_setting( 'setting', array(
 	'default'   => '',
 ) );
+
+// Warning: Using WP_Customize_Image_Control class
+$control = new WP_Customize_Image_Control;
+
+// Warning: Class extends WP_Customize_Control
+class SubclassedControl extends WP_Customize_Control {}
