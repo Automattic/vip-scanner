@@ -277,10 +277,7 @@ class DeprecatedFunctionsCheck extends BaseCheck {
 			'get_allowed_themes'      => "wp_get_themes( array( 'allowed' => true ) )",
 			'get_broken_themes'       => "wp_get_themes( array( 'errors' => true )",
 			'get_site_allowed_themes' => 'WP_Theme::get_allowed_on_network()',
-			'current_theme_info'      => 'wp_get_theme()',
 			'display_theme'           => '',
-			'get_allowed_themes'      => "wp_get_themes( array( 'allowed' => true ) )",
-			'get_broken_themes'       => "wp_get_themes( array( 'errors' => true )",
 			// 3.5
 			'_insert_into_post_button' => '',
 			'_media_button'            => '',
