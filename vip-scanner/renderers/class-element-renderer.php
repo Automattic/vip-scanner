@@ -4,6 +4,7 @@ class ElementRenderer {
 	protected $element;
 	protected $spacing_char = "\t";
 	protected $display_args = array();
+	protected $random_colors = array();
 	protected $bash_color_codes = array(
 		'red'     => 31,
 		'green'   => 32,
@@ -15,8 +16,9 @@ class ElementRenderer {
 		'black'   => 30,
 	);
 
-	function __construct( $element ) {
+	function __construct( $element, $colors = array() ) {
 		$this->element = $element;
+		$this->random_colors = $colors;
 	}
 	
 	/**
@@ -70,8 +72,13 @@ class ElementRenderer {
 		}
 
 		if ( 0 === $args['depth'] || $args['level'] < $args['depth'] ) {
-			foreach ( $this->element->get_children( array( $this, 'randColor' ) ) as $child ) {
-				$r = new ElementRenderer( $child );
+			$colors = array();
+			if ( $this->element instanceof ElementGroup ) {
+				$prefix_count = $this->element->analyze_prefixes();
+				$colors = $this->randColor( $prefix_count );
+			}
+			foreach ( $this->element->get_children() as $child ) {
+				$r = new ElementRenderer( $child, $colors );
 				$output .= $r->display( false, $args );
 			}
 		}
@@ -290,7 +297,15 @@ class ElementRenderer {
 				$styles[] = 'font-decoration: underline;';
 			}
 			if ( isset( $opts['color'] ) ) {
-				$styles[] = 'color: ' . $opts['color'] . ';';
+				$color = $opts['color'];
+
+				if ( strpos( $color, 'randomcolor' ) === 0 ) {
+					$no = substr( $color, strlen( 'randomcolor') );
+					if ( array_key_exists( $no, $this->random_colors ) ) {
+						$color = $this->random_colors[ $no ];
+					}
+				}
+				$styles[] = 'color: ' . $color . ';';
 			}
 
 			if ( !empty( $styles ) ) {

@@ -129,10 +129,10 @@ abstract class BaseElement {
 
 	/**
 	 * Get this object's children.
-	 * @param mixed optional data
+	 *
 	 * @return array<BaseElement>
 	 */
-	function get_children( $options = null) {
+	function get_children() {
 		return $this->children;
 	}
 

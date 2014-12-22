@@ -8,7 +8,7 @@ class ElementGroup extends BaseElement {
 	protected $children = array();
 	protected $singular = '';
 	protected $plural = '';
-	protected $analyzed_prefixes = null;
+	protected $analyzed_prefixes = array();
 	protected $prefixes = null;
 	protected $num_prefixes = 0;
 			
@@ -38,17 +38,14 @@ class ElementGroup extends BaseElement {
 	 * Get this element's children.
 	 * @return array<BaseElement>
 	 */
-	function get_children( $color_callback = null ) {
-		$this->analyze_prefixes();
-		if ( ! is_null( $color_callback ) ) {
-			$colors = call_user_func( $color_callback, $this->num_prefixes );
-		}
-
-		foreach ( $this->children as $child ) {
-			$name = $child->name();
-			if ( array_key_exists( $name, $this->analyzed_prefixes ) && isset( $colors ) ) {
-				$color = $colors[ array_search( $this->analyzed_prefixes[ $name ], $this->prefixes ) ];
-				$child->set_prefix( $this->analyzed_prefixes[ $name ], array( 'color' => $color ) );
+	function get_children() {
+		if ( $this->num_prefixes !== 0 ) {
+			foreach ( $this->children as $child ) {
+				$name = $child->name();
+				if ( array_key_exists( $name, $this->analyzed_prefixes ) ) {
+					$no = array_search( $this->analyzed_prefixes[ $name ], $this->prefixes );
+					$child->set_prefix( $this->analyzed_prefixes[ $name ], array( 'color' => 'randomcolor' . $no ) );
+				}
 			}
 		}
 		return $this->children;
@@ -112,6 +109,7 @@ class ElementGroup extends BaseElement {
 				}
 			}
 		}
+		return $this->num_prefixes;
 	}
 
 	/**
