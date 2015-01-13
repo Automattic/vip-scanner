@@ -47,6 +47,10 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			'get_posts' 			=> array( 'level' => 'Warning', 'note' => 'Uncached function. Use WP_Query or ensure suppress_filters is false' ),
 			'wp_get_recent_posts' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Use WP_Query or ensure suppress_filters is false' ),
 
+			//Batcache manipulation
+			'batcache_post'			=> array( 'level' => 'Blocker', 'note' => 'Clearing batcache.  This can cause cache stampedes.' ),
+			'batcache_clear_url'	=> array( 'level' => 'Blocker', 'note' => 'Clearing batcache.  This can cause cache stampedes.' ),
+
 			// Object cache bypass
 			"wpcom_uncached_get_post_meta" 		=> array( "level" => "Warning", "note" => "Bypassing object cache, please validate" ),
 			"wpcom_uncached_get_post_by_meta" 	=> array( "level" => "Warning", "note" => "Bypassing object cache, please validate" ),
