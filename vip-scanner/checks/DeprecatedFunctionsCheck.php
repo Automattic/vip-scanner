@@ -212,6 +212,7 @@ class DeprecatedFunctionsCheck extends BaseCheck {
 			// 4.0
 			'like_escape'               => '$wpdb->esc_like()',
 			'url_is_accessable_via_ssl' => '',
+			'get_all_category_ids'      => 'get_terms()',
 			/**
 			 * wp-admin
 			 */
