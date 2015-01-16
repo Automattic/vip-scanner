@@ -35,6 +35,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			'wp_get_sites' 			=> array( 'level' => 'Blocker', 'note' => 'Querying network sites' ),
 			
 			// Uncached functions
+			'count_user_posts'       => array( 'level' => BaseScanner::LEVEL_WARNING, 'note' => 'Uncached Function. Use wpcom_vip_count_user_posts() instead.' ),
 			'get_category_by_slug' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to wpcom_vip_get_category_by_slug()' ),
 			'wp_get_post_categories' => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to get_the_terms() along with wp_list_pluck() see: http://vip.wordpress.com/documentation/uncached-functions/' ),
 			'wp_get_post_tags' 		=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to get_the_terms() along with wp_list_pluck() see: http://vip.wordpress.com/documentation/uncached-functions/' ),

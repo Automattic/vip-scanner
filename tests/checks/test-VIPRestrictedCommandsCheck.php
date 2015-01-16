@@ -67,6 +67,7 @@ class VIPRestrictedCommandsTest extends CheckTestBase {
 
 	public function testUncached() {
 		$restricted_commands = array(
+			'count_user_posts',
 			'get_category_by_slug',
 			'wp_get_post_categories',
 			'wp_get_post_tags',
