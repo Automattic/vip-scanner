@@ -12,14 +12,14 @@ class ThemePostPaginationCheck extends BaseCheck {
 	
 		/**
 		 * Look for post pagination functions:
-		 * (get_)the_pagination()
+		 * (get_)the_posts_pagination()
 		 * posts_nav_link()
 		 * paginate_links()
 		 * (get_)previous_posts_link() and (get_)next_posts_link()
 		 */
 		$this->increment_check_count();
 
-		if (   0 === preg_match( '/\s(get_)?the_pagination\(/', $php_code )
+		if (   0 === preg_match( '/\s(get_)?the_posts_pagination\(/', $php_code )
 		  &&   0 === preg_match( '/\sposts_nav_link\(/', $php_code )
 		  &&   0 === preg_match( '/\spaginate_links\(/', $php_code )
 		  && ( 0 === preg_match( '/\s(get_)?previous_posts_link\(/', $php_code ) && 0 === preg_match( '/\s(get_)?next_posts_link\(/', $php_code ) ) ) {

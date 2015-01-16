@@ -24,9 +24,9 @@ EOT;
 	}
 
 	/**
-	 * Test that the_pagination() function is detected as valid pagination.
+	 * Test that (get_)the_posts_pagination() functions are detected as valid pagination.
 	 */
-	public function testValidPaginationThePagination() {
+	public function testValidPaginationThePostsPagination() {
 		$file_contents = <<<'EOT'
 			<?php
 				if ( have_posts() ) :
@@ -34,7 +34,7 @@ EOT;
 						get_template_part( 'content', get_post_format() );
 					endwhile;
 
-					the_pagination( array(
+					the_posts_pagination( array(
 						'prev_text'          => __( 'Previous page', 'theme-slug' ),
 						'next_text'          => __( 'Next page', 'theme-slug' ),
 						'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'theme-slug' ) . ' </span>',
