@@ -8,7 +8,6 @@ class ThemeBasicChecks extends BaseCheck {
 		$php = $this->merge_files( $files, 'php' );
 
 		$checks = array(
-			'DOCTYPE' => 'See: <a href="http://codex.wordpress.org/HTML_to_XHTML">http://codex.wordpress.org/HTML_to_XHTML</a><pre>&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"<br />"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"?&gt;</pre>',
 			'wp_footer\(' => 'See: <a href="http://codex.wordpress.org/Function_Reference/wp_footer">wp_footer</a><pre> &lt;?php wp_footer(); ?&gt;</pre>',
 			'wp_head\(' => 'See: <a href="http://codex.wordpress.org/Function_Reference/wp_head">wp_head</a><pre> &lt;?php wp_head(); ?&gt;</pre>',
 			'language_attributes' => 'See: <a href="http://codex.wordpress.org/Function_Reference/language_attributes">language_attributes</a><pre>&lt;html &lt;?php language_attributes(); ?&gt;</pre>',
