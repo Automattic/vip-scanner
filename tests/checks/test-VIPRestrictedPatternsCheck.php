@@ -32,7 +32,7 @@ EOT;
 		$error_slugs = $this->runCheck( $file_contents );
 
 		$this->assertNotContains( '/(\$_REQUEST)+/msiU', $error_slugs );
-	} 
+	}
 
 	public function testReadingREQUESTVariables() {
 		$file_contents = <<<'EOT'
@@ -63,6 +63,64 @@ EOT;
 		$error_slugs = $this->runCheck( $file_contents );
 
 		$this->assertNotContains( '/(\$_REQUEST)+/msiU', $error_slugs );
+	}
+
+	public function testOutputRestrictedVariables() {
+		$patterns = array(
+			'echo $_GET["foo"];',
+			'echo $_GET["var"];',
+			'echo( $_GET["foo"] );',
+			'echo $_GET;',
+			'print $_GET;',
+			'echo $_POST;',
+			'echo $GLOBALS;',
+			'echo $_SERVER;',
+			'echo $_REQUEST;',
+			'print_r( $_SERVER );',
+			'var_dump( $_POST );',
+			'echo "Hello, " . $_GET["name"]',
+			'sprintf( "Hello, %s", $_GET["name"] );'
+		);
+
+		foreach ( $patterns as $pattern ) {
+			$file_contents = <<<EOT
+			<?php
+
+			{$pattern}
+
+			?>
+EOT;
+
+			$this->assertContains(
+				'/(echo|print|var_dump|\<\?\=)+(?!\s+\(?\s*(?:isset|typeof)\(\s*)[^;]+(\$GLOBALS|\$_SERVER|\$_GET|\$_POST|\$_REQUEST)+/msiU',
+				$this->runCheck( $file_contents )
+			);
+		}
+	}
+
+	// Patterns that shouldn't set off red flags
+	public function testOutputRestrictedVariablesFalsePositives() {
+		$patterns = array(
+			'echo $foo; isset( $_GET["bar"] );',
+			'echo isset( $_GET ) ? "foo" : "bar";',
+			'echo typeof( $_GET ) == "array" ? "yes" : "no";',
+			'echo ( isset( $_GET["checked"] ) ? "is" : "not";'
+		);
+
+		foreach ( $patterns as $pattern ) {
+			$file_contents = <<<EOT
+			<?php
+
+			{$pattern}
+
+			?>
+EOT;
+
+			$this->assertNotContains(
+				'/(echo|print|var_dump|\<\?\=)+(?!\s+\(?\s*(?:isset|typeof)\(\s*)[^;]+(\$GLOBALS|\$_SERVER|\$_GET|\$_POST|\$_REQUEST)+/msiU',
+				$this->runCheck( $file_contents )
+			);
+		}
 	}
 
 	public function testQueryVarsDirectAccessGet() {
