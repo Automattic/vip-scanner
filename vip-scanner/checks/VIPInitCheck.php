@@ -14,21 +14,17 @@ class VIPInitCheck extends BaseCheck {
 		$path 	= $this->get_path(); // So we can ensure we only look at the main functions.php
 		$files 	= $this->filter_files( $files, 'php' );
 
-		$vip_init_found = false;
-
 		foreach( $files as $path => $content ) {
-			if ( ! $this->file_is_main_functions( $path ) )
-				continue;
-
-			$vip_init_found = $this->vip_init_is_included( $path );
-
-			break;
+			if ( $this->file_is_main_functions( $path ) ) {
+				if ( $this->vip_init_is_included( $path ) ) {
+					return true;
+				}
+				break;
+			}
 		}
 
-		if ( ! $vip_init_found )
-			$this->add_error( 'vip-init', 'VIP Init', BaseScanner::LEVEL_BLOCKER, 'functions.php', array( 'vip-init.php was not required' ) );
-
-		return true;
+		$this->add_error( 'vip-init', 'VIP Init', BaseScanner::LEVEL_BLOCKER, 'functions.php', array( 'vip-init.php was not required' ) );
+		return false;
 	}
 
 	public function file_is_main_functions( $file ) {
