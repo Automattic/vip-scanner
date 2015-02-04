@@ -99,7 +99,7 @@ class VIP_Scanner_UI {
 		wp_enqueue_script( 'vip-scanner-js', plugins_url( 'js/vip-scanner.js', __FILE__ ), array('jquery'), '20120320' );
 		wp_enqueue_script( 'jquery-ui-accordion');
 		wp_enqueue_script( 'jquery-ui-core' );
-		wp_enqueue_style('vip-scanner-admin-ui-css', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/smoothness/jquery-ui.min.css');
+		wp_enqueue_style( 'vip-scanner-admin-ui-css', plugins_url( 'css/jquery-ui.min.css', __FILE__ ), array(), '1.11.2' );
 	}
 
 	function display_admin_page() {
