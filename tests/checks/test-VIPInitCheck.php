@@ -16,6 +16,10 @@ class VIPInitCheckTest extends WP_UnitTestCase {
 		$this->assertTrue( $this->_VIPInitCheckTest->vip_init_is_included( $this->_functions_file ) );
 	}
 
+	public function testStatementRequire() {
+		$this->assertTrue( $this->_VIPInitCheckTest->vip_init_is_included( dirname(__FILE__) . '/../data/test-theme2/functions.php' ) );
+	}
+
 	public function testScanner() {
 		$vipsccanner = VIP_Scanner::get_instance();
 		$vipsccanner->register_review( 'VIPInitCheck', array(
