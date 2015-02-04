@@ -48,7 +48,7 @@ class VIPInitCheck extends BaseCheck {
 	}
 
 	public function vip_init_is_included( $file ) {
-		$matches = $this->preg_file( '/\brequire_once?\s*?\(\s*?WP_CONTENT_DIR\s*?\.\s*?(\'|\")\/themes\/vip\/plugins\/vip-init\.php\1/', $file );
+		$matches = $this->preg_file( '/\brequire_once?\s*?\(?\s*?WP_CONTENT_DIR\s*?\.\s*?(\'|\")\/themes\/vip\/plugins\/vip-init\.php\1/', $file );
 
 		return ( count( $matches ) ) ? true : false;
 	}
