@@ -42,6 +42,55 @@ class VIPScanner_Command extends WP_CLI_Command {
 		if ( ! $scanner )
 			WP_CLI::error( sprintf( 'Scanning of %s failed', $args['theme'] ) );
 
+		self::scan_dir( $scanner, $args );
+	}
+
+	/**
+	 * Perform checks on a directory
+	 *
+	 * [<dir>]
+	 * : Directory to scan. Defaults to current.
+	 *
+	 * [--scan_type=<scan_type>]
+	 * : Type of scan to perform. Defaults to "WP.org Theme Review"
+	 *
+	 * [--summary]
+	 * : Summarize the results.
+	 *
+	 * [--format=<format>]
+	 * : Output results to a given format: table, JSON, CSV. Defaults to table.
+	 *
+	 * @subcommand scan
+	 */
+	public function scan( $args, $assoc_args ) {
+		if ( empty( $args[0] ) )
+			$dir = getcwd();
+		else
+			$dir = realpath( $args[0] );
+
+		$defaults = array(
+			'scan_type' => 'VIP Theme Review',
+			'format'    => 'table'
+		);
+
+		$args = wp_parse_args( $assoc_args, $defaults );
+
+		$review = VIP_Scanner::get_instance()->get_review( $args['scan_type'] );
+
+		if ( ! $review )
+			WP_CLI::error( sprintf( 'Scanning of %s failed', $dir ) );
+
+		$scanner = new DirectoryScanner( $dir, $review );
+		$scanner->scan( array( 'checks', 'analyzers' ) );
+
+		if ( ! $scanner )
+			WP_CLI::error( sprintf( 'Scanning of %s failed', $dir ) );
+
+		self::scan_dir( $scanner, $args );
+	}
+
+	private static function scan_dir( &$scanner, $args ) {
+
 		if ( isset( $args['summary'] ) ) {
 			$this->display_summary( $scanner, $args['format'] );
 		} else {
