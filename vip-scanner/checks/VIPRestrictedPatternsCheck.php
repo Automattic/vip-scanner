@@ -15,7 +15,7 @@ class VIPRestrictedPatternsCheck extends BaseCheck
 			"/(\\\$wpdb->|mysql_)+.+(DELETE)+\s+(FROM)+\s+/msiU" => array( "level" => "Warning", "note" => "Direct database delete query" ),
 			"/(\\\$wpdb->|mysql_)+.+(SELECT)+\s.+/msiU" => array( "level" => "Note", "note" => "Direct Database select query" ),
 			"/(^GLOBAL)(\\\$wpdb->|mysql_)+/msiU" => array( "level" => "Warning", "note" => "Possible direct database query" ),
-			'/(echo|print|var_dump|\<\?\=)+(?!\s+\(?\s*(?:isset|typeof)\(\s*)[^;]+(\$GLOBALS|\$_SERVER|\$_GET|\$_POST|\$_REQUEST)+/msiU' => array( "level" => "Warning", "note" => "Possible output of restricted variables" ),
+			'/(echo|\<\?\=)+(?!\s+\(?\s*(?:isset|typeof)\(\s*)[^;]+(\$GLOBALS|\$_SERVER|\$_GET|\$_POST|\$_REQUEST)+/msiU' => array( "level" => "Warning", "note" => "Possible output of restricted variables" ),
 			"/(\\\$GLOBALS|\\\$_SERVER|\\\$_GET|\\\$_POST|\\\$_REQUEST)+/msiU" => array( "level" => "Note", "note" => "Working with superglobals" ),
 			"/(\\\$_SERVER\[(?!('|\"REQUEST_URI|SCRIPT_FILENAME|HTTP_HOST'|\"))([^]]+|)\])+/msiU" => array( "level" => "Blocker", "note" => 'Non whitelisted $_SERVER superglobals found in this file' ),
 			"/(pre_)?option_(blogname|siteurl|post_count)/msiU" => array( "level" => "Blocker", "note" => "possible unsafe use of pre_option_* hook"),

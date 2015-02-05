@@ -76,8 +76,6 @@ EOT;
 			'echo $GLOBALS;',
 			'echo $_SERVER;',
 			'echo $_REQUEST;',
-			'print_r( $_SERVER );',
-			'var_dump( $_POST );',
 			'echo "Hello, " . $_GET["name"]',
 			'sprintf( "Hello, %s", $_GET["name"] );'
 		);
@@ -92,7 +90,7 @@ EOT;
 EOT;
 
 			$this->assertContains(
-				'/(echo|print|var_dump|\<\?\=)+(?!\s+\(?\s*(?:isset|typeof)\(\s*)[^;]+(\$GLOBALS|\$_SERVER|\$_GET|\$_POST|\$_REQUEST)+/msiU',
+				'/(echo|\<\?\=)+(?!\s+\(?\s*(?:isset|typeof)\(\s*)[^;]+(\$GLOBALS|\$_SERVER|\$_GET|\$_POST|\$_REQUEST)+/msiU',
 				$this->runCheck( $file_contents )
 			);
 		}
@@ -117,7 +115,7 @@ EOT;
 EOT;
 
 			$this->assertNotContains(
-				'/(echo|print|var_dump|\<\?\=)+(?!\s+\(?\s*(?:isset|typeof)\(\s*)[^;]+(\$GLOBALS|\$_SERVER|\$_GET|\$_POST|\$_REQUEST)+/msiU',
+				'/(echo|\<\?\=)+(?!\s+\(?\s*(?:isset|typeof)\(\s*)[^;]+(\$GLOBALS|\$_SERVER|\$_GET|\$_POST|\$_REQUEST)+/msiU',
 				$this->runCheck( $file_contents )
 			);
 		}
