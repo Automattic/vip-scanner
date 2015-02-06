@@ -127,8 +127,9 @@ class VIPScanner_Command extends WP_CLI_Command {
 		if ( ! $scanner ) {
 			WP_CLI::error( sprintf( 'Scanning of %s failed', $args['theme'] ) );
 		}
-
-		if ( ! empty( $scanner->get_errors() ) ) {
+	
+		$errors = $scanner->get_errors();
+		if ( ! empty( $errors ) ) {
 			$this->display_errors( $scanner, 'table' );
 		}
 
