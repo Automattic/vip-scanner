@@ -17,7 +17,7 @@ class FirstPostPromptCheck extends BaseCheck {
 		 * Look for is_home() && current_user_can( 'publish_posts' )
 		 */
 		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
-			if ( false !== strpos( 'is_home(', $file_content ) && ! preg_match( '/current_user_can\(\s*[\'"]publish_posts[\'"]\s*\)/', $file_content ) ) {
+			if ( ! empty( $file_content ) && false !== strpos( 'is_home(', $file_content ) && ! preg_match( '/current_user_can\(\s*[\'"]publish_posts[\'"]\s*\)/', $file_content ) ) {
 				$has_prompt = true;
 			}
 		}
