@@ -41,6 +41,7 @@ class EscapingCheck extends BaseCheck {
 			),
 		);
 
+		$result = true;
 		foreach ( $checks as $check ) {
 			$this->increment_check_count();
 			foreach ( $this->filter_files( $files, 'php' ) as $path => $code ) {
@@ -51,11 +52,13 @@ class EscapingCheck extends BaseCheck {
 						'functions-file',
 						$check['message'],
 						'blocker',
-						array( $filename, $line_number ),
-						esc_html( $error )
+						$filename,
+						array( $line_number => $error )
 					);
+					$result = false;
 				}
 			}
 		}
+		return $result;
 	}
 }
