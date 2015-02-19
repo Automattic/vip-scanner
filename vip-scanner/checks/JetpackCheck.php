@@ -31,7 +31,7 @@ class JetpackCheck extends BaseCheck {
 				$this->add_error(
 					'jetpack',
 					"The theme has not declared support for Jetpack Responsive Videos. Use <code>add_theme_support( 'jetpack-responsive-videos' );</code> in your <code>inc/jetpack.php</code> file",
-					Basescanner::LEVEL_WARNING
+					Basescanner::LEVEL_BLOCKER
 				);
 				$result = false;
 			}
