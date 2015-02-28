@@ -92,9 +92,9 @@ class VIPScanner_Command extends WP_CLI_Command {
 	private static function scan_dir( &$scanner, $args ) {
 
 		if ( isset( $args['summary'] ) ) {
-			$this->display_summary( $scanner, $args['format'] );
+			self::display_summary( $scanner, $args['format'] );
 		} else {
-			$this->display_errors( $scanner, $args['format'] );
+			self::display_errors( $scanner, $args['format'] );
 		}
 	}
 
