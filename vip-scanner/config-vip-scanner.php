@@ -56,6 +56,7 @@ VIP_Scanner::get_instance()->register_review( 'VIP Theme Review', array(
 	'DeprecatedConstantsCheck',
 	'DeprecatedFunctionsCheck',
 	'DeprecatedParametersCheck',
+	'jQueryCheck',
 	'VIPWhitelistCheck',
 	'VIPRestrictedClassesCheck',
 	'VIPRestrictedPatternsCheck',
