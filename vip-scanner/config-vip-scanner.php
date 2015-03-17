@@ -35,6 +35,7 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 	'MasonryCheck',
 	'PostThumbnailsCheck',
 	'ScreenshotCheck',
+	'StyleHeadersCheck',
 	'ThemecolorsCheck',
 	'ThemeNameCheck',
 	'ThemePostPaginationCheck',
@@ -63,6 +64,7 @@ VIP_Scanner::get_instance()->register_review( 'VIP Theme Review', array(
 	'VIPParametersCheck',
 	'PHPShortTagsCheck',
 	'PHPClosingTagsCheck',
+	'StyleHeadersCheck',
 	'VCMergeConflictCheck',
 	'WordPressCodingStandardsCheck',
 	'ClamAVCheck', // Pass null to lookup the check normally
