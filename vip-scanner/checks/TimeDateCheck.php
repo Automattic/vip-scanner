@@ -2,31 +2,40 @@
 class TimeDateCheck extends BaseCheck {
 
 	function check( $files ) {
+
+		$this->increment_check_count();
 		$result = true;
 
-		$checks = array(
-			//'/get_the_time\((\s|)["|\'][A-Za-z\s]+(\s|)["|\']\)/' => 'get_the_time( get_option( \'date_format\' ) )',
-			'/\sdate\((\s|)["|\'][A-Za-z\s]+(\s|)["|\']\)/' => 'date( get_option( \'date_format\' ) )',
-			'/[^get_]the_date\((\s|)["|\'][A-Za-z\s]+(\s|)["|\']\)/' => 'the_date( get_option( \'date_format\' ) )',
-			'/[^get_]the_time\((\s|)["|\'][A-Za-z\s]+(\s|)["|\']\)/' => 'the_time( get_option( \'date_format\' ) )'
+		$format_regex = '\(\s*["\'][a-zA-Z0-9\s\p{P}]+["\']\s*\)';
+		$functions = array(
+			'get_the_date',
+			'the_date',
+			'get_the_time',
+			'the_time',
+			'get_comment_time',
+			'comment_time',
 		);
 
-		foreach ( $this->filter_files( $files, 'php' ) as $filepath => $file ) {
-			foreach ( $checks as $key => $check ) {
-				$this->increment_check_count();
-				if ( preg_match( $key, $file, $matches ) ) {
-					$filename = $this->get_filename( $filepath );
-					$error = trim( rtrim( $matches[0], '(' ) );//trim( esc_html( rtrim( $matches[0], '(' ) ) );
-					$this->add_error(
-						$key,
-						'At least one hard-coded date was found. Consider `get_option( \'date_format\' )` instead.',
-						'info',
-						$filename
-					);
+		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
+
+			foreach ( $functions as $function ) {
+				/**
+				 * Before a function, there's either a start of a line, whitespace, . or (
+				 * This is to avoid false positives.
+				 */
+				if ( preg_match( '/(?:^|[\s\.\(])' . $function . $format_regex . '/', $file_content, $matches ) ) {
 					$result = false;
+					$this->add_error(
+						'hardcoded-date-time',
+						esc_html__( 'Found a hardcoded time or date format.', 'vip-scanner' ),
+						BaseScanner::LEVEL_WARNING,
+						basename( $file_path ),
+						$this->grep_content( rtrim( $matches[0], '(' ), $file_content )
+					);
 				}
 			}
 		}
+
 		return $result;
 	}
 }
