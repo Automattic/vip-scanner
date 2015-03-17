@@ -13,6 +13,7 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 	'AtPackageCheck',
 	'BodyClassCheck',
 	'CDNCheck',
+	'CheckedSelectedDisabledCheck',
 	'CommentsCheck',
 	'CustomizerCheck',
 	'DeprecatedConstantsCheck',
@@ -49,6 +50,7 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 ) );
 
 VIP_Scanner::get_instance()->register_review( 'VIP Theme Review', array(
+	'CheckedSelectedDisabledCheck',
 	'DeprecatedConstantsCheck',
 	'DeprecatedFunctionsCheck',
 	'DeprecatedParametersCheck',
