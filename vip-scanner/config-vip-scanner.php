@@ -37,6 +37,7 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 	'ScreenshotCheck',
 	'StyleHeadersCheck',
 	'ThemecolorsCheck',
+	'ThemeContentWidthCheck',
 	'ThemeNameCheck',
 	'ThemePostPaginationCheck',
 	'ThemeStyleRequiredCheck',
