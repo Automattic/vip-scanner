@@ -130,7 +130,7 @@ class VIPScanner_Command extends WP_CLI_Command {
 	
 		$errors = $scanner->get_errors();
 		if ( ! empty( $errors ) ) {
-			$this->display_errors( $scanner, 'table' );
+			self::display_errors( $scanner, 'table' );
 		}
 
 		$empty = array();
@@ -163,7 +163,7 @@ class VIPScanner_Command extends WP_CLI_Command {
 	 * @param BaseScanner $scanner the scanner whose errors to display
 	 * @param string $format 'table', 'JSON', or 'CSV'
 	 */
-	protected function display_summary( $scanner, $format ) {
+	protected static function display_summary( $scanner, $format ) {
 		$results = $scanner->get_results();
 
 		$data = array();
@@ -212,7 +212,7 @@ class VIPScanner_Command extends WP_CLI_Command {
 	 * @param BaseScanner $scanner the scanner whose errors to display
 	 * @param string $format 'table', 'JSON', or 'CSV'
 	 */
-	protected function display_errors( $scanner, $format ) {
+	protected static function display_errors( $scanner, $format ) {
 		$data = array();
 
 		foreach ( $scanner->get_error_levels() as $level ) {
