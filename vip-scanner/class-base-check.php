@@ -93,7 +93,7 @@ abstract class BaseCheck
 		return in_array( $file_name, $all_file_names );
 	}
 
-	function get_line( $line, $content ) {
+	static function get_line( $line, $content ) {
 		if( ! is_array( $content ) )
 			$lines = preg_split( '/((?<!\\\|\r)\n)|((?<!\\\)\r\n)/', $content );
 		else
