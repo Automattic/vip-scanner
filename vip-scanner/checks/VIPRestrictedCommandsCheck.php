@@ -33,7 +33,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			'restore_current_blog' 	=> array( 'level' => 'Blocker', 'note' => 'Switching blog context' ),
 			'ms_is_switched' 		=> array( 'level' => 'Blocker', 'note' => 'Querying blog context' ),
 			'wp_get_sites' 			=> array( 'level' => 'Blocker', 'note' => 'Querying network sites' ),
-			
+
 			// Uncached functions
 			'count_user_posts'       => array( 'level' => BaseScanner::LEVEL_WARNING, 'note' => 'Uncached Function. Use wpcom_vip_count_user_posts() instead.' ),
 			'get_category_by_slug' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to wpcom_vip_get_category_by_slug()' ),
@@ -71,7 +71,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"delete_user_meta" 	=> array( "level" => "Blocker", "note" => "Using user meta, consider user_attributes http://vip.wordpress.com/documentation/user_meta-vs-user_attributes/" ),
 			"get_user_meta" 	=> array( "level" => "Blocker", "note" => "Using user meta, consider user_attributes http://vip.wordpress.com/documentation/user_meta-vs-user_attributes/" ),
 			"update_user_meta" 	=> array( "level" => "Blocker", "note" => "Using user meta, consider user_attributes http://vip.wordpress.com/documentation/user_meta-vs-user_attributes/" ),
-			
+
 			// debugging
 			"error_log" 	=> array( "level" => "Blocker", "note" => "Filesystem operation" ),
 			"var_dump" 		=> array( "level" => "Warning", "note" => "Unfiltered variable output" ),
@@ -105,7 +105,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 
 			"clearstatcache" 	=> array( "level" => "Blocker", "note" => "Clears file status cache" ),
 			"set_file_buffer" 	=> array( "level" => "Warning", "note" => "Alias of stream_set_write_buffer" ),
-			
+
 			"copy" 			=> array( "level" => "Blocker", "note" => "Copies file" ),
 			"curl_init" 	=> array( "level" => "Blocker", "note" => "cURL used. Should use WP_HTTP class or cached functions instead" ),
 			"curl_setopt" 	=> array( "level" => "Blocker", "note" => "cURL used. Should use WP_HTTP class or cached functions instead" ),
@@ -116,7 +116,7 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"disk_free_space" 	=> array( "level" => "Blocker", "note" => "Returns available space in directory" ),
 			"disk_total_space" 	=> array( "level" => "Blocker", "note" => "Returns the total size of a directory" ),
 			"diskfreespace" 	=> array( "level" => "Blocker", "note" => "Alias of disk_free_space" ),
-			
+
 			"fclose" 	=> array( "level" => "Warning", "note" => "Closes an open file pointer" ),
 			"feof" 		=> array( "level" => "Warning", "note" => "Tests for end-of-file on a file pointer" ),
 			"fflush" 	=> array( "level" => "Blocker", "note" => "Flushes the output to a file" ),
@@ -124,11 +124,11 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"fgetcsv" 	=> array( "level" => "Warning", "note" => "Gets line from file pointer and parse for CSV fields" ),
 			"fgets" 	=> array( "level" => "Warning", "note" => "Gets line from file pointer" ),
 			"fgetss" 	=> array( "level" => "Warning", "note" => "Gets line from file pointer and strip HTML tags" ),
-			
+
 			//"file_exists" => array( "level" => "Warning", "note" => "Checks whether a file or directory exists" ),
 			"file_get_contents" => array( "level" => "Blocker", "note" => "Use wpcom_vip_file_get_contents() instead" ),
 			"file_put_contents" => array( "level" => "Blocker", "note" => "Write a string to a file" ),
-			
+
 			"file" 		=> array( "level" => "Warning", "note" => "Reads entire file into an array" ),
 			"fileatime" => array( "level" => "Blocker", "note" => "Gets last access time of file" ),
 			"filectime" => array( "level" => "Blocker", "note" => "Gets inode change time of file" ),
@@ -156,14 +156,14 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 			"is_dir" 	=> array( "level" => "Note", "note" => "Tells whether the filename is a directory" ),
 			"is_file" 	=> array( "level" => "Note", "note" => "Tells whether the filename is a regular file" ),
 			"is_link" 	=> array( "level" => "Note", "note" => "Tells whether the filename is a symbolic link" ),
-			
+
 			//"is_readable" => array( "level" => "Warning", "note" => "Tells whether the filename is readable" ),
 			"is_executable" 		=> array( "level" => "Blocker", "note" => "Tells whether the filename is executable" ),
 			"is_uploaded_file" 		=> array( "level" => "Warning", "note" => "Tells whether the file was uploaded via HTTP POST" ),
 			"move_uploaded_file" 	=> array( "level" => "Blocker", "note" => "Moves an uploaded file to a new location" ),
 			"is_writable" 			=> array( "level" => "Warning", "note" => "Tells whether the filename is writable" ),
 			"is_writeable" 			=> array( "level" => "Warning", "note" => "Alias of is_writable" ),
-			
+
 			"parse_ini_file" 	=> array( "level" => "Warning", "note" => "Parse a configuration file" ),
 			"parse_ini_string" 	=> array( "level" => "Warning", "note" => "Parse a configuration string" ),
 
@@ -405,8 +405,8 @@ class VIPRestrictedCommandsCheck extends BaseCheck
 				$this->increment_check_count();
 
 				if ( strpos( $file_content, $check ) !== false ) {
-					$pattern = "/\s+($check)+\s?\(+/msiU";
-					
+					$pattern = "/^(#|\/\/|\/\*|\*){0}\s+($check)+\s?\(+/msiU";
+
 					if ( preg_match( $pattern, $file_content, $matches ) ) {
 						$filename = $this->get_filename( $file_path );
 

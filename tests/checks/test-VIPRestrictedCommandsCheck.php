@@ -25,7 +25,7 @@ class VIPRestrictedCommandsTest extends CheckTestBase {
 	/**
 	 * Take a command's slug (the name of the function) and add on some parenthesis and a semi-colon to
 	 * make it valid PHP for testing
-	 * 
+	 *
 	 * @param string $command The name of a function to add parenthesis to
 	 */
 	public function add_parenthesis_to_command_name( $command ) {
@@ -50,7 +50,7 @@ class VIPRestrictedCommandsTest extends CheckTestBase {
 			'add_feed',
 			'query_posts'
 		);
-		
+
 		$this->checkCommands( $restricted_commands );
 	}
 
@@ -61,7 +61,7 @@ class VIPRestrictedCommandsTest extends CheckTestBase {
 			'ms_is_switched',
 			'wp_get_sites'
 		);
-		
+
 		$this->checkCommands( $restricted_commands );
 	}
 
@@ -460,7 +460,7 @@ class VIPRestrictedCommandsTest extends CheckTestBase {
 
 		$this->checkCommands( $restricted_commands );
 	}
-	
+
 	public function testShowAdminBar() {
 		$restricted_commands = array(
 			'show_admin_bar'
@@ -475,6 +475,38 @@ class VIPRestrictedCommandsTest extends CheckTestBase {
 		);
 
 		$this->checkCommands( $restricted_commands );
+	}
+
+	public function testCodeInCommentsDoesntTriggerMatches() {
+		$file_contents = <<<EOT
+<?php
+	/** Single line eval() */
+
+	/**
+		* eval() in a DocBlock
+		* @see eval()
+		*/
+
+	/*
+		don't use eval()
+	*/
+
+	// Please don't use eval()
+
+	# Seriously, eval() is bad news bears
+
+	/*Bad eval() comment formatting*/
+
+	/**
+	 *a bad docblock with eval()
+	 */
+
+	//don't eval() this!
+
+	#one more eval() statement
+EOT;
+
+		$this->assertEmpty( $this->runCheck( $file_contents ) );
 	}
 }
 
