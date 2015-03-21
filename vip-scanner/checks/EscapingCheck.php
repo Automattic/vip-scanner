@@ -39,6 +39,10 @@ class EscapingCheck extends BaseCheck {
 					'<code>esc_attr_e()</code>'
 				),
 			),
+			array(
+				'pattern' => '/\<?php\s*(echo|print)\s*esc_\S+\(\s*the_\S+\(/i',
+				'message' => __( 'Escape method is being bypassed by calling a self-printing template tag.', 'vip-scanner' ),
+			),
 		);
 
 		foreach ( $checks as $check ) {
