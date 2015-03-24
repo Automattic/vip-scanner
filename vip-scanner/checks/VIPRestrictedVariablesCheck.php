@@ -6,7 +6,7 @@ class VIPRestrictedVariablesCheck extends BaseCheck
 		$result = true;
 
 		$checks = array(
-			'((?<![\\\'\"])\$\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*?(?![\\\'\"])|(?<![\\\'\"])\$\{(?:.*)[\}](?![\\\'\"]))' => array( "level" => "Warning", "note" => "Possible variable variables" ),
+			'((?<![\\\'\"])\$\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*?(?![\\\'\"])|(?<![\\\'\"])\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*?\-\>\$(?![\\\'\"])|(?<![\\\'\"])\$\{(?:.*)[\}](?![\\\'\"]))' => array( "level" => "Warning", "note" => "Possible variable variables" ),
 		);
 
 		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
