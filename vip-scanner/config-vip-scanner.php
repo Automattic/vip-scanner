@@ -61,6 +61,7 @@ VIP_Scanner::get_instance()->register_review( 'VIP Theme Review', array(
 	'jQueryCheck',
 	'VIPWhitelistCheck',
 	'VIPRestrictedClassesCheck',
+	'VIPRestrictedVariablesCheck',
 	'VIPRestrictedPatternsCheck',
 	'VIPRestrictedCommandsCheck',
 	'VIPInitCheck',
