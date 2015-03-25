@@ -95,7 +95,7 @@ class VIPRestrictedPatternsCheck extends BaseCheck
 						$check_info['note'],
 						$check_info['level'],
 						$filename,
-						$lines,
+						$lines
 					);
 					$result = false;
 				}
