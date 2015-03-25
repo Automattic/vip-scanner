@@ -82,6 +82,23 @@ class VIPRestrictedPatternsCheck extends BaseCheck
 				'note'       => 'Possible direct query_vars modification, should use set_query_var() function',
 			),
 			'variable-variables' => array(
+				/*
+					This regex is a bit complicated, so I will break it down:
+					\$\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*?
+					This is matching simple variable variables: $$foo = 'bar';
+					It searches for a double dollar sign ($$), followed by a valid PHP variable name.
+
+					\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*?\-\>\$
+					This is matching variable class properties: $foo->$bar = 'foobar';
+					It searches for a single dollar sign ($), followed by a valid PHP variable name, followed by an object operator (->), followed by a single dollar sign ($).
+
+					\$\{(?:.*)[\}]
+					This is matching complex syntax variable variables.
+					It searches for a single dolalr sign ($), followed by opening and closing curly braces ({}) with anything inside them.
+
+					(?<![\'\"]) ... (?![\'\"])
+					Each of these searches is surrounded by a pair of lookarounds that tell the regex not to search inside string literals where variable variables do not work.
+				*/
 				'expression' => '/((?<![\\\'\"])\$\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*?(?![\\\'\"])|(?<![\\\'\"])\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*?\-\>\$(?![\\\'\"])|(?<![\\\'\"])\$\{(?:.*)[\}](?![\\\'\"]))/msiU',
 				'level'      => 'Warning',
 				'note'       => 'Possible PHP variable variables',
