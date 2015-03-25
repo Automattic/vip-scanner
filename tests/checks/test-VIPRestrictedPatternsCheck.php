@@ -17,7 +17,7 @@ EOT;
 
 		$error_slugs = $this->runCheck( $file_contents );
 
-		$this->assertContains( '/(\$_REQUEST)+/msiU', $error_slugs );
+		$this->assertContains( 'using-request-variable', $error_slugs );
 	}
 
 	public function testAssignedNormalVariables() {
@@ -31,7 +31,7 @@ EOT;
 
 		$error_slugs = $this->runCheck( $file_contents );
 
-		$this->assertNotContains( '/(\$_REQUEST)+/msiU', $error_slugs );
+		$this->assertNotContains( 'using-request-variable', $error_slugs );
 	}
 
 	public function testReadingREQUESTVariables() {
@@ -46,7 +46,7 @@ EOT;
 
 		$error_slugs = $this->runCheck( $file_contents );
 
-		$this->assertContains( '/(\$_REQUEST)+/msiU', $error_slugs );
+		$this->assertContains( 'using-request-variable', $error_slugs );
 	}
 
 
@@ -62,7 +62,7 @@ EOT;
 
 		$error_slugs = $this->runCheck( $file_contents );
 
-		$this->assertNotContains( '/(\$_REQUEST)+/msiU', $error_slugs );
+		$this->assertNotContains( 'using-request-variable', $error_slugs );
 	}
 
 	public function testOutputRestrictedVariables() {
@@ -90,7 +90,7 @@ EOT;
 EOT;
 
 			$this->assertContains(
-				'/(echo|\<\?\=)+(?!\s+\(?\s*(?:isset|typeof)\(\s*)[^;]+(\$GLOBALS|\$_SERVER|\$_GET|\$_POST|\$_REQUEST)+/msiU',
+				'output-of-restricted-variables',
 				$this->runCheck( $file_contents )
 			);
 		}
@@ -115,7 +115,7 @@ EOT;
 EOT;
 
 			$this->assertNotContains(
-				'/(echo|\<\?\=)+(?!\s+\(?\s*(?:isset|typeof)\(\s*)[^;]+(\$GLOBALS|\$_SERVER|\$_GET|\$_POST|\$_REQUEST)+/msiU',
+				'output-of-restricted-variables',
 				$this->runCheck( $file_contents )
 			);
 		}
@@ -133,7 +133,7 @@ EOT;
 
 		$error_slugs = $this->runCheck( $file_contents );
 
-		$this->assertContains( '/\$wp_query->query_vars\[.*?\][^=]*?\;/msi', $error_slugs );
+		$this->assertContains( 'direct-query_vars-access', $error_slugs );
 	}
 
 	public function testQueryVarsDirectAccessSet() {
@@ -148,6 +148,6 @@ EOT;
 
 		$error_slugs = $this->runCheck( $file_contents );
 
-		$this->assertContains( '/\$wp_query->query_vars\[.*?\]\s*?\=.*?\;/msi', $error_slugs );
+		$this->assertContains( 'direct-query_vars-modification', $error_slugs );
 	}
 }
