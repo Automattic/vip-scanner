@@ -17,7 +17,7 @@ EOT;
 
 		$error_slugs = $this->runCheck( $file_contents );
 
-		$this->assertContains( 'using-request-variable', $error_slugs );
+		$this->assertContains( '/(\$_REQUEST)+/msiU', $error_slugs );
 	}
 
 	public function testAssignedNormalVariables() {
@@ -31,7 +31,7 @@ EOT;
 
 		$error_slugs = $this->runCheck( $file_contents );
 
-		$this->assertNotContains( 'using-request-variable', $error_slugs );
+		$this->assertNotContains( '/(\$_REQUEST)+/msiU', $error_slugs );
 	}
 
 	public function testReadingREQUESTVariables() {
@@ -46,7 +46,7 @@ EOT;
 
 		$error_slugs = $this->runCheck( $file_contents );
 
-		$this->assertContains( 'using-request-variable', $error_slugs );
+		$this->assertContains( '/(\$_REQUEST)+/msiU', $error_slugs );
 	}
 
 
@@ -62,7 +62,7 @@ EOT;
 
 		$error_slugs = $this->runCheck( $file_contents );
 
-		$this->assertNotContains( 'using-request-variable', $error_slugs );
+		$this->assertNotContains( '/(\$_REQUEST)+/msiU', $error_slugs );
 	}
 
 	public function testOutputRestrictedVariables() {
@@ -90,7 +90,7 @@ EOT;
 EOT;
 
 			$this->assertContains(
-				'output-of-restricted-variables',
+				'/(echo|\<\?\=)+(?!\s+\(?\s*(?:isset|typeof)\(\s*)[^;]+(\$GLOBALS|\$_SERVER|\$_GET|\$_POST|\$_REQUEST)+/msiU',
 				$this->runCheck( $file_contents )
 			);
 		}
@@ -115,7 +115,7 @@ EOT;
 EOT;
 
 			$this->assertNotContains(
-				'output-of-restricted-variables',
+				'/(echo|\<\?\=)+(?!\s+\(?\s*(?:isset|typeof)\(\s*)[^;]+(\$GLOBALS|\$_SERVER|\$_GET|\$_POST|\$_REQUEST)+/msiU',
 				$this->runCheck( $file_contents )
 			);
 		}
@@ -133,7 +133,7 @@ EOT;
 
 		$error_slugs = $this->runCheck( $file_contents );
 
-		$this->assertContains( 'direct-query_vars-access', $error_slugs );
+		$this->assertContains( '/\$wp_query->query_vars\[.*?\][^=]*?\;/msi', $error_slugs );
 	}
 
 	public function testQueryVarsDirectAccessSet() {
@@ -148,169 +148,6 @@ EOT;
 
 		$error_slugs = $this->runCheck( $file_contents );
 
-		$this->assertContains( 'direct-query_vars-modification', $error_slugs );
+		$this->assertContains( '/\$wp_query->query_vars\[.*?\]\s*?\=.*?\;/msi', $error_slugs );
 	}
-
-
-
-
-	public function testVarVarsSingleQuoteStringLiteral() {
-		$file_contents = <<<'EOT'
-				<?php
-
-				$test = '$$this is a test';
-
-				?>
-EOT;
-
-		$error_slugs = $this->runCheck( $file_contents );
-
-		$this->assertNotContains( 'variable-variables', $error_slugs );
-	}
-
-	public function testVarVarsDoubleQuoteStringLiteral() {
-		$file_contents = <<<'EOT'
-				<?php
-
-				$test = "$$this is a test";
-
-				?>
-EOT;
-
-		$error_slugs = $this->runCheck( $file_contents );
-
-		$this->assertNotContains( 'variable-variables', $error_slugs );
-	}
-
-	public function testVarVarsStandardVariable() {
-		$file_contents = <<<'EOT'
-				<?php
-
-				$bar = 'foo';
-
-				?>
-EOT;
-
-		$error_slugs = $this->runCheck( $file_contents );
-
-		$this->assertNotContains( 'variable-variables', $error_slugs );
-	}
-
-	public function testVarVarsComplexSyntax() {
-		$file_contents = <<<'EOT'
-				<?php
-
-				$bar = 'foo';
-				$foo = ${$bar};
-
-				?>
-EOT;
-
-		$error_slugs = $this->runCheck( $file_contents );
-
-		$this->assertContains( 'variable-variables', $error_slugs );
-	}
-
-	public function testVarVarsStandard() {
-		$file_contents = <<<'EOT'
-				<?php
-
-				$foo = 'foo';
-				$bar = 'biz';
-				$$foo = $bar;
-
-				?>
-EOT;
-
-		$error_slugs = $this->runCheck( $file_contents );
-
-		$this->assertContains( 'variable-variables', $error_slugs );
-	}
-
-	public function testVarVarsDoubleQuoteStringLiteralInsideComplexSyntax() {
-		$file_contents = <<<'EOT'
-				<?php
-
-				$one = 'biz';
-				${"foo$one"} = 'bar';
-
-				?>
-EOT;
-
-		$error_slugs = $this->runCheck( $file_contents );
-
-		$this->assertContains( 'variable-variables', $error_slugs );
-	}
-
-	public function testVarVarsConstantInsideComplexSyntax() {
-		$file_contents = <<<'EOT'
-				<?php
-
-				define("ONE", "biz");
-				${'foo' . ONE} = 'bar';
-
-				?>
-EOT;
-
-		$error_slugs = $this->runCheck( $file_contents );
-
-		$this->assertContains( 'variable-variables', $error_slugs );
-	}
-
-	public function testVarVarsFunctionInsideComplexSyntax() {
-		$file_contents = <<<'EOT'
-				<?php
-
-				function biz() {
-					return 'foo';
-				}
-				${'foo' . one()} = 'bar';
-
-				?>
-EOT;
-
-		$error_slugs = $this->runCheck( $file_contents );
-
-		$this->assertContains( 'variable-variables', $error_slugs );
-	}
-
-	public function testVarVarsVariableClassProperties() {
-		$file_contents = <<<'EOT'
-				<?php
-
-				class Foo {
-					public $foo = 'bar';
-				}
-
-				$bar = 'foo';
-				$foo->$bar = 'foobar';
-
-				?>
-EOT;
-
-		$error_slugs = $this->runCheck( $file_contents );
-
-		$this->assertContains( 'variable-variables', $error_slugs );
-	}
-
-	public function testVarVarsStandardClassProperties() {
-		$file_contents = <<<'EOT'
-				<?php
-
-				class Foo {
-					public $bar = 'bar';
-				}
-
-				$foo->barr = 'foobar';
-
-				?>
-EOT;
-
-		$error_slugs = $this->runCheck( $file_contents );
-
-		$this->assertNotContains( 'variable-variables', $error_slugs );
-	}
-
-
-
 }
