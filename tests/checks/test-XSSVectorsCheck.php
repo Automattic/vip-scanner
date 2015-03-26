@@ -90,4 +90,36 @@ EOT;
 		$this->assertNotContains( 'xss-javascript-in-style-tag', $error_slugs );
 	}
 
+	public function test_css_expression_xss_in_style_tag() {
+		$file_contents = <<<'EOT'
+			<STYLE>body{ width: expression(alert('XSS')); }</STYLE>
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'css-expression-xss-in-style-tag', $error_slugs );
+	}
+
+	public function test_css_expression_xss_not_in_style_tag() {
+		$file_contents = <<<'EOT'
+			<STYLE>body{ color: #000; }</STYLE>
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'css-expression-xss-in-style-tag', $error_slugs );
+	}
+
+	public function test_css_expression_xss_in_style_attribute() {
+		$file_contents = <<<'EOT'
+			<DIV STYLE="width: expression(alert('XSS'));">>
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'css-expression-xss-in-style-attribute', $error_slugs );
+	}
+
+	public function test_css_expression_xss_not_in_style_attribute() {
+		$file_contents = <<<'EOT'
+			<DIV STYLE="width: 100%;">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'css-expression-xss-in-style-attribute', $error_slugs );
+	}
+
 }

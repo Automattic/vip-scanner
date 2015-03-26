@@ -178,6 +178,58 @@ class XSSVectorsCheck extends BaseCheck {
 			}
 		}
 
+		/**
+		 * Checks for CSS expression() property within style attribute in all HTML tags
+		 */
+		$this->increment_check_count();
+		foreach ( $this->filter_files( $files, array( 'html', 'php' ) ) as $file_path => $file_content ) {
+			$regex = '/<[a-z]*(?:[^\>]*?)style(?:\s)*?=(?:\s)*?(?<QUOTES>[\\\'\"])*(?<ATTR>.*?)\k<QUOTES>(?:.*?)>/ims';
+			if ( preg_match_all( $regex, $file_content, $matches ) ) {
+				$lines = array();
+				foreach ( $matches['ATTR'] as $match ) {
+					$sanitized_string = $this->sanitize_string( $match );
+					if ( strpos( $sanitized_string, 'expression(' )  !== false ) {
+						$filename = $this->get_filename( $file_path );
+						$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
+						$this->add_error(
+							'css-expression-xss-in-style-attribute',
+							"XSS Attack Vector found in STYLE tag (CSS expression property)",
+							'Warning',
+							$filename,
+							$lines
+						);
+						$result = false;
+					}
+				}
+			}
+		}
+
+		/**
+		 * Checks for CSS expression() property within style tags
+		 */
+		$this->increment_check_count();
+		foreach ( $this->filter_files( $files, array( 'html', 'php' ) ) as $file_path => $file_content ) {
+			$regex = '/<[\s]*?style(?:.*?)?>(?<CONTENT>.*?)<[\s]*?\/[\s]*?[a-z]*?[\s]*?>/ims';
+			if ( preg_match_all( $regex, $file_content, $matches ) ) {
+				$lines = array();
+				foreach ( $matches['CONTENT'] as $match ) {
+					$sanitized_string = $this->sanitize_string( $match );
+					if ( strpos( $sanitized_string, 'expression(' )  !== false ) {
+						$filename = $this->get_filename( $file_path );
+						$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
+						$this->add_error(
+							'css-expression-xss-in-style-tag',
+							"XSS Attack Vector found in STYLE tag (CSS expression property)",
+							'Warning',
+							$filename,
+							$lines
+						);
+						$result = false;
+					}
+				}
+			}
+		}
+
 		return $result;
 	}
 }
