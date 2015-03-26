@@ -65,6 +65,18 @@ class XSSVectorsCheck extends BaseCheck {
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in <style> tag  (CSS expression property)',
 			),
+			'css-behavior-xss-in-style-attribute' => array(
+				'expression' => '/<[a-z]*(?:[^\>]*?)style(?:\s)*?=(?:\s)*?(?<QUOTES>[\\\'\"])*(?<MATCHTEXT>.*?)\k<QUOTES>(?:.*?)>/ims',
+				'match-text' => 'behavior:',
+				'level'      => 'Warning',
+				'note'       => 'XSS Attack Vector found in HTML tag style attribute (CSS behavior property)',
+			),
+			'css-behavior-xss-in-style-tag' => array(
+				'expression' => '/<[\s]*?style(?:.*?)?>(?<MATCHTEXT>.*?)<[\s]*?\/[\s]*?[a-z]*?[\s]*?>/ims',
+				'match-text' => 'behavior:',
+				'level'      => 'Warning',
+				'note'       => 'XSS Attack Vector found in <style> tag  (CSS behavior property)',
+			),
 		);
 
 		foreach ( $this->filter_files( $files, array( 'html', 'php' ) ) as $file_path => $file_content ) {

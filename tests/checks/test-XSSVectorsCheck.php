@@ -142,4 +142,39 @@ EOT;
 		$this->assertNotContains( 'css-expression-xss-in-style-attribute', $error_slugs );
 	}
 
+	/*
+	 * XSS CSS behavior property in style attribute and style tag
+	 */
+	public function test_css_behavior_xss_in_style_tag() {
+		$file_contents = <<<'EOT'
+			<STYLE>body{ behavior: url(xss.htc); }</STYLE>
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'css-behavior-xss-in-style-tag', $error_slugs );
+	}
+
+	public function test_css_behavior_xss_not_in_style_tag() {
+		$file_contents = <<<'EOT'
+			<STYLE>body{ color: #000; }</STYLE>
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'css-behavior-xss-in-style-attribute', $error_slugs );
+	}
+
+	public function test_css_behavior_xss_in_style_attribute() {
+		$file_contents = <<<'EOT'
+			<DIV STYLE="width: behavior: url(xss.htc);">>
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'css-behavior-xss-in-style-attribute', $error_slugs );
+	}
+
+	public function test_css_behavior_xss_not_in_style_attribute() {
+		$file_contents = <<<'EOT'
+			<DIV STYLE="width: 100%;">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'css-behavior-xss-in-style-attribute', $error_slugs );
+	}
+
 }
