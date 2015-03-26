@@ -29,7 +29,7 @@ class XSSVectorsCheck extends BaseCheck {
 
 		$checks = array(
 			'xss-in-link-tag-href' => array(
-				'expression' => '/<[\s]*?link(?:[^\>]*?)href(?:\s)*?=(?:\s)*?(?<QUOTES>[\\\'\"])*(?<MATCHTEXT>.*?)\k<QUOTES>(?:.*?)>/ims',
+				'expression' => '/<[\s]*?link(?:[^\>]*?)href(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/ims',
 				'match-text' => 'javascript:',
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in <link> tag href attribute (javascript:)',
@@ -47,10 +47,10 @@ class XSSVectorsCheck extends BaseCheck {
 				'note'       => 'XSS Attack Vector found in <style> tag (javascript:)',
 			),
 			'xss-in-style-attribute' => array(
-				'expression' => '/<[a-z]*(?:[^\>]*?)style(?:\s)*?=(?:\s)*?(?<QUOTES>[\\\'\"])*(?<MATCHTEXT>.*?)\k<QUOTES>(?:.*?)>/ims',
+				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)style(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(>)/ims',
 				'match-text' => 'javascript:',
 				'level'      => 'Warning',
-				'note'       => 'XSS Attack Vector found in HTML tag style attribute (javascript:)',
+				'note'       => 'Possible XSS Attack Vector found in HTML tag style attribute (javascript:)',
 			),
 			'moz-binding-xss-in-style-tag' => array(
 				'expression' => '/<[\s]*?style(?:.*?)?>(?<MATCHTEXT>.*?)<[\s]*?\/[\s]*?[a-z]*?[\s]*?>/ims',
@@ -59,13 +59,13 @@ class XSSVectorsCheck extends BaseCheck {
 				'note'       => 'XSS Attack Vector found in <style> tag (-moz-binding)',
 			),
 			'moz-binding-xss-in-style-attribute' => array(
-				'expression' => '/<[a-z]*(?:[^\>]*?)style(?:\s)*?=(?:\s)*?(?<QUOTES>[\\\'\"])*(?<MATCHTEXT>.*?)\k<QUOTES>(?:.*?)>/ims',
+				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)style(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(>)/ims',
 				'match-text' => '-moz-binding',
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in HTML tag style attribute (-moz-binding)',
 			),
 			'css-expression-xss-in-style-attribute' => array(
-				'expression' => '/<[a-z]*(?:[^\>]*?)style(?:\s)*?=(?:\s)*?(?<QUOTES>[\\\'\"])*(?<MATCHTEXT>.*?)\k<QUOTES>(?:.*?)>/ims',
+				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)style(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(>)/ims',
 				'match-text' => 'expression(',
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in HTML tag style attribute (CSS expression property)',
@@ -77,10 +77,10 @@ class XSSVectorsCheck extends BaseCheck {
 				'note'       => 'XSS Attack Vector found in <style> tag  (CSS expression property)',
 			),
 			'css-behavior-xss-in-style-attribute' => array(
-				'expression' => '/<[a-z]*(?:[^\>]*?)style(?:\s)*?=(?:\s)*?(?<QUOTES>[\\\'\"])*(?<MATCHTEXT>.*?)\k<QUOTES>(?:.*?)>/ims',
+				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)style(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(>)/ims',
 				'match-text' => 'behavior:',
 				'level'      => 'Warning',
-				'note'       => 'XSS Attack Vector found in HTML tag style attribute (CSS behavior property)',
+				'note'       => 'Possible XSS Attack Vector found in HTML tag style attribute (CSS behavior property)',
 			),
 			'css-behavior-xss-in-style-tag' => array(
 				'expression' => '/<[\s]*?style(?:.*?)?>(?<MATCHTEXT>.*?)<[\s]*?\/[\s]*?[a-z]*?[\s]*?>/ims',
