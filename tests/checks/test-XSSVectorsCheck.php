@@ -30,6 +30,25 @@ EOT;
 	}
 
 	/*
+	 * XSS javascript in bgsound src attribute
+	 */
+	public function test_xss_in_bgsound_tag_src() {
+		$file_contents = <<<'EOT'
+			<BGSOUND SRC="javascript:alert('XSS');">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-in-bgsound-tag-src', $error_slugs );
+	}
+
+	public function test_xss_not_in_bgsound_tag_src() {
+		$file_contents = <<<'EOT'
+			<BGSOUND SRC="canyon.mid">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'xss-in-bgsound-tag-src', $error_slugs );
+	}
+
+	/*
 	 * XSS javascript in style attribute and style tag
 	 */
 	public function test_xss_in_tag_style_attr() {
