@@ -29,7 +29,7 @@ class XSSVectorsCheck extends BaseCheck {
 
 		$checks = array(
 			'xss-in-link-tag-href' => array(
-				'expression' => '/<link(?:[^\>]*?)href(?:\s)*?=(?:\s)*?(?<QUOTES>[\\\'\"])*(?<MATCHTEXT>.*?)\k<QUOTES>(?:.*?)>/ims',
+				'expression' => '/<[\s]*?link(?:[^\>]*?)href(?:\s)*?=(?:\s)*?(?<QUOTES>[\\\'\"])*(?<MATCHTEXT>.*?)\k<QUOTES>(?:.*?)>/ims',
 				'match-text' => 'javascript:',
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in <link> tag href attribute (javascript:)',
