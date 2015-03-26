@@ -17,6 +17,16 @@ class XSSVectorsCheck extends BaseCheck {
 		$string = str_replace( array( '/', '\\' ), '', $string );
 
 		/**
+		 * Removes encoded tabs (&#x09;), newlines (&#x0A;), and carriage returns (&#x0D;)
+		 */
+		$string = str_replace( array( '&#x09;', '&#x0A;', '&#x0D;' ), '', $string );
+
+		/**
+		 * Removes null characters
+		 */
+		$string = str_replace( "\0", "", $string );
+
+		/**
 		 * Removes all whitespace
 		 */
 		$string = preg_replace( '/(\s)/misU', '', $string );
