@@ -215,6 +215,61 @@ EOT;
 		$this->assertNotContains( 'malformed-img-tag-xss-script', $error_slugs );
 	}
 
+	/*
+	 * Malformed whitespace and embedded characters
+	 */
+	public function test_space_before_javascript_in_src_attr() {
+		$file_contents = <<<'EOT'
+			<IMG SRC="   javascript:alert('XSS');">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-in-any-tag-src', $error_slugs );
+	}
 
+	public function test_space_and_metachar_before_javascript_in_src_attr() {
+		$file_contents = <<<'EOT'
+			<IMG SRC=" &#14;  javascript:alert('XSS');">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-in-any-tag-src', $error_slugs );
+	}
+
+	public function test_tab_javascript_in_src_attr() {
+		$file_contents = <<<'EOT'
+			<IMG SRC="jav	ascript:alert('XSS');">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-in-any-tag-src', $error_slugs );
+	}
+
+	public function test_encoded_tab_javascript_in_src_attr() {
+		$file_contents = <<<'EOT'
+			<IMG SRC="jav&#x09;ascript:alert('XSS');">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-in-any-tag-src', $error_slugs );
+	}
+
+	public function test_encoded_newline_javascript_in_src_attr() {
+		$file_contents = <<<'EOT'
+			<IMG SRC="jav&#x0A;ascript:alert('XSS');">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-in-any-tag-src', $error_slugs );
+	}
+
+	public function test_encoded_carriage_return_javascript_in_src_attr() {
+		$file_contents = <<<'EOT'
+			<IMG SRC="jav&#x0D;ascript:alert('XSS');">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-in-any-tag-src', $error_slugs );
+	}
+
+	public function test_null_character_javascript_in_src_attr() {
+		$file_contents = "<IMG SRC=\"jav\0ascript:alert('XSS');\">";
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-in-any-tag-src', $error_slugs );
+	}
 
 }
