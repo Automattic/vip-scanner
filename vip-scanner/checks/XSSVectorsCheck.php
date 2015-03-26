@@ -16,6 +16,7 @@ class XSSVectorsCheck extends BaseCheck {
 		 */
 		$string = preg_replace( '(/\*.*?\*/)', '', $string );
 
+		return $string;
 	}
 
 	function check( $files ) {
@@ -30,7 +31,7 @@ class XSSVectorsCheck extends BaseCheck {
 			if ( preg_match_all( $regex, $file_content, $matches ) ) {
 				$lines = array();
 				foreach ( $matches['HREF'] as $match ) {
-					$sanitized_string = str_replace( array( '/', '\\' ), '', $match );
+					$sanitized_string = $this->sanitize_string( $match );
 					if ( strpos( $sanitized_string, 'javascript:' )  !== false ) {
 						$filename = $this->get_filename( $file_path );
 						$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
@@ -56,7 +57,7 @@ class XSSVectorsCheck extends BaseCheck {
 			if ( preg_match_all( $regex, $file_content, $matches ) ) {
 				$lines = array();
 				foreach ( $matches['ATTR'] as $match ) {
-					$sanitized_string = str_replace( array( '/', '\\' ), '', $match );
+					$sanitized_string = $this->sanitize_string( $match );
 					if ( strpos( $sanitized_string, 'javascript:' )  !== false ) {
 						$filename = $this->get_filename( $file_path );
 						$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
@@ -82,7 +83,7 @@ class XSSVectorsCheck extends BaseCheck {
 			if ( preg_match_all( $regex, $file_content, $matches ) ) {
 				$lines = array();
 				foreach ( $matches['CONTENT'] as $match ) {
-					$sanitized_string = str_replace( array( '/', '\\' ), '', $match );
+					$sanitized_string = $this->sanitize_string( $match );
 					if ( strpos( $sanitized_string, '-moz-binding' )  !== false ) {
 						$filename = $this->get_filename( $file_path );
 						$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
@@ -108,7 +109,7 @@ class XSSVectorsCheck extends BaseCheck {
 			if ( preg_match_all( $regex, $file_content, $matches ) ) {
 				$lines = array();
 				foreach ( $matches['ATTR'] as $match ) {
-					$sanitized_string = str_replace( array( '/', '\\' ), '', $match );
+					$sanitized_string = $this->sanitize_string( $match );
 					if ( strpos( $sanitized_string, '-moz-binding' )  !== false ) {
 						$filename = $this->get_filename( $file_path );
 						$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
@@ -134,7 +135,7 @@ class XSSVectorsCheck extends BaseCheck {
 			if ( preg_match_all( $regex, $file_content, $matches ) ) {
 				$lines = array();
 				foreach ( $matches['CONTENT'] as $match ) {
-					$sanitized_string = str_replace( array( '/', '\\' ), '', $match );
+					$sanitized_string = $this->sanitize_string( $match );
 					if ( strpos( $sanitized_string, '-moz-binding' )  !== false ) {
 						$filename = $this->get_filename( $file_path );
 						$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
