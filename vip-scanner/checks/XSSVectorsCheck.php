@@ -16,6 +16,11 @@ class XSSVectorsCheck extends BaseCheck {
 		 */
 		$string = str_replace( array( '/', '\\' ), '', $string );
 
+		/**
+		 * Removes all whitespace
+		 */
+		$string = preg_replace( '/(\s)/misU', '', $string );
+
 		return $string;
 	}
 
