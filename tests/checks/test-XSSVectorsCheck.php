@@ -272,4 +272,23 @@ EOT;
 		$this->assertContains( 'xss-in-any-tag-src', $error_slugs );
 	}
 
+	/*
+	 * XSS javascript declaration in tag background attribute
+	 */
+	public function test_javascript_in_body_tag_background_attribute() {
+		$file_contents = <<<'EOT'
+			<BODY BACKGROUND="javascript:alert('XSS')">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-in-background-attribute', $error_slugs );
+	}
+
+	public function test_javascript_not_in_body_tag_background_attribute() {
+		$file_contents = <<<'EOT'
+			<BODY BACKGROUND="#000">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'xss-in-background-attribute', $error_slugs );
+	}
+
 }

@@ -62,6 +62,12 @@ class XSSVectorsCheck extends BaseCheck {
 				'level'      => 'Warning',
 				'note'       => 'Possible XSS Attack Vector found in HTML tag style attribute (javascript:)',
 			),
+			'xss-in-background-attribute' => array(
+				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)background(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/ims',
+				'match-text' => 'javascript:',
+				'level'      => 'Warning',
+				'note'       => 'Possible XSS Attack Vector found in HTML tag background attribute (javascript:)',
+			),
 			'moz-binding-xss-in-style-tag' => array(
 				'expression' => '/<[\s]*?style(?:.*?)?>(?<MATCHTEXT>.*?)<[\s]*?\/[\s]*?[a-z]*?[\s]*?>/ims',
 				'match-text' => '-moz-binding',
