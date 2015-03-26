@@ -196,4 +196,25 @@ EOT;
 		$this->assertNotContains( 'css-behavior-xss-in-style-attribute', $error_slugs );
 	}
 
+	/*
+	 * XSS Script tag in malformed img tag
+	 */
+	public function test_script_tag_in_malformed_img_tag() {
+		$file_contents = <<<'EOT'
+			<IMG """><SCRIPT>alert("XSS")</SCRIPT>">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'malformed-img-tag-xss-script', $error_slugs );
+	}
+
+	public function test_script_tag_not_in_malformed_img_tag() {
+		$file_contents = <<<'EOT'
+			<IMG SRC="picture.jpg">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'malformed-img-tag-xss-script', $error_slugs );
+	}
+
+
+
 }

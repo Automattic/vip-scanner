@@ -88,6 +88,12 @@ class XSSVectorsCheck extends BaseCheck {
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in <style> tag  (CSS behavior property)',
 			),
+			'malformed-img-tag-xss-script' => array(
+				'expression' => '/<[\s]*?img(?:[^\>]*?)[\s]*?(?:\"\"\"|\\\'\\\'\\\'|\`\`\`)[\s]*?>[\s]*?(.*)(?:\"|\\\'|\`)[\s]*?>/ims',
+				'match-text' => 'script',
+				'level'      => 'Warning',
+				'note'       => 'XSS Attack Vector found in malformed <img> tag (<script> tag)',
+			),
 		);
 
 		foreach ( $this->filter_files( $files, array( 'html', 'php' ) ) as $file_path => $file_content ) {
