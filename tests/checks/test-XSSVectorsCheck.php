@@ -114,6 +114,14 @@ EOT;
 		$this->assertContains( 'css-expression-xss-in-style-attribute', $error_slugs );
 	}
 
+	public function test_obfuscated_css_expression_xss_in_style_attribute() {
+		$file_contents = <<<'EOT'
+			<IMG STYLE="xss:expr/*XSS*/ession(alert('XSS'))">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'css-expression-xss-in-style-attribute', $error_slugs );
+	}
+
 	public function test_css_expression_xss_not_in_style_attribute() {
 		$file_contents = <<<'EOT'
 			<DIV STYLE="width: 100%;">
