@@ -152,6 +152,32 @@ class XSSVectorsCheck extends BaseCheck {
 			}
 		}
 
+		/**
+		 * Checks for 'javascript:' within style tags
+		 */
+		$this->increment_check_count();
+		foreach ( $this->filter_files( $files, array( 'html', 'php' ) ) as $file_path => $file_content ) {
+			$regex = '/<[\s]*?style(?:.*?)?>(?<CONTENT>.*?)<[\s]*?\/[\s]*?[a-z]*?[\s]*?>/ims';
+			if ( preg_match_all( $regex, $file_content, $matches ) ) {
+				$lines = array();
+				foreach ( $matches['CONTENT'] as $match ) {
+					$sanitized_string = $this->sanitize_string( $match );
+					if ( strpos( $sanitized_string, 'javascript:' )  !== false ) {
+						$filename = $this->get_filename( $file_path );
+						$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
+						$this->add_error(
+							'xss-javascript-in-style-tag',
+							"XSS Attack Vector found in STYLE tag (javascript:)",
+							'Warning',
+							$filename,
+							$lines
+						);
+						$result = false;
+					}
+				}
+			}
+		}
+
 		return $result;
 	}
 }

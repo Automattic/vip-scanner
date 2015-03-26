@@ -74,4 +74,20 @@ EOT;
 		$this->assertNotContains( 'moz-binding-xss-in-style-tag', $error_slugs );
 	}
 
+	public function test_xss_in_style_tag() {
+		$file_contents = <<<'EOT'
+			<STYLE>@im\port'\ja\vasc\ript:alert("XSS")';</STYLE>
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-javascript-in-style-tag', $error_slugs );
+	}
+
+	public function test_xss_not_in_style_tag() {
+		$file_contents = <<<'EOT'
+			<STYLE>body{ color: #000; }</STYLE>
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'xss-javascript-in-style-tag', $error_slugs );
+	}
+
 }
