@@ -81,6 +81,21 @@ class VIPRestrictedPatternsCheck extends BaseCheck
 				'level'      => 'Warning',
 				'note'       => 'Possible direct query_vars modification, should use set_query_var() function',
 			),
+			'variable-class-properties' => array(
+				'expression' => '/((?<![\\\'\"])\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*?[\s]*?->[\s]*?\$(?![\\\'\"]))/msiU',
+				'level'      => 'Warning',
+				'note'       => 'Possible PHP variable class properties',
+			),
+			'variable-standard-variables' => array(
+				'expression' => '/((?<![\\\'\"])\$\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*?(?![\\\'\"]))/msiU',
+				'level'      => 'Warning',
+				'note'       => 'Possible PHP variable variables',
+			),
+			'variable-complex-syntax-variables' => array(
+				'expression' => '/((?<![\\\'\"])\$[\s]*?{(?:.*)[}](?![\\\'\"]))/msiU',
+				'level'      => 'Warning',
+				'note'       => 'Possible PHP complex syntax variable variables',
+			),
 		);
 
 		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
