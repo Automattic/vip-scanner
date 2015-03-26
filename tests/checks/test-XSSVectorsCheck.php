@@ -163,7 +163,7 @@ EOT;
 
 	public function test_css_behavior_xss_in_style_attribute() {
 		$file_contents = <<<'EOT'
-			<DIV STYLE="width: behavior: url(xss.htc);">>
+			<DIV STYLE="behavior: url(xss.htc);">
 EOT;
 		$error_slugs = $this->runCheck( $file_contents );
 		$this->assertContains( 'css-behavior-xss-in-style-attribute', $error_slugs );
