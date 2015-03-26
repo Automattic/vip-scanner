@@ -30,22 +30,22 @@ EOT;
 	}
 
 	/*
-	 * XSS javascript in bgsound src attribute
+	 * XSS javascript in any src attribute
 	 */
-	public function test_xss_in_bgsound_tag_src() {
+	public function test_xss_in_any_tag_src() {
 		$file_contents = <<<'EOT'
 			<BGSOUND SRC="javascript:alert('XSS');">
 EOT;
 		$error_slugs = $this->runCheck( $file_contents );
-		$this->assertContains( 'xss-in-bgsound-tag-src', $error_slugs );
+		$this->assertContains( 'xss-in-any-tag-src', $error_slugs );
 	}
 
-	public function test_xss_not_in_bgsound_tag_src() {
+	public function test_xss_not_in_any_tag_src() {
 		$file_contents = <<<'EOT'
 			<BGSOUND SRC="canyon.mid">
 EOT;
 		$error_slugs = $this->runCheck( $file_contents );
-		$this->assertNotContains( 'xss-in-bgsound-tag-src', $error_slugs );
+		$this->assertNotContains( 'xss-in-any-tag-src', $error_slugs );
 	}
 
 	/*

@@ -34,11 +34,11 @@ class XSSVectorsCheck extends BaseCheck {
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in <link> tag href attribute (javascript:)',
 			),
-			'xss-in-bgsound-tag-src' => array(
-				'expression' => '/<[\s]*?bgsound(?:[^\>]*?)src(?:\s)*?=(?:\s)*?(?<QUOTES>[\\\'\"])*(?<MATCHTEXT>.*?)\k<QUOTES>(?:.*?)>/ims',
+			'xss-in-any-tag-src' => array(
+				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)src(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/ims',
 				'match-text' => 'javascript:',
 				'level'      => 'Warning',
-				'note'       => 'XSS Attack Vector found in <bgsound> tag src attribute (javascript:)',
+				'note'       => 'XSS Attack Vector found in HTML tag src attribute (javascript:)',
 			),
 			'xss-javascript-in-style-tag' => array(
 				'expression' => '/<[\s]*?style(?:.*?)?>(?<MATCHTEXT>.*?)<[\s]*?\/[\s]*?[a-z]*?[\s]*?>/ims',
