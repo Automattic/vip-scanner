@@ -42,6 +42,22 @@ EOT;
 		$this->assertNotContains( 'xss-in-style-attribute', $error_slugs );
 	}
 
+	public function test_moz_binding_in_tag_style_attr() {
+		$file_contents = <<<'EOT'
+			<DIV STYLE="-moz-binding:url(http://ha.ckers.org/xssmoz.xml#xss)">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'moz-binding-xss-in-style-attribute', $error_slugs );
+	}
+
+	public function test_moz_binding_not_in_tag_style_attr() {
+		$file_contents = <<<'EOT'
+			<DIV STYLE="color: #fff;">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'moz-binding-xss-in-style-attribute', $error_slugs );
+	}
+
 	public function test_moz_binding_in_tag_style() {
 		$file_contents = <<<'EOT'
 			<style>body{-moz-binding:url(http://ha.ckers.org/xssmoz.xml#xss)}</style>
