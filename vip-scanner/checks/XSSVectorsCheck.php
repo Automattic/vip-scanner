@@ -161,7 +161,7 @@ class XSSVectorsCheck extends BaseCheck {
 					$lines = array();
 					foreach ( $matches['MATCHTEXT'] as $match ) {
 						$sanitized_string = $this->sanitize_string( $match );
-						if ( strpos( $sanitized_string, $check_info['match-text'] )  !== false ) {
+						if ( stripos( $sanitized_string, $check_info['match-text'] )  !== false ) {
 							$filename = $this->get_filename( $file_path );
 							$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
 							$this->add_error(
