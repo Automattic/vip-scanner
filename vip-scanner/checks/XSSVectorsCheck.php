@@ -44,6 +44,12 @@ class XSSVectorsCheck extends BaseCheck {
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in <link> tag href attribute (javascript:)',
 			),
+			'xss-in-meta-tag-content' => array(
+				'expression' => '/<[\s]*?meta(?:[^\>]*?)content(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=>)/ims',
+				'match-text' => 'javascript:',
+				'level'      => 'Warning',
+				'note'       => 'XSS Attack Vector found in <meta> tag content attribute (javascript:)',
+			),
 			'xss-javascript-in-any-tag-src' => array(
 				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)src(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/ims',
 				'match-text' => 'javascript:',

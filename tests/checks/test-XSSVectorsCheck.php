@@ -30,6 +30,25 @@ EOT;
 	}
 
 	/*
+	 * XSS javascript in meta tag content attribute
+	 */
+	public function test_xss_in_meta_tag_content() {
+		$file_contents = <<<'EOT'
+			<META HTTP-EQUIV="refresh" CONTENT="0;url=javascript:alert('XSS');">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-in-meta-tag-content', $error_slugs );
+	}
+
+	public function test_xss_not_meta_tag_content() {
+		$file_contents = <<<'EOT'
+			<META HTTP-EQUIV="refresh" CONTENT="0;url=http://www.example.com/">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'xss-in-meta-tag-content', $error_slugs );
+	}
+
+	/*
 	 * XSS javascript in any src attribute
 	 */
 	public function test_xss_in_any_tag_src() {
