@@ -75,7 +75,7 @@ EOT;
 			<DIV STYLE="background-image: url(&#1;javascript:alert('XSS'))">
 EOT;
 		$error_slugs = $this->runCheck( $file_contents );
-		$this->assertContains( 'xss-in-style-attribute', $error_slugs );
+		$this->assertContains( 'xss-javascript-in-style-attribute', $error_slugs );
 	}
 
 	public function test_xss_not_in_tag_style_attr() {
@@ -83,7 +83,23 @@ EOT;
 			<DIV STYLE="background-image: url(bg.gif)">
 EOT;
 		$error_slugs = $this->runCheck( $file_contents );
-		$this->assertNotContains( 'xss-in-style-attribute', $error_slugs );
+		$this->assertNotContains( 'xss-javascript-in-style-attribute', $error_slugs );
+	}
+
+	public function test_xss_unicode_obfuscated_javascript_in_tag_style_attr() {
+		$file_contents = <<<'EOT'
+			<DIV STYLE="background-image:\0075\0072\006C\0028'\006a\0061\0076\0061\0073\0063\0072\0069\0070\0074\003a\0061\006c\0065\0072\0074\0028.1027\0058.1053\0053\0027\0029'\0029">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-unicode-obfuscated-javascript-in-style-attribute', $error_slugs );
+	}
+
+	public function test_xss_unicode_obfuscated_javascript_not_in_tag_style_attr() {
+		$file_contents = <<<'EOT'
+			<DIV STYLE="background-image: url(bg.gif)">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'xss-unicode-obfuscated-javascript-in-style-attribute', $error_slugs );
 	}
 
 	public function test_xss_in_style_tag() {

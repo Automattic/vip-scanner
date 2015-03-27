@@ -74,11 +74,17 @@ class XSSVectorsCheck extends BaseCheck {
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in <style> tag (javascript:)',
 			),
-			'xss-in-style-attribute' => array(
+			'xss-javascript-in-style-attribute' => array(
 				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)style(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(>)/ims',
 				'match-text' => 'javascript:',
 				'level'      => 'Warning',
 				'note'       => 'Possible XSS Attack Vector found in HTML tag style attribute (javascript:)',
+			),
+			'xss-unicode-obfuscated-javascript-in-style-attribute' => array(
+				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)style(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(>)/ims',
+				'match-text' => '006a006100760061007300630072006900700074003a', // Unicode escaped 'javascript:' minus the slashes that get sanitized out.
+				'level'      => 'Warning',
+				'note'       => 'Possible XSS Attack Vector found in HTML tag style attribute (unicode obfuscated javascript:)',
 			),
 			'xss-in-background-attribute' => array(
 				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)background(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/ims',
