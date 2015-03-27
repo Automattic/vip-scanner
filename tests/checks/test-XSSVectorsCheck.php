@@ -270,8 +270,17 @@ EOT;
 	}
 
 	/*
-	 * Malformed whitespace and embedded characters
+	 * Malformed whitespace, embedded characters, and comment abuse
 	 */
+	public function test_comment_obfuscated_javascript_in_src_attr() {
+		$file_contents = <<<'EOT'
+			<XML ID="xss"><I><B><IMG SRC="javas<!-- -->cript:alert('XSS')"></B></I></XML>
+			<SPAN DATASRC="#xss" DATAFLD="B" DATAFORMATAS="HTML"></SPAN>
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-javascript-in-any-tag-src', $error_slugs );
+	}
+
 	public function test_space_before_javascript_in_src_attr() {
 		$file_contents = <<<'EOT'
 			<IMG SRC="   javascript:alert('XSS');">
