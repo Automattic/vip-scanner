@@ -69,6 +69,9 @@ class BaseScanner {
 		}
 	}
 
+	// FIXME: We're currently duplicating functionality, as BaseCheck has an
+	// add_error() method, too. We should remove either and replace it by a
+	// call to the other.
 	protected function add_error( $slug, $description, $level, $file = '', $lines = array() ) {
 		$error = array(
 			'slug' => $slug,
@@ -76,10 +79,15 @@ class BaseScanner {
 			'description' => $description
 		);
 
-		if( ! empty( $file ) )
+		$error['file'] = '';
+		if ( ! empty( $file ) )
 			$error['file'] = $file;
-		if( ! empty( $lines ) )
+
+		if( ! empty( $lines ) ) {
+			$lines = array_map( 'htmlspecialchars', (array) $lines );
+			$lines = array_map( 'trim', $lines );
 			$error['lines'] = $lines;
+		}
 
 		$this->errors[] = $error;
 	}
