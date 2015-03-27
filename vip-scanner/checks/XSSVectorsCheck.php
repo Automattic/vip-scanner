@@ -42,6 +42,9 @@ class XSSVectorsCheck extends BaseCheck {
 	function check( $files ) {
 		$result = true;
 
+		/*
+		 * PHP and HTML Checks
+		 */
 		$checks = array(
 			'xss-in-base-tag-href' => array(
 				'expression' => '/<[\s]*?base(?:[^\>]*?)href(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/imsU',
@@ -172,6 +175,60 @@ class XSSVectorsCheck extends BaseCheck {
 					$lines = array();
 					foreach ( $matches['MATCHTEXT'] as $match ) {
 						$sanitized_string = $this->sanitize_string( $match );
+						if ( stripos( $sanitized_string, $check_info['match-text'] )  !== false ) {
+							$filename = $this->get_filename( $file_path );
+							$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
+							$this->add_error(
+								$check,
+								$check_info['note'],
+								$check_info['level'],
+								$filename,
+								$lines
+							);
+							$result = false;
+						}
+					}
+				}
+			}
+		}
+
+		/*
+		 * CSS Checks
+		 */
+		$checks = array(
+			'javascript-in-css' => array(
+				'expression' => '/(?<MATCHTEXT>javascript)[\s]*?:.*/imsU',
+				'match-text' => 'javascript:',
+				'level'      => 'Warning',
+				'note'       => 'XSS Attack Vector found in CSS (javascript:)',
+			),
+			'behavior-in-css' => array(
+				'expression' => '/(?<MATCHTEXT>behavior)[\s]*?:.*/imsU',
+				'match-text' => 'behavior:',
+				'level'      => 'Warning',
+				'note'       => 'XSS Attack Vector found in CSS (behavior:)',
+			),
+			'moz-binding-in-css' => array(
+				'expression' => '/(?<MATCHTEXT>-moz-binding)[\s]*?:.*/imsU',
+				'match-text' => '-moz-binding:',
+				'level'      => 'Warning',
+				'note'       => 'XSS Attack Vector found in CSS (-moz-binding:)',
+			),
+			'expression-in-css' => array(
+				'expression' => '/(?<MATCHTEXT>expression)[\s]*?\(.*/imsU',
+				'match-text' => 'expression(',
+				'level'      => 'Warning',
+				'note'       => 'XSS Attack Vector found in CSS (expression())',
+			),
+		);
+
+		foreach ( $this->filter_files( $files, 'css' ) as $file_path => $file_content ) {
+			foreach ( $checks as $check => $check_info ) {
+				$this->increment_check_count();
+				if ( preg_match_all( $check_info['expression'], $file_content, $matches ) ) {
+					$lines = array();
+					foreach ( $matches['MATCHTEXT'] as $match ) {
+						$sanitized_string = $this->sanitize_string( $file_content );
 						if ( stripos( $sanitized_string, $check_info['match-text'] )  !== false ) {
 							$filename = $this->get_filename( $file_path );
 							$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );

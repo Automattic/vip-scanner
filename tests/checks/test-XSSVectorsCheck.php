@@ -443,4 +443,87 @@ EOT;
 		$this->assertNotContains( 'xss-object-type-x-scriptlet', $error_slugs );
 	}
 
+	/*
+	 * XSS in CSS
+	 */
+	public function test_xss_javascript_in_css() {
+		$file_contents = <<<'EOT'
+			body {
+				background-image:url("javascript:alert('XSS')");
+			}
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'javascript-in-css', $error_slugs );
+	}
+
+	public function test_xss_javascript_not_in_css() {
+		$file_contents = <<<'EOT'
+			body {
+				background-image:url("background.gif");
+			}
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'javascript-in-css', $error_slugs );
+	}
+
+	public function test_xss_behavior_in_css() {
+		$file_contents = <<<'EOT'
+			body {
+				behavior: url(xss.htc);
+			}
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'behavior-in-css', $error_slugs );
+	}
+
+	public function test_xss_behavior_not_in_css() {
+		$file_contents = <<<'EOT'
+			body {
+				background-image:url("background.gif");
+			}
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'behavior-in-css', $error_slugs );
+	}
+
+	public function test_xss_moz_binding_in_css() {
+		$file_contents = <<<'EOT'
+			body {
+				-moz-binding:url("http://ha.ckers.org/xssmoz.xml#xss")
+			}
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'moz-binding-in-css', $error_slugs );
+	}
+
+	public function test_xss_moz_binding_not_in_css() {
+		$file_contents = <<<'EOT'
+			body {
+				background-image:url("background.gif");
+			}
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'moz-binding-in-css', $error_slugs );
+	}
+
+	public function test_xss_expression_in_css() {
+		$file_contents = <<<'EOT'
+			body {
+				width: expression(alert('XSS'));
+			}
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'expression-in-css', $error_slugs );
+	}
+
+	public function test_xss_expression_not_in_css() {
+		$file_contents = <<<'EOT'
+			body {
+				width: 100%;
+			}
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'expression-in-css', $error_slugs );
+	}
+
 }
