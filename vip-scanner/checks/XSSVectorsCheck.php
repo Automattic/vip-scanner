@@ -92,19 +92,19 @@ class XSSVectorsCheck extends BaseCheck {
 				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)style(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(>)/imsU',
 				'match-text' => 'javascript:',
 				'level'      => 'Warning',
-				'note'       => 'Possible XSS Attack Vector found in HTML tag style attribute (javascript:)',
+				'note'       => 'XSS Attack Vector found in HTML tag style attribute (javascript:)',
 			),
 			'xss-unicode-obfuscated-javascript-in-style-attribute' => array(
 				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)style(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(>)/imsU',
 				'match-text' => '006a006100760061007300630072006900700074003a', // Unicode escaped 'javascript:' minus the slashes that get sanitized out.
 				'level'      => 'Warning',
-				'note'       => 'Possible XSS Attack Vector found in HTML tag style attribute (unicode obfuscated javascript:)',
+				'note'       => 'XSS Attack Vector found in HTML tag style attribute (unicode obfuscated javascript:)',
 			),
 			'xss-in-background-attribute' => array(
 				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)background(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/imsU',
 				'match-text' => 'javascript:',
 				'level'      => 'Warning',
-				'note'       => 'Possible XSS Attack Vector found in HTML tag background attribute (javascript:)',
+				'note'       => 'XSS Attack Vector found in HTML tag background attribute (javascript:)',
 			),
 			'moz-binding-xss-in-style-tag' => array(
 				'expression' => '/<[\s]*?style(?:.*?)?>(?<MATCHTEXT>.*?)<[\s]*?\/[\s]*?[a-z]*?[\s]*?>/imsU',
@@ -128,19 +128,19 @@ class XSSVectorsCheck extends BaseCheck {
 				'expression' => '/<[\s]*?style(?:.*?)?>(?<MATCHTEXT>.*?)<[\s]*?\/[\s]*?[a-z]*?[\s]*?>/imsU',
 				'match-text' => 'expression(',
 				'level'      => 'Warning',
-				'note'       => 'XSS Attack Vector found in <style> tag  (CSS expression property)',
+				'note'       => 'XSS Attack Vector found in <style> tag (CSS expression property)',
 			),
 			'css-behavior-xss-in-style-attribute' => array(
 				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)style(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(>)/imsU',
 				'match-text' => 'behavior:',
 				'level'      => 'Warning',
-				'note'       => 'Possible XSS Attack Vector found in HTML tag style attribute (CSS behavior property)',
+				'note'       => 'XSS Attack Vector found in HTML tag style attribute (CSS behavior property)',
 			),
 			'css-behavior-xss-in-style-tag' => array(
 				'expression' => '/<[\s]*?style(?:.*?)?>(?<MATCHTEXT>.*?)<[\s]*?\/[\s]*?[a-z]*?[\s]*?>/imsU',
 				'match-text' => 'behavior:',
 				'level'      => 'Warning',
-				'note'       => 'XSS Attack Vector found in <style> tag  (CSS behavior property)',
+				'note'       => 'XSS Attack Vector found in <style> tag (CSS behavior property)',
 			),
 			'malformed-img-tag-xss-script' => array(
 				'expression' => '/<[\s]*?img(?:[^\>]*?)[\s]*?(?:\"\"\"|\\\'\\\'\\\'|\`\`\`)[\s]*?>[\s]*?(?<MATCHTEXT>.*)(?:\"|\\\'|\`)[\s]*?>/imsU',
@@ -161,7 +161,7 @@ class XSSVectorsCheck extends BaseCheck {
 				'note'       => 'XSS Attack Vector found in <img> tag (lowsrc attribute)',
 			),
 			'xss-object-type-x-scriptlet' => array(
-				'expression' => '/<[\s]*?object(?:[^\>]*?)type(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/imsUU',
+				'expression' => '/<[\s]*?object(?:[^\>]*?)type(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/imsU',
 				'match-text' => 'x-scriptlet',
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in <object> tag (x-scriptlet)',
@@ -175,7 +175,7 @@ class XSSVectorsCheck extends BaseCheck {
 					$lines = array();
 					foreach ( $matches['MATCHTEXT'] as $match ) {
 						$sanitized_string = $this->sanitize_string( $match );
-						if ( stripos( $sanitized_string, $check_info['match-text'] )  !== false ) {
+						if ( stripos( $sanitized_string, $check_info['match-text'] ) !== false ) {
 							$filename = $this->get_filename( $file_path );
 							$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
 							$this->add_error(
@@ -229,7 +229,7 @@ class XSSVectorsCheck extends BaseCheck {
 					$lines = array();
 					foreach ( $matches['MATCHTEXT'] as $match ) {
 						$sanitized_string = $this->sanitize_string( $file_content );
-						if ( stripos( $sanitized_string, $check_info['match-text'] )  !== false ) {
+						if ( stripos( $sanitized_string, $check_info['match-text'] ) !== false ) {
 							$filename = $this->get_filename( $file_path );
 							$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
 							$this->add_error(
