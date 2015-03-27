@@ -70,6 +70,12 @@ class XSSVectorsCheck extends BaseCheck {
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in HTML tag src attribute (javascript:)',
 			),
+			'xss-html-comment-obfuscated-javascript-in-any-tag-src' => array(
+				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)src(?:\s)*?=[\s]*?(?<MATCHTEXT>(?:.*)(?:<--)?(?:.*)(?:-->)(?:.*))(?=\s|=|>)/imsU',
+				'match-text' => 'javascript:',
+				'level'      => 'Warning',
+				'note'       => 'XSS Attack Vector found in HTML tag src attribute (javascript:)',
+			),
 			'xss-vbscript-in-any-tag-src' => array(
 				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)src(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/imsU',
 				'match-text' => 'vbscript:',

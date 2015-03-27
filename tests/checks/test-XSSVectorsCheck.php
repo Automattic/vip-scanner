@@ -278,7 +278,7 @@ EOT;
 			<SPAN DATASRC="#xss" DATAFLD="B" DATAFORMATAS="HTML"></SPAN>
 EOT;
 		$error_slugs = $this->runCheck( $file_contents );
-		$this->assertContains( 'xss-javascript-in-any-tag-src', $error_slugs );
+		$this->assertContains( 'xss-html-comment-obfuscated-javascript-in-any-tag-src', $error_slugs );
 	}
 
 	public function test_space_before_javascript_in_src_attr() {
