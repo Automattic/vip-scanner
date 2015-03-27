@@ -7,9 +7,14 @@ class XSSVectorsCheck extends BaseCheck {
 	function sanitize_string( $string ) {
 
 		/**
-		 * Removes comment blocks
+		 * Removes PHP/CSS comment blocks
 		 */
-		$string = preg_replace( '/(\/\(*(?:.*)?\*\/)/misU', '', $string );
+		$string = preg_replace( '/(\/\*(?:.*)?\*\/)/misU', '', $string );
+
+		/**
+		 * Removes HTML comment blocks
+		 */
+		$string = preg_replace( '/(<!--(?:.*)?-->)/misU', '', $string );
 
 		/**
 		 * Removes slashes
