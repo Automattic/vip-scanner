@@ -326,4 +326,40 @@ EOT;
 		$this->assertNotContains( 'xss-in-img-lowsrc-attr', $error_slugs );
 	}
 
+	/*
+	 * XSS less used scripting languages in any tag src attributes
+	 */
+	public function test_xss_vbscript_in_src_attr() {
+		$file_contents = <<<'EOT'
+			<IMG SRC='vbscript:msgbox("XSS")'>
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-vbscript-in-any-tag-src', $error_slugs );
+	}
+
+	public function test_xss_vbscript_not_in_src_attr() {
+		$file_contents = <<<'EOT'
+			<IMG SRC="picture.jpg">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'xss-vbscript-in-any-tag-src', $error_slugs );
+	}
+
+	public function test_xss_livescript_in_src_attr() {
+		$file_contents = <<<'EOT'
+			<IMG SRC="livescript:[code]">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-livescript-in-any-tag-src', $error_slugs );
+	}
+
+	public function test_xss_livescript_not_in_src_attr() {
+		$file_contents = <<<'EOT'
+			<IMG SRC="picture.jpg">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'xss-livescript-in-any-tag-src', $error_slugs );
+	}
+
+
 }
