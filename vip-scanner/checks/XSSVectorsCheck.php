@@ -38,6 +38,12 @@ class XSSVectorsCheck extends BaseCheck {
 		$result = true;
 
 		$checks = array(
+			'xss-in-base-tag-href' => array(
+				'expression' => '/<[\s]*?base(?:[^\>]*?)href(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/ims',
+				'match-text' => 'javascript:',
+				'level'      => 'Warning',
+				'note'       => 'XSS Attack Vector found in <base> tag href attribute (javascript:)',
+			),
 			'xss-in-link-tag-href' => array(
 				'expression' => '/<[\s]*?link(?:[^\>]*?)href(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/ims',
 				'match-text' => 'javascript:',

@@ -30,6 +30,25 @@ EOT;
 	}
 
 	/*
+	 * XSS javascript in base href tag
+	 */
+	public function test_xss_in_base_tag_href() {
+		$file_contents = <<<'EOT'
+			<BASE HREF="javascript:alert('XSS');//">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-in-base-tag-href', $error_slugs );
+	}
+
+	public function test_xss_not_in_base_tag_href() {
+		$file_contents = <<<'EOT'
+			<BASE HREF="http://www.example.com/">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'xss-in-base-tag-href', $error_slugs );
+	}
+
+	/*
 	 * XSS javascript in meta tag content attribute
 	 */
 	public function test_xss_in_meta_tag_content() {
