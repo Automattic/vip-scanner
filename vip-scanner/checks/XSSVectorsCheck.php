@@ -65,19 +65,19 @@ class XSSVectorsCheck extends BaseCheck {
 				'note'       => 'XSS Attack Vector found in <meta> tag content attribute (javascript:)',
 			),
 			'xss-javascript-in-any-tag-src' => array(
-				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)src(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/ims',
+				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)src(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/imsU',
 				'match-text' => 'javascript:',
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in HTML tag src attribute (javascript:)',
 			),
 			'xss-vbscript-in-any-tag-src' => array(
-				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)src(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/ims',
+				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)src(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/imsU',
 				'match-text' => 'vbscript:',
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in HTML tag src attribute (vbscript:)',
 			),
 			'xss-livescript-in-any-tag-src' => array(
-				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)src(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/ims',
+				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)src(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/imsU',
 				'match-text' => 'livescript:',
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in HTML tag src attribute (livescript:)',
