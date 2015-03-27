@@ -135,7 +135,7 @@ class XSSVectorsCheck extends BaseCheck {
 				'note'       => 'XSS Attack Vector found in <style> tag  (CSS behavior property)',
 			),
 			'malformed-img-tag-xss-script' => array(
-				'expression' => '/<[\s]*?img(?:[^\>]*?)[\s]*?(?:\"\"\"|\\\'\\\'\\\'|\`\`\`)[\s]*?>[\s]*?(.*)(?:\"|\\\'|\`)[\s]*?>/ims',
+				'expression' => '/<[\s]*?img(?:[^\>]*?)[\s]*?(?:\"\"\"|\\\'\\\'\\\'|\`\`\`)[\s]*?>[\s]*?(?<MATCHTEXT>.*)(?:\"|\\\'|\`)[\s]*?>/ims',
 				'match-text' => 'script',
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in malformed <img> tag (<script> tag)',
