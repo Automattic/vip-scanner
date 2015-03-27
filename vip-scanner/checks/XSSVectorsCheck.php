@@ -110,6 +110,18 @@ class XSSVectorsCheck extends BaseCheck {
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in malformed <img> tag (<script> tag)',
 			),
+			'xss-in-img-dynsrc-attr' => array(
+				'expression' => '/<[\s]*?img*(?:[^\>]*?)dynsrc(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/ims',
+				'match-text' => 'javascript:',
+				'level'      => 'Warning',
+				'note'       => 'XSS Attack Vector found in <img> tag (dynsrc attribute)',
+			),
+			'xss-in-img-lowsrc-attr' => array(
+				'expression' => '/<[\s]*?img*(?:[^\>]*?)lowsrc(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/ims',
+				'match-text' => 'javascript:',
+				'level'      => 'Warning',
+				'note'       => 'XSS Attack Vector found in <img> tag (lowsrc attribute)',
+			),
 		);
 
 		foreach ( $this->filter_files( $files, array( 'html', 'php' ) ) as $file_path => $file_content ) {

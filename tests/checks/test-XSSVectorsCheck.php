@@ -291,4 +291,39 @@ EOT;
 		$this->assertNotContains( 'xss-in-background-attribute', $error_slugs );
 	}
 
+	/*
+	 * XSS javascript in img tag rarely used attributes
+	 */
+	public function test_xss_in_img_dynsrc_attr() {
+		$file_contents = <<<'EOT'
+			<IMG DYNSRC="javascript:alert('XSS')">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-in-img-dynsrc-attr', $error_slugs );
+	}
+
+	public function test_xss_not_in_img_dynsrc_attr() {
+		$file_contents = <<<'EOT'
+			<IMG DYNSRC="movie.mpg" SRC="movie.gif">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'xss-in-img-dynsrc-attr', $error_slugs );
+	}
+
+	public function test_xss_in_img_lowsrc_attr() {
+		$file_contents = <<<'EOT'
+			<IMG LOWSRC="javascript:alert('XSS')">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-in-img-lowsrc-attr', $error_slugs );
+	}
+
+	public function test_xss_not_in_img_lowsrc_attr() {
+		$file_contents = <<<'EOT'
+			<IMG LOWSRC="picsmall.jpg" SRC="picregular.jpg">
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'xss-in-img-lowsrc-attr', $error_slugs );
+	}
+
 }
