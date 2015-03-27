@@ -76,6 +76,18 @@ class XSSVectorsCheck extends BaseCheck {
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in HTML tag src attribute (javascript:)',
 			),
+			'xss-whitespace-and-javascript-in-any-tag-src' => array(
+				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)src(?:\s)*?=[\s]*?(?<MATCHTEXT>(?:[\s]*)?.*(?:[\s]*)?)(?=\=|>)/imsU',
+				'match-text' => 'javascript:',
+				'level'      => 'Warning',
+				'note'       => 'XSS Attack Vector found in HTML tag src attribute (javascript:)',
+			),
+			'xss-whitespace-obfuscated-javascript-in-any-tag-src' => array(
+				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)src(?:\s)*?=[\s]*?(?<MATCHTEXT>(?:[\s]*)?(?:.*)j(?:[\s]*)?a(?:[\s]*)?v(?:[\s]*)?a(?:[\s]*)?s(?:[\s]*)?c(?:[\s]*)?r(?:[\s]*)?i(?:[\s]*)?p(?:[\s]*)?t(?:[\s]*)?:(?:.*)(?:[\s]*)?)(?=\=|>)/imsU',
+				'match-text' => 'javascript:',
+				'level'      => 'Warning',
+				'note'       => 'XSS Attack Vector found in HTML tag src attribute (javascript:)',
+			),
 			'xss-vbscript-in-any-tag-src' => array(
 				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)src(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/imsU',
 				'match-text' => 'vbscript:',

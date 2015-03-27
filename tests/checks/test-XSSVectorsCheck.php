@@ -286,7 +286,7 @@ EOT;
 			<IMG SRC="   javascript:alert('XSS');">
 EOT;
 		$error_slugs = $this->runCheck( $file_contents );
-		$this->assertContains( 'xss-javascript-in-any-tag-src', $error_slugs );
+		$this->assertContains( 'xss-whitespace-and-javascript-in-any-tag-src', $error_slugs );
 	}
 
 	public function test_space_and_metachar_before_javascript_in_src_attr() {
@@ -294,7 +294,7 @@ EOT;
 			<IMG SRC=" &#14;  javascript:alert('XSS');">
 EOT;
 		$error_slugs = $this->runCheck( $file_contents );
-		$this->assertContains( 'xss-javascript-in-any-tag-src', $error_slugs );
+		$this->assertContains( 'xss-whitespace-and-javascript-in-any-tag-src', $error_slugs );
 	}
 
 	public function test_tab_javascript_in_src_attr() {
@@ -302,7 +302,7 @@ EOT;
 			<IMG SRC="jav	ascript:alert('XSS');">
 EOT;
 		$error_slugs = $this->runCheck( $file_contents );
-		$this->assertContains( 'xss-javascript-in-any-tag-src', $error_slugs );
+		$this->assertContains( 'xss-whitespace-obfuscated-javascript-in-any-tag-src', $error_slugs );
 	}
 
 	public function test_encoded_tab_javascript_in_src_attr() {
