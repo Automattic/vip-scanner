@@ -152,6 +152,12 @@ class XSSVectorsCheck extends BaseCheck {
 				'level'      => 'Warning',
 				'note'       => 'XSS Attack Vector found in <img> tag (lowsrc attribute)',
 			),
+			'xss-object-type-x-scriptlet' => array(
+				'expression' => '/<[\s]*?object(?:[^\>]*?)type(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/ims',
+				'match-text' => 'x-scriptlet',
+				'level'      => 'Warning',
+				'note'       => 'XSS Attack Vector found in <object> tag (x-scriptlet)',
+			),
 		);
 
 		foreach ( $this->filter_files( $files, array( 'html', 'php' ) ) as $file_path => $file_content ) {

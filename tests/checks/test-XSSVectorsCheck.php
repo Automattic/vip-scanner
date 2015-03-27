@@ -415,5 +415,23 @@ EOT;
 		$this->assertNotContains( 'xss-livescript-in-any-tag-src', $error_slugs );
 	}
 
+	/*
+	 * XSS Object type x-scriptlet
+	 */
+	public function test_xscript_in_object_tag() {
+		$file_contents = <<<'EOT'
+			<OBJECT TYPE="text/x-scriptlet" DATA="http://ha.ckers.org/scriptlet.html"></OBJECT>
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertContains( 'xss-object-type-x-scriptlet', $error_slugs );
+	}
+
+	public function test_xscript_not_in_object_tag() {
+		$file_contents = <<<'EOT'
+			<OBJECT TYPE="application/vnd.adobe.flash-movie" DATA="example.swf"></OBJECT>
+EOT;
+		$error_slugs = $this->runCheck( $file_contents );
+		$this->assertNotContains( 'xss-object-type-x-scriptlet', $error_slugs );
+	}
 
 }
