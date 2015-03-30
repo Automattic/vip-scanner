@@ -137,7 +137,9 @@ class VIPRestrictedCommandsTest extends CheckTestBase {
 			'create_function',
 			'extract',
 			'ini_set',
-			'wp_is_mobile'
+			'wp_is_mobile',
+			'serialize',
+			'unserialize',
 		);
 
 		$this->checkCommands( $restricted_commands );
