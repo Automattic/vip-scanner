@@ -28,7 +28,7 @@ class URISchemeCheck extends BaseCheck
 			'hardcoded-http-scheme' => array(
 				'expression' => '/(?<MATCHTEXT>(http):\/\/([\da-z\.-]+[a-z\.]{2,6})(?:[\/\w \.-]*)*)/msi',
 				'level'      => 'Warning',
-				'note'       => 'Hardcoded HTTP',
+				'note'       => 'Hardcoded URL Scheme.  To prevent "Mixed Content" security warnings, it may be better to use <a href="http://en.wikipedia.org/wiki/Uniform_resource_locator#Protocol-relative_URLs">Protocol-Relative URLs</a>',
 			),
 		);
 
