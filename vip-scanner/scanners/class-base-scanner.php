@@ -10,7 +10,7 @@ class BaseScanner {
 	public $analyzers = array();
 	public $total_checks = 0;
 	public $errors = array();
-	public $renderers = array();
+	public $elements = array();
 	public $stats = array();
 	//recognized extensions
 	public $known_extensions = array(
@@ -218,7 +218,13 @@ class BaseScanner {
 
 			if ( true === isset( $this->files['php'] ) && true === is_array( $this->files['php'] ) ) {
 				foreach ( $this->files['php'] as $filepath => $filecontents ) {
-					$analyzed_files[] = new AnalyzedPHPFile( $filepath, $filecontents );
+					try {
+						$analyzed_files[] = new AnalyzedPHPFile( $filepath, $filecontents );
+					} catch ( PhpParser\Error $error ) {
+						$line_no = $error->getRawLine() - 1;
+						$lines = array( BaseCheck::get_line( $line_no, $filecontents ) );
+						$this->add_error( 'parse-error', esc_html( $error->getMessage() ), 'blocker', basename( $filepath ), $lines );
+					}
 				}
 			}
 			
@@ -266,7 +272,7 @@ class BaseScanner {
 			} elseif ( 'analyzers' === $type && $check instanceof BaseAnalyzer ) {
 				$check->set_scanner( $this );
 				$check->analyze( $analyzed_files );
-				$this->renderers = array_merge( $check->get_renderers(), $this->renderers );
+				$this->elements = array_merge( $check->get_elements(), $this->elements );
 				$this->stats = array_merge( $check->get_stats(), $this->stats );
 			}
 		}

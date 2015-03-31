@@ -265,22 +265,24 @@ class VIP_Scanner_UI {
 			<div id="analysis-accordion">
 				<?php 
 				$empty = array();
-				foreach ( $scanner->renderers as $renderer ) {
-					if ( $renderer->name() !== 'Files' ) {
-						$renderer->analyze_prefixes();
+				foreach ( $scanner->elements as $element ) {
+					if ( $element->name() !== 'Files' ) {
+						$element->analyze_prefixes();
 					}
 					
-					// Display empty renderers after the others
-					if ( $renderer->is_empty() ) {
-						$empty[] = $renderer;
+					// Display empty elements after the others
+					if ( $element->is_empty() ) {
+						$empty[] = $element;
 						continue;
 					}
 
-					$renderer->display();
+					$r = new ElementRenderer( $element );
+					$r->display();
 				}
 				
-				foreach ( $empty as $renderer ) {
-					$renderer->display();
+				foreach ( $empty as $element ) {
+					$r = new ElementRenderer( $element );
+					$r->display();
 				}
 				
 				?>

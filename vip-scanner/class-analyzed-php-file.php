@@ -4,9 +4,24 @@ class AnalyzedPHPFile extends AnalyzedFile {
 	protected $filepath = '';
 	protected $filecontents = '';
 	protected $processed_file_contents = '';
+	/*
+	 * @var PhpParser\Parser\Node[]
+	 */
+	protected $node_tree;
+
+	/**
+	 * Return the abstract syntax tree for this PHP file
+	 *
+	 * @return PhpParser\Parser\Node[]
+	 */
+	public function get_node_tree() {
+		return $this->node_tree;
+	}
 
 	/**
 	 * Analyzes this file.
+	 *
+	 * @throws PhpParser\Error if the file cannot be parsed.
 	 */
 	protected function analyze_file() {
 		// Load the contents of the file
@@ -19,60 +34,17 @@ class AnalyzedPHPFile extends AnalyzedFile {
 		}
 
 		// Parse the tokens
-		require_once( VIP_SCANNER_DIR . '/class-token-parser.php' );
-		$parser = new TokenParser();
-		$items = $parser->parse_contents( $this->filecontents );
+		$parser = new PhpParser\Parser( new PhpParser\Lexer );
+		$this->node_tree = $parser->parse( $this->filecontents );
 
-		// Parse the items
-		$this->hierarchy_elements = array();
-		$this->parse_token_results( $items );
+		// Pre-process the parsed elements for further usage
+		$traverser = new PhpParser\NodeTraverser;
+		$traverser->addVisitor( new ScopeVisitor );
+		$traverser->addVisitor( new InAssignmentVisitor );
+		$this->node_tree = $traverser->traverse( $this->node_tree );
 	}
 
 	protected function get_strings_and_comments_regexes() {
 		return array();
-	}
-
-	private function parse_token_results( $items ) {
-		foreach ( $items as $item ) {
-			$type = '';
-			switch ( $item['type'] ) {
-				case 'class':
-					$type = 'classes';
-					break;
-
-				case 'const':
-					$type = 'constants';
-					break;
-
-				default:
-					$type = $item['type'] . 's';
-			}
-
-			if ( !isset( $this->hierarchy_elements[$type] ) ) {
-				$this->hierarchy_elements[$type] = array();
-			}
-
-			if ( !isset( $this->hierarchy_elements[$type][$item['path']] ) ) {
-				$this->hierarchy_elements[$type][$item['path']] = array();
-			}
-
-			// There's a chance for duplicate items that are significant. Ie: two calls to one function within a block of code.
-			if ( isset( $this->hierarchy_elements[$type][$item['path']][$item['name']] ) ) {
-				if ( isset( $this->hierarchy_elements[$type][$item['path']][$item['name']][0] ) ) {
-					$this->hierarchy_elements[$type][$item['path']][$item['name']][] = $item;
-				} else {
-					$this->hierarchy_elements[$type][$item['path']][$item['name']] = array(
-						$this->hierarchy_elements[$type][$item['path']][$item['name']],
-						$item,
-					);
-				}
-			} else {
-				$this->hierarchy_elements[$type][$item['path']][$item['name']] = $item;
-			}
-
-			if ( !empty( $item['children'] ) ) {
-				$this->parse_token_results( $item['children'] );
-			}
-		}
 	}
 }

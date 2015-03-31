@@ -8,6 +8,23 @@ define( 'VIP_SCANNER_CHECKS_DIR', VIP_SCANNER_DIR . '/checks' );
 define( 'VIP_SCANNER_ANALYZERS_DIR', VIP_SCANNER_DIR . '/analyzers' );
 define( 'VIP_SCANNER_BIN_DIR', VIP_SCANNER_DIR . '/bin' );
 
+define( 'PHP_PARSER_BOOTSTRAP', VIP_SCANNER_DIR . '/../vendor/PHP-Parser/lib/bootstrap.php' );
+
+register_activation_hook( dirname( VIP_SCANNER_DIR ) . '/vip-scanner.php', function() {
+	if ( ! file_exists( PHP_PARSER_BOOTSTRAP ) ) {
+		wp_die( 'VIP-Scanner could not find PHP-Parser, which it requires to run. ' .
+				'Please refer to the "Requirements" section in readme.md.' );
+	}
+} );
+
+// Has PHP-Parser been already loaded, e.g. by another plugin?
+if ( class_exists( 'PhpParser\Parser' ) ) {
+	wp_die( 'A PHP-Parser instance was loaded before VIP-scanner. ' .
+			'If another plugin uses PHP-Parser, please deactivate it.' );
+} elseif ( file_exists( PHP_PARSER_BOOTSTRAP ) ) {
+	require_once PHP_PARSER_BOOTSTRAP;
+}
+
 require_once( VIP_SCANNER_DIR . '/config-vip-scanner.php' );
 
 spl_autoload_register( function( $class_name ) {
@@ -18,7 +35,7 @@ spl_autoload_register( function( $class_name ) {
 		'VIP_Scanner_Async' => 'vip-scanner-async.php',
 		'AnalyzedPHPFile'   => 'class-analyzed-php-file.php',
 		'AnalyzedCSSFile'   => 'class-analyzed-css-file.php',
-		'RendererGroup'     => 'renderers/class-renderer-group.php',
+		'ElementGroup'      => 'elements/class-element-group.php',
 	);
 
 	if ( array_key_exists( $class_name, $other ) ) {

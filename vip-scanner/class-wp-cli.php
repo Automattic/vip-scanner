@@ -139,22 +139,24 @@ class VIPScanner_Command extends WP_CLI_Command {
 			'depth' => intval( $args['depth'] ),
 		);
 
-		foreach ( $scanner->renderers as $renderer ) {
-			// Display empty renderers after the others
-			if ( $renderer->is_empty() ) {
-				$empty[] = $renderer;
+		foreach ( $scanner->elements as $element ) {
+			// Display empty elements after the others
+			if ( $element->is_empty() ) {
+				$empty[] = $element;
 				continue;
 			}
 
-			if ( $renderer->name() !== 'Files' ) {
-				$renderer->analyze_prefixes();
+			if ( $element->name() !== 'Files' ) {
+				$element->analyze_prefixes();
 			}
 
-			WP_CLI::line( $renderer->display( false, $display_args ) );
+			$r = new ElementRenderer( $element );
+			WP_CLI::line( $r->display( false, $display_args ) );
 		}
 
-		foreach ( $empty as $renderer ) {
-			$renderer->display( true, $display_args );
+		foreach ( $empty as $element ) {
+			$r = new ElementRenderer( $element );
+			$r->display( true, $display_args );
 		}
 	}
 

@@ -1,22 +1,54 @@
 <?php
 
-class RendererGroup extends AnalyzerRenderer {
+class ElementGroup extends BaseElement {
+
+	/**
+	 * @var array<BaseElement>
+	 */
+	protected $children = array();
 	protected $singular = '';
-	protected $analyzed_prefixes = null;
+	protected $plural = '';
+	protected $analyzed_prefixes = array();
 	protected $prefixes = null;
 	protected $num_prefixes = 0;
 			
 	function __construct( $plural, $singular, $attributes = array() ) {
-		parent::__construct( $plural, $attributes );
 		$this->singular = $singular;
+		$this->plural   = $plural;
+		$this->name     = $plural;
 	}
 
-	function display_header() {
-		return sprintf( 
-			'%s (%s)',
-			$this->stylize_text( esc_html( ucwords( $this->name() ) ), array( 'bold' => true, 'classes' => array( 'renderer-class-name' ) ) ),
-			empty( $this->children ) ? '0' : esc_html( $this->get_child_summary() )
+	/**
+	 * Get the building blocks of the header to display
+	 * @return array of arrays with 'content' and 'style' keys
+	 */
+	function get_header() {
+		return array(
+			array(
+				'content' => esc_html( ucwords( $this->name() ) ),
+				'style'   => array(
+					'bold' => true,
+					'classes' => array( 'renderer-class-name' ),
+				)
+			)
 		);
+	}
+
+	/**
+	 * Get this element's children.
+	 * @return array<BaseElement>
+	 */
+	function get_children() {
+		if ( $this->num_prefixes !== 0 ) {
+			foreach ( $this->children as $child ) {
+				$name = $child->name();
+				if ( array_key_exists( $name, $this->analyzed_prefixes ) ) {
+					$no = array_search( $this->analyzed_prefixes[ $name ], $this->prefixes );
+					$child->set_prefix( $this->analyzed_prefixes[ $name ], array( 'color' => 'randomcolor' . $no ) );
+				}
+			}
+		}
+		return $this->children;
 	}
 
 	/**
@@ -77,6 +109,7 @@ class RendererGroup extends AnalyzerRenderer {
 				}
 			}
 		}
+		return $this->num_prefixes;
 	}
 
 	/**
@@ -99,41 +132,5 @@ class RendererGroup extends AnalyzerRenderer {
 		}
 
 		return implode( '', $common );
-	}
-
-	/**
-	 * Generates $numColors random colours. Used to highlight prefixes.
-	 * @param int $numColors
-	 * @return array
-	 */
-	function randColor( $numColors ) {
-		if ( $this->display_args['bare'] ) {
-			$code = 0;
-			$keys = array_keys( $this->bash_color_codes );
-			$numColors = count( $keys );
-			$codes = array();
-			
-			for ( $i = 0; $i < $numColors; $i++ ) {
-				$codes[] = $keys[$code++ % $numColors];
-//				$code[] = $keys[1];
-			}
-			
-			return $codes;
-		} else {
-			$base = array( 200, 200, 200 );
-			$str = array();
-
-			for( $i = 0; $i < $numColors; $i++ ) {
-				$colour = array(
-					( $base[0] + rand( 0, 255 ) ) / 2,
-					( $base[1] + rand( 0, 255 ) ) / 2,
-					( $base[2] + rand( 0, 255 ) ) / 2,
-				);
-
-				$str[$i] = sprintf( 'rgb( %d, %d, %d )', $colour[0], $colour[1], $colour[2] );
-			}
-		}
-
-		return $str;
 	}
 }
