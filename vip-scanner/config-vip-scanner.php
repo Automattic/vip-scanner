@@ -73,6 +73,7 @@ VIP_Scanner::get_instance()->register_review( 'VIP Theme Review', array(
 	'WordPressCodingStandardsCheck',
 	'ClamAVCheck', // Pass null to lookup the check normally
 	'AdBustersCheck',
+	'URISchemeCheck',
 ), array(
 	'PHPAnalyzer',
 	'CustomResourceAnalyzer',
