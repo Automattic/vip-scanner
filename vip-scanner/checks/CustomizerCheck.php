@@ -50,23 +50,29 @@ class CustomizerCheck extends CodeCheck {
 				}
 
 				foreach( $args->items as $arg ) {
-					if ( $arg->key instanceof PhpParser\Node\Scalar\String ) {
-						$key = $arg->key->value;
-						// Check if we have sanitize_callback or sanitize_js_callback
-						if ( 'sanitize_callback' === $key || 'sanitize_js_callback' === $key ) {
-							$found_sanitize_callback = true;
-							// There's a callback, check that no empty parameter is passed.
-							if ( $arg->value instanceof PhpParser\Node\Scalar\String ) {
-								$value = trim( $arg->value->value );
-								if ( empty( $value ) ) {
-									$this->add_error(
-										'customizer',
-										'Found a Customizer setting that had an empty value passed as sanitization callback. You need to pass a function name as sanitization callback.',
-										BaseScanner::LEVEL_BLOCKER
-									);
-								}
-							}
-						}
+					if ( ! $arg->key instanceof PhpParser\Node\Scalar\String ) {
+						continue;
+					}
+
+					$key = $arg->key->value;
+					// Check if we have sanitize_callback or sanitize_js_callback
+					if ( 'sanitize_callback' !== $key && 'sanitize_js_callback' !== $key ) {
+						continue;
+					}
+
+					$found_sanitize_callback = true;
+					// There's a callback, check that no empty parameter is passed.
+					if ( ! $arg->value instanceof PhpParser\Node\Scalar\String ) {
+						continue;
+					}
+
+					$value = trim( $arg->value->value );
+					if ( empty( $value ) ) {
+						$this->add_error(
+							'customizer',
+							'Found a Customizer setting that had an empty value passed as sanitization callback. You need to pass a function name as sanitization callback.',
+							BaseScanner::LEVEL_BLOCKER
+						);
 					}
 				}
 				if ( ! $found_sanitize_callback ) {
