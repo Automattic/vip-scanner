@@ -50,19 +50,19 @@ class XSSVectorsCheck extends BaseCheck {
 				'expression' => '/<[\s]*?base(?:[^\>]*?)href(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/imsU',
 				'match-text' => 'javascript:',
 				'level'      => 'Warning',
-				'note'       => 'XSS Attack Vector found in <base> tag href attribute (javascript:)',
+				'note'       => esc_html( 'XSS Attack Vector found in <base> tag href attribute (javascript:)' ),
 			),
 			'xss-in-link-tag-href' => array(
 				'expression' => '/<[\s]*?link(?:[^\>]*?)href(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/imsU',
 				'match-text' => 'javascript:',
 				'level'      => 'Warning',
-				'note'       => 'XSS Attack Vector found in <link> tag href attribute (javascript:)',
+				'note'       =>  esc_html( 'XSS Attack Vector found in <link> tag href attribute (javascript:)' ),
 			),
 			'xss-in-meta-tag-content' => array(
 				'expression' => '/<[\s]*?meta(?:[^\>]*?)content(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=>)/imsU',
 				'match-text' => 'javascript:',
 				'level'      => 'Warning',
-				'note'       => 'XSS Attack Vector found in <meta> tag content attribute (javascript:)',
+				'note'       =>  esc_html( 'XSS Attack Vector found in <meta> tag content attribute (javascript:)' ),
 			),
 			'xss-javascript-in-any-tag-src' => array(
 				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)src(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/imsU',
@@ -104,7 +104,7 @@ class XSSVectorsCheck extends BaseCheck {
 				'expression' => '/<[\s]*?style(?:.*?)?>(?<MATCHTEXT>.*?)<[\s]*?\/[\s]*?[a-z]*?[\s]*?>/imsU',
 				'match-text' => 'javascript:',
 				'level'      => 'Warning',
-				'note'       => 'XSS Attack Vector found in <style> tag (javascript:)',
+				'note'       =>  esc_html( 'XSS Attack Vector found in <style> tag (javascript:)' ),
 			),
 			'xss-javascript-in-style-attribute' => array(
 				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)style(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(>)/imsU',
@@ -128,7 +128,7 @@ class XSSVectorsCheck extends BaseCheck {
 				'expression' => '/<[\s]*?style(?:.*?)?>(?<MATCHTEXT>.*?)<[\s]*?\/[\s]*?[a-z]*?[\s]*?>/imsU',
 				'match-text' => '-moz-binding',
 				'level'      => 'Warning',
-				'note'       => 'XSS Attack Vector found in <style> tag (-moz-binding)',
+				'note'       =>  esc_html( 'XSS Attack Vector found in <style> tag (-moz-binding)' ),
 			),
 			'moz-binding-xss-in-style-attribute' => array(
 				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)style(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(>)/imsU',
@@ -146,7 +146,7 @@ class XSSVectorsCheck extends BaseCheck {
 				'expression' => '/<[\s]*?style(?:.*?)?>(?<MATCHTEXT>.*?)<[\s]*?\/[\s]*?[a-z]*?[\s]*?>/imsU',
 				'match-text' => 'expression(',
 				'level'      => 'Warning',
-				'note'       => 'XSS Attack Vector found in <style> tag (CSS expression property)',
+				'note'       =>  esc_html( 'XSS Attack Vector found in <style> tag (CSS expression property)' ),
 			),
 			'css-behavior-xss-in-style-attribute' => array(
 				'expression' => '/<[\s]*?[a-z]*(?:[^\>]*?)style(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(>)/imsU',
@@ -158,31 +158,31 @@ class XSSVectorsCheck extends BaseCheck {
 				'expression' => '/<[\s]*?style(?:.*?)?>(?<MATCHTEXT>.*?)<[\s]*?\/[\s]*?[a-z]*?[\s]*?>/imsU',
 				'match-text' => 'behavior:',
 				'level'      => 'Warning',
-				'note'       => 'XSS Attack Vector found in <style> tag (CSS behavior property)',
+				'note'       =>  esc_html( 'XSS Attack Vector found in <style> tag (CSS behavior property)' ),
 			),
 			'malformed-img-tag-xss-script' => array(
 				'expression' => '/<[\s]*?img(?:[^\>]*?)[\s]*?(?:\"\"\"|\\\'\\\'\\\'|\`\`\`)[\s]*?>[\s]*?(?<MATCHTEXT>.*)(?:\"|\\\'|\`)[\s]*?>/imsU',
 				'match-text' => 'script',
 				'level'      => 'Warning',
-				'note'       => 'XSS Attack Vector found in malformed <img> tag (<script> tag)',
+				'note'       =>  esc_html( 'XSS Attack Vector found in malformed <img> tag (<script> tag)' ),
 			),
 			'xss-in-img-dynsrc-attr' => array(
 				'expression' => '/<[\s]*?img*(?:[^\>]*?)dynsrc(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/imsU',
 				'match-text' => 'javascript:',
 				'level'      => 'Warning',
-				'note'       => 'XSS Attack Vector found in <img> tag (dynsrc attribute)',
+				'note'       =>  esc_html( 'XSS Attack Vector found in <img> tag (dynsrc attribute)' ),
 			),
 			'xss-in-img-lowsrc-attr' => array(
 				'expression' => '/<[\s]*?img*(?:[^\>]*?)lowsrc(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/imsU',
 				'match-text' => 'javascript:',
 				'level'      => 'Warning',
-				'note'       => 'XSS Attack Vector found in <img> tag (lowsrc attribute)',
+				'note'       =>  esc_html( 'XSS Attack Vector found in <img> tag (lowsrc attribute)' ),
 			),
 			'xss-object-type-x-scriptlet' => array(
 				'expression' => '/<[\s]*?object(?:[^\>]*?)type(?:\s)*?=[\s]*?(?<MATCHTEXT>.*)(?=\s|=|>)/imsU',
 				'match-text' => 'x-scriptlet',
 				'level'      => 'Warning',
-				'note'       => 'XSS Attack Vector found in <object> tag (x-scriptlet)',
+				'note'       =>  esc_html( 'XSS Attack Vector found in <object> tag (x-scriptlet)' ),
 			),
 		);
 

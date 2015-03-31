@@ -313,7 +313,7 @@ class VIP_Scanner_UI {
 
 		?>
 		<li class="scan-result-<?php echo strtolower( $level ); ?>">
-			<span class="scan-description"><?php echo esc_html( $description ); ?></span>
+			<span class="scan-description"><?php echo $description; ?></span>
 
 			<?php if( ! empty( $file ) ) : ?>
 				<span class="scan-file">
