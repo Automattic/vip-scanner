@@ -32,7 +32,7 @@ class URISchemeCheck extends BaseCheck
 			),
 		);
 
-		foreach ( $this->filter_files( $files,'css' ) as $file_path => $file_content ) {
+		foreach ( $this->filter_files( $files,array( 'css', 'js' ) ) as $file_path => $file_content ) {
 			foreach ( $checks as $check => $check_info ) {
 				$this->increment_check_count();
 				$sanitized_string = $this->sanitize_string( $file_content );
