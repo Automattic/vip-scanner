@@ -27,8 +27,10 @@ if ( class_exists( 'PhpParser\Parser' ) ) {
 	wp_die( 'VIP-Scanner could not find PHP-Parser, which it requires to run. ' .
 	        'Please refer to the "Requirements" section in readme.md. <br>(tl;dr
 	        You probably need to run "git submodule update --init --recursive" 
-	        to fetch the PHP-Parser submodule that is now required. ) ' );
+	        inside the vip-scanner folder in the plugins directory to fetch 
+	        the PHP-Parser submodule that is now required. ) ' );
 }
+
 require_once( VIP_SCANNER_DIR . '/config-vip-scanner.php' );
 
 spl_autoload_register( function( $class_name ) {
