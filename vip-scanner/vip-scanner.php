@@ -23,8 +23,12 @@ if ( class_exists( 'PhpParser\Parser' ) ) {
 			'If another plugin uses PHP-Parser, please deactivate it.' );
 } elseif ( file_exists( PHP_PARSER_BOOTSTRAP ) ) {
 	require_once PHP_PARSER_BOOTSTRAP;
+}else{
+	wp_die( 'VIP-Scanner could not find PHP-Parser, which it requires to run. ' .
+	        'Please refer to the "Requirements" section in readme.md. <br>(tl;dr
+	        You probably need to run "git submodule update --init --recursive" 
+	        to fetch the PHP-Parser submodule that is now required. ) ' );
 }
-
 require_once( VIP_SCANNER_DIR . '/config-vip-scanner.php' );
 
 spl_autoload_register( function( $class_name ) {
