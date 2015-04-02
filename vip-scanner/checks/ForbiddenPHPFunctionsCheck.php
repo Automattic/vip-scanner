@@ -3,15 +3,9 @@
  * Checks for the usage of forbidden PHP functions.
  */
 
-class ForbiddenPHPFunctionsCheck extends BaseCheck {
+class ForbiddenPHPFunctionsCheck extends CodeCheck {
 
-	function check( $files ) {
-
-		$this->increment_check_count();
-		$result = true;
-
-		$checks = array(
-			'eval',
+	protected static $forbidden_php_functions = array(
 			'popen',
 			'proc_open',
 			'exec',
@@ -25,30 +19,27 @@ class ForbiddenPHPFunctionsCheck extends BaseCheck {
 			'ini_set',
 			'create_function',
 			'extract',
-		);
+	);
 
-		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
-
-			foreach ( $checks as $check ) {
-				
-				/**
-				 * Before a function, there's either a start of a line, whitespace, . or (
-				 */
-				if ( preg_match( '/(?:^|[\s\.\(])' . $check . '\(/m', $file_content, $matches ) ) {
-					$forbidden_function = trim( rtrim( $matches[0], '(' ) );
-
+	function __construct() {
+		parent::__construct( array(
+			'PhpParser\Node\Expr\Eval_' => function( $node ) {
+				$this->add_error(
+					'forbidden-php',
+					sprintf( 'The PHP function %s was found. Themes cannot use this function.', '<code>eval()</code>' ),
+					'blocker'
+				);
+			},
+			'PhpParser\Node\Expr\FuncCall' => function( $node ) {
+				$name = $node->name->toString();
+				if ( in_array( $name, self::$forbidden_php_functions ) ) {
 					$this->add_error(
 						'forbidden-php',
-						'The PHP function <code>' . esc_html( $forbidden_function ) . '()</code> was found. Themes cannot use this function.',
-						BaseScanner::LEVEL_BLOCKER,
-						$this->get_filename( $file_path )
+						sprintf( 'The PHP function %s was found. Themes cannot use this function.', '<code>' . $name . '()</code>' ),
+						'blocker'
 					);
-					$result = false;
 				}
-			}
-
-		}
-
-		return $result;
+			},
+		) );
 	}
 }

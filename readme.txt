@@ -17,6 +17,8 @@ This plugin is based on code from the <a href="http://wordpress.org/extend/plugi
 
 == Requirements ==
 
+VIP Scanner requires PHP >= 5.4.
+
 For parsing PHP files, VIP Scanner uses [PHP-Parser](https://github.com/nikic/PHP-Parser),
 which it includes as a git submodule. When cloning VIP Scanner's git repo, use
 the `--recursive` parameter to include PHP-Parser, i.e.

@@ -10,6 +10,11 @@ abstract class CodeCheckTestBase extends CheckTestBase {
 	 */
 	protected function checkFile( $filename ) {
 		$file = $this->loadFile( $filename );
+
+		if ( $this->check instanceof CodeCheck ) {
+			$file = array( new AnalyzedPhpFile( $filename, $file['php'][0] ) );
+		}
+
 		$this->assertFalse( $this->check->check( $file ) );
 		return $this->check->get_errors();
 	}

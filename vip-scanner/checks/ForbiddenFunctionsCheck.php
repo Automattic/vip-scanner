@@ -10,36 +10,30 @@
  * query_posts()
  */
 
-class ForbiddenFunctionsCheck extends BaseCheck {
+class ForbiddenFunctionsCheck extends CodeCheck {
 
-	function check( $files ) {
-		$result = true;
+	protected static $forbidden_functions = array(
+		'register_post_type',
+		'register_taxonomy',
+		'add_shortcode',
+		'add_meta_box',
+		'add_help_tab',
+		'query_posts',
+		'get_children',
+	);
 
-		$forbidden_functions = array(
-			'register_post_type',
-			'register_taxonomy',
-			'add_shortcode',
-			'add_meta_box',
-			'add_help_tab',
-			'query_posts',
-			'get_children',
-		);
-
-		$php = $this->merge_files( $files, 'php' );
-
-
-		foreach ( $forbidden_functions as $function ) {
-			$this->increment_check_count();
-
-			if ( false !== strpos( $php, $function ) ) {
-				$this->add_error(
-					'forbidden-function',
-					sprintf( 'The function %s was found in the theme. Themes cannot use this function, please remove it.', '<code>' . $function . '</code>' ),
-					'blocker'
-				);
-				$result = false;
+	function __construct() {
+		parent::__construct( array(
+			'PhpParser\Node\Expr\FuncCall' => function( $node ) {
+				$name = $node->name->toString();
+				if ( in_array( $name, self::$forbidden_functions ) ) {
+					$this->add_error(
+						'forbidden-function',
+						sprintf( 'The function %s was found in the theme. Themes cannot use this function, please remove it.', '<code>' . $name . '</code>' ),
+						BaseScanner::LEVEL_BLOCKER
+					);
+				}
 			}
-		}
-		return $result;
+		) );
 	}
 }

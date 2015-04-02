@@ -5,40 +5,29 @@
  * TEMPLATEPATH
  */
 
-class DeprecatedConstantsCheck extends BaseCheck {
+class DeprecatedConstantsCheck extends CodeCheck {
 
-	function check( $files ) {
-		$result = true;
-		$this->increment_check_count();
+	protected static $deprecated_constants = array(
+		'STYLESHEETPATH' => 'get_stylesheet_directory()',
+		'TEMPLATEPATH'   => 'get_template_directory()',
+	);
 
-		$checks = array(
-			'STYLESHEETPATH' => 'get_stylesheet_directory()',
-			'TEMPLATEPATH'   => 'get_template_directory()',
-		);
-
-		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
-
-			foreach ( $checks as $check => $replacement ) {
-				
-				/**
-				 * Before a constant, there's either a start of a line, whitespace, . or (
-				 * This is to avoid false positives.
-				 */
-				if ( preg_match( '/(?:^|[\s\.\(])' . $check . '/m', $file_content, $matches ) ) {
-					$deprecated = trim( $matches[0] );
-
+	function __construct() {
+		parent::__construct( array(
+			'PhpParser\Node\Expr\ConstFetch' => function( $node ) {
+				$name = $node->name->toString();
+				if ( array_key_exists( $name, self::$deprecated_constants ) ) {
 					$this->add_error(
 						'deprecated',
-						'The constant <code>' . esc_html( $deprecated ) . '</code> is deprecated. Use <code>' . esc_html( $replacement ) . '</code> instead.',
-						BaseScanner::LEVEL_BLOCKER,
-						$this->get_filename( $file_path )
+						sprintf(
+							'The constant %1$s is deprecated. Use %2$s instead.',
+							'<code>' . esc_html( $name ) . '</code>',
+							'<code>' . esc_html( self::$deprecated_constants[ $name ] ) . '</code>'
+						),
+						BaseScanner::LEVEL_BLOCKER
 					);
-					$result = false;
 				}
 			}
-
-		}
-
-		return $result;
+		) );
 	}
 }

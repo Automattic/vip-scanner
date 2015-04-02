@@ -6,97 +6,71 @@
  * Parameter value will be matched with or without quotes
  * (e.g. 5, '5' will match 5 or 5, 'false' with match 'false' and false)
  */
-class VIPParametersCheck extends BaseCheck {
 
-	function check( $files ) {
-		$result = true;
-		$this->increment_check_count();
-
-		$checks = array(
-			'wpcom_vip_load_plugin' => array(
-				array(
-					'value'    => 'breadcrumb-navxt',
+class VIPParametersCheck extends CodeCheck {
+	protected static $parameters = array(
+		'wpcom_vip_load_plugin' => array(
+				'breadcrumb-navxt' => array(
 					'position' => 0,
 					'level'    => 'warning',
 					'note'     => 'Deprecated VIP Plugin. Use breadcrumb-navxt-39 instead.'
 				),
-				array(
-					'value'    => 'livefyre',
+				'livefyre' => array(
 					'position' => 0,
 					'level'    => 'warning',
 					'note'     => 'Deprecated VIP Plugin. Use livefyre3 instead.'
 				),
-				array(
-					'value'    => 'feedwordpress',
+				'feedwordpress' => array(
 					'position' => 0,
 					'level'    => 'blocker',
 					'note'     => 'Deprecated VIP Plugin. No alternative available'
 				),
-				array(
-					'value'    => 'wordtwit-1.3-mod',
+				'wordtwit-1.3-mod' => array(
 					'position' => 0,
 					'level'    => 'warning',
 					'note'     => 'Deprecated VIP Plugin. Use publicize instead.'
 				),
-				array(
-					'value'    => 'uppsite',
+				'uppsite' => array(
 					'position' => 0,
 					'level'    => 'blocker',
 					'note'     => 'Deprecated VIP Plugin. Retired from Featured Partner Program.'
 				),
-				array(
-					'value'    => 'wpcom-related-posts',
+				'wpcom-related-posts' => array(
 					'position' => 0,
 					'level'    => 'warning',
 					'note'     => 'Deprecated VIP Plugin. Functionality included in Jetpack.'
 				),
-				array(
-					'value'    => 'scrollkit-wp',
+				'scrollkit-wp' => array(
 					'position' => 0,
 					'level'    => 'blocker',
 					'note'     => 'Deprecated VIP Plugin. Scroll Kit has shut down.'
 				),
-			),
-		);
+		),
+	);
 
-		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
-			if ( false == $this->check_file_contents( $checks, $file_path, $file_content ) ) {
-				$result = false;
-			}
-		}
-
-		return $result;
-	}
-
-	function check_file_contents( $checks, $file_path, $file_content ) {
-		$result = true;
-
-		// Loop through all functions.
-		foreach ( $checks as $function => $data ) {
-
-			// Loop through the parameters and look for all function/parameter combinations.
-			foreach ( $data as $parameter_data ) {
-				$previous_params = '';
-				if ( isset( $parameter_data['position'] ) && $parameter_data['position'] > 0 ) {
-					$previous_params = '(("|\')?(.+)("|\')?,\s*){' . $parameter_data['position'] . '}';
-				} elseif ( ! isset( $parameter_data['position'] ) ) {
-					$previous_params = '(.+)';
+	function __construct() {
+		parent::__construct( array(
+			'PhpParser\Node\Expr\FuncCall' => function( $node ) {
+				$name = $node->name->toString();
+				if ( ! array_key_exists( $name, self::$parameters ) ) {
+					return;
 				}
-
-				if ( preg_match( '/' . $function . '\(\s*' . $previous_params . '("|\'|\s)' . $parameter_data['value'] . '("|\'|,|\s)\s*/', $file_content, $matches ) ) {
-					$lines = $this->grep_content( $matches[0], $file_content );
-					$this->add_error(
-						'vip-parameters-' . $parameter_data['value'],
-						esc_html( $parameter_data['note'] ),
-						$parameter_data['level'],
-						$this->get_filename( $file_path ),
-						$lines
-					);
-					$result = false;
+				$pars = self::$parameters[ $name ];
+				foreach ( $node->args as $idx => $arg) {
+					$value = $arg->value;
+					if ( ! ( $value instanceof PhpParser\Node\Scalar\String ) || ! array_key_exists( $value->value, $pars ) ) {
+						continue;
+					}
+					$parameter_data = $pars[ $value->value ];
+					if ( isset( $parameter_data['position'] ) && $idx === $parameter_data['position'] ) {
+						$this->add_error(
+							'vip-parameters-' . $value->value,
+							esc_html( $parameter_data['note'] ),
+							$parameter_data['level']
+						);
+					}
 				}
 			}
-		}
-
-		return $result;
+		) );
 	}
 }

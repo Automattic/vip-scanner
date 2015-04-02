@@ -6,6 +6,7 @@ class BaseScanner {
 	const LEVEL_NOTE = 'note';
 
 	public $files = array();
+	public $analyzed_files = array();
 	public $checks = array();
 	public $analyzers = array();
 	public $total_checks = 0;
@@ -196,6 +197,10 @@ class BaseScanner {
 			return false;
 		}
 
+		$this->analyzed_files = array();
+
+		$this->analyze_php_files();
+
 		if ( in_array( 'checks', $scanners ) ) {
 			$this->run_scanners( 'checks', $pass );
 			$this->result = $pass;
@@ -208,29 +213,29 @@ class BaseScanner {
 		return $pass;
 	}
 	
+	protected function analyze_php_files() {
+		if ( true === isset( $this->files['php'] ) && true === is_array( $this->files['php'] ) ) {
+			foreach ( $this->files['php'] as $filepath => $filecontents ) {
+				try {
+					$this->analyzed_files[] = new AnalyzedPHPFile( $filepath, $filecontents );
+				} catch ( PhpParser\Error $error ) {
+					$line_no = $error->getRawLine() - 1;
+					$lines = array( BaseCheck::get_line( $line_no, $filecontents ) );
+					$this->add_error( 'parse-error', esc_html( $error->getMessage() ), 'blocker', basename( $filepath ), $lines );
+				}
+			}
+		}
+	}
+
 	protected function run_scanners( $type, &$pass = null ) {
 		if ( 'checks' !== $type && 'analyzers' !== $type ) {
 			return;
 		}
-		
-		if ( 'analyzers' === $type ) {
-			$analyzed_files = array();
 
-			if ( true === isset( $this->files['php'] ) && true === is_array( $this->files['php'] ) ) {
-				foreach ( $this->files['php'] as $filepath => $filecontents ) {
-					try {
-						$analyzed_files[] = new AnalyzedPHPFile( $filepath, $filecontents );
-					} catch ( PhpParser\Error $error ) {
-						$line_no = $error->getRawLine() - 1;
-						$lines = array( BaseCheck::get_line( $line_no, $filecontents ) );
-						$this->add_error( 'parse-error', esc_html( $error->getMessage() ), 'blocker', basename( $filepath ), $lines );
-					}
-				}
-			}
-			
+		if ( 'analyzers' === $type ) {
 			if ( true === isset( $this->files['css'] ) && true === is_array( $this->files['css'] ) ) {
 				foreach ( $this->files['css'] as $filepath => $filecontents ) {
-					$analyzed_files[] = new AnalyzedCSSFile( $filepath, $filecontents );
+					$this->analyzed_files[] = new AnalyzedCSSFile( $filepath, $filecontents );
 				}
 			}
 		}
@@ -258,10 +263,18 @@ class BaseScanner {
 			}
 
 			$check = new $check;
-			if ( 'checks' === $type && $check instanceof BaseCheck ) {
-				$check->set_scanner( $this );
 
-				$pass = $pass & $check->check( $this->files );
+			if ( 'checks' === $type && $check instanceof BaseCheck || $check instanceof CodeCheckVisitor ) {
+				if ( $check instanceof CodeCheckVisitor ) {
+					// $check is actually a CodeCheckVisitor, so we need to
+					// wrap it in a CodeCheck object.
+					$check = new CodeCheck( $check );
+					$check->set_scanner( $this );
+					$pass = $pass & $check->check( $this->analyzed_files );
+				} else {
+					$check->set_scanner( $this );
+					$pass = $pass & $check->check( $this->files );
+				}
 				$results = $check->get_results();
 
 				if ( ! empty( $results['errors'] ) ) {
@@ -271,7 +284,7 @@ class BaseScanner {
 				$this->total_checks += $results['count'];
 			} elseif ( 'analyzers' === $type && $check instanceof BaseAnalyzer ) {
 				$check->set_scanner( $this );
-				$check->analyze( $analyzed_files );
+				$check->analyze( $this->analyzed_files );
 				$this->elements = array_merge( $check->get_elements(), $this->elements );
 				$this->stats = array_merge( $check->get_stats(), $this->stats );
 			}

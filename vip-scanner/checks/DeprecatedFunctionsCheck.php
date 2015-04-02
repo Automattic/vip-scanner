@@ -3,13 +3,10 @@
  * Checks for deprecated WordPress functions.
  */
 
-class DeprecatedFunctionsCheck extends BaseCheck {
-
-	function check( $files ) {
-		$result = true;
-		$this->increment_check_count();
-
-		$checks = array(
+class DeprecatedFunctionsCheck extends CodeCheck {
+	protected static $description_template = 'The function %s is deprecated.';
+	protected static $replacement_template = ' Use %s instead.';
+	protected static $deprecated_functions = array(
 			/**
 			 * wp-includes
 			 */
@@ -277,10 +274,7 @@ class DeprecatedFunctionsCheck extends BaseCheck {
 			'get_allowed_themes'      => "wp_get_themes( array( 'allowed' => true ) )",
 			'get_broken_themes'       => "wp_get_themes( array( 'errors' => true )",
 			'get_site_allowed_themes' => 'WP_Theme::get_allowed_on_network()',
-			'current_theme_info'      => 'wp_get_theme()',
 			'display_theme'           => '',
-			'get_allowed_themes'      => "wp_get_themes( array( 'allowed' => true ) )",
-			'get_broken_themes'       => "wp_get_themes( array( 'errors' => true )",
 			// 3.5
 			'_insert_into_post_button' => '',
 			'_media_button'            => '',
@@ -314,39 +308,25 @@ class DeprecatedFunctionsCheck extends BaseCheck {
 			 */
 			// 3.4
 			'logIO' => 'error_log()',
-		);
+	);
 
-		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
-
-			foreach ( $checks as $check => $replacement ) {
-				
-				/**
-				 * Before a function, there's either a start of a line, whitespace, . or (
-				 * This is to avoid false positives, like wp_link_pages() being flagged as link_pages().
-				 */
-				if ( preg_match( '/(?:^|[\s\.\(])' . $check . '\(/m', $file_content, $matches ) ) {
-					$deprecated_function = trim( rtrim( $matches[0], '(' ) );
-
-					// Indicate the deprecated function that has been found.
-					$message = 'The function <code>' . $deprecated_function . '</code> is deprecated.';
-
-					// Indicate the replacement function if it exists.
-					if ( ! empty( $replacement ) ) {
-						$message .= ' Use <code>' . $replacement . '</code> instead.';
+	function __construct() {
+		parent::__construct( array(
+			'PhpParser\Node\Expr\FuncCall' => function( $node ) {
+				$name = $node->name->toString();
+				if ( array_key_exists( $name, self::$deprecated_functions ) ) {
+					$message = sprintf( self::$description_template, '<code>' . $name . '</code>' );
+					if ( ! empty( self::$deprecated_functions[ $name ] ) ) {
+						$message .= sprintf( self::$replacement_template, '<code>' . self::$deprecated_functions[ $name ] . '</code>' );
 					}
 
 					$this->add_error(
 						'deprecated',
 						$message,
-						BaseScanner::LEVEL_BLOCKER,
-						$this->get_filename( $file_path )
+						BaseScanner::LEVEL_BLOCKER
 					);
-					$result = false;
 				}
 			}
-
-		}
-
-		return $result;
+		) );
 	}
 }
