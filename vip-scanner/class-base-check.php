@@ -57,13 +57,13 @@ abstract class BaseCheck
 		$files = (array) $files;
 		if ( $type ) {
 			if ( is_array( $type ) ) {
-				$file_types = array();
+				$files_of_multiple_types = array();
 				foreach ( $type as $single_type ) {
 					if ( isset( $files[ $single_type ] ) ) {
-						$file_types = array_merge( $file_types, $files[ $single_type ] );
+						$files_of_multiple_types = array_merge( $files_of_multiple_types, $files[ $single_type ] );
 					}
 				}
-				return $file_types;
+				return $files_of_multiple_types;
 			} else {
 				if ( isset( $files[ $type ] ) ) {
 					return $files[ $type ];
