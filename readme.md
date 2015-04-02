@@ -4,7 +4,7 @@ A WordPress plugin that enables you to scan all sorts of themes and files and th
 
 Contributors: [Mohammad Jangda](http://profiles.wordpress.org/batmoo/), [Automattic](http://profiles.wordpress.org/automattic/), [Thorsten Ott](http://profiles.wordpress.org/tott/), [Michael Fields](http://profiles.wordpress.org/mfields/), [Filipe Varela](http://profiles.wordpress.org/keoshi/), [Josh Betz](http://profiles.wordpress.org/betzster/), [Mike Blouin](https://github.com/Mobius5150), [Nick Daugherty](http://profiles.wordpress.org/nickdaugherty/) and [Fränk Klein](https://profiles.wordpress.org/frank-klein/).
 
-Requires WordPress version 3.4 or greater.
+Requires WordPress version 3.4 or greater and PHP >= 5.4.
 
 
 About
