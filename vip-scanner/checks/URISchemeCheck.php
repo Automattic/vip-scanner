@@ -30,7 +30,7 @@ class URISchemeCheck extends BaseCheck
 
 		$checks = array(
 			'hardcoded-http-scheme' => array(
-				'expression' => '/(?<MATCHTEXT>(http):\/\/([\da-z\.-]+[a-z\.]{2,6})(?:[\/\w \.-]*)*)/msi',
+				'expression' => '/(?<MATCHTEXT>http:\/\/)/msi',
 				'level'      => 'Warning',
 				'note'       => 'Hardcoded URL Scheme.  To prevent "Mixed Content" security warnings, it may be better to use <a href="http://en.wikipedia.org/wiki/Uniform_resource_locator#Protocol-relative_URLs">Protocol-Relative URLs</a>',
 			),
@@ -44,7 +44,7 @@ class URISchemeCheck extends BaseCheck
 					$lines = array();
 					foreach ( $matches['MATCHTEXT'] as $match ) {
 						$filename = $this->get_filename( $file_path );
-						$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
+						$lines = array_merge( $this->grep_content( $match, $sanitized_string ), $lines );
 						$this->add_error(
 							$check,
 							$check_info['note'],
