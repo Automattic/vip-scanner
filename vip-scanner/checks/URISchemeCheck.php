@@ -2,21 +2,33 @@
 
 class URISchemeCheck extends BaseCheck
 {
-	function sanitize_string( $string ) {
-		/**
-		 * Removes Javascript/CSS comment blocks
-		 */
-		$string = preg_replace( '/(\/\*(?:.*)?\*\/)/misU', '', $string );
+	function sanitize_string( $string, $types = '' ) {
+		if ( is_array( $types ) ) {
+			foreach ( $types as $type ) {
 
-		/**
-		 * Removes Javascript inline comments
-		 */
-		$string = preg_replace( '/(?<![:])(\/\/(?:.*?)$)/mis', '', $string );
+				if ('js' == $type || 'css' == $type || 'php' == $type ) {
+					/**
+					 * Removes C style comment blocks
+					 */
+					$string = preg_replace( '/(\/\*(?:.*)?\*\/)/misU', '', $string );
+				}
+				
+				if ( 'js' == $type || 'php' == $type ) {
+					/**
+					 * Removes C++ style inline comments
+					 */
+					$string = preg_replace( '/(?<![:])(\/\/(?:.*?)$)/mis', '', $string );
+				}
 
-		/**
-		 * Removes HTML comment blocks
-		 */
-		$string = preg_replace( '/(<!--(?:.*)?-->)/misU', '', $string );
+				if ( 'html' == $type ) {
+					/**
+					 * Removes HTML comment blocks
+					 */
+					$string = preg_replace( '/(<!--(?:.*)?-->)/misU', '', $string );
+				}
+
+			}
+		}
 
 		return $string;
 	}
@@ -39,7 +51,7 @@ class URISchemeCheck extends BaseCheck
 		foreach ( $this->filter_files( $files, 'css' ) as $file_path => $file_content ) {
 			foreach ( $checks as $check => $check_info ) {
 				$this->increment_check_count();
-				$sanitized_string = $this->sanitize_string( $file_content );
+				$sanitized_string = $this->sanitize_string( $file_content, array( 'css') );
 				if ( preg_match_all( $check_info['expression'], $sanitized_string, $matches ) ) {
 					$lines = array();
 					foreach ( $matches['MATCHTEXT'] as $match ) {
@@ -77,7 +89,7 @@ class URISchemeCheck extends BaseCheck
 				if ( preg_match_all( $check_info['expression'], $file_content, $matches ) ) {
 					$lines = array();
 					foreach ( $matches['MATCHTEXT'] as $match ) {
-						$sanitized_string = $this->sanitize_string( $match );
+						$sanitized_string = $this->sanitize_string( $match, array( 'php' ) );
 						if ( stripos( $sanitized_string, $check_info['match-text'] ) !== false ) {
 							$filename = $this->get_filename( $file_path );
 							$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
