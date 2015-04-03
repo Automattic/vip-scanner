@@ -264,15 +264,11 @@ class BaseScanner {
 
 			$check = new $check;
 
-			if ( 'checks' === $type && $check instanceof BaseCheck || $check instanceof CodeCheckVisitor ) {
-				if ( $check instanceof CodeCheckVisitor ) {
-					// $check is actually a CodeCheckVisitor, so we need to
-					// wrap it in a CodeCheck object.
-					$check = new CodeCheck( $check );
-					$check->set_scanner( $this );
+			if ( 'checks' === $type && $check instanceof BaseCheck ) {
+				$check->set_scanner( $this );
+				if ( $check instanceof CodeCheck ) {
 					$pass = $pass & $check->check( $this->analyzed_files );
 				} else {
-					$check->set_scanner( $this );
 					$pass = $pass & $check->check( $this->files );
 				}
 				$results = $check->get_results();
