@@ -13,6 +13,9 @@ class CustomizerCheck extends CodeCheck {
 			 * Does the theme create a WP_Customize_Image_Control?
 			 */
 			'PhpParser\Node\Expr\New_' => function( $node ) {
+				if ( ! $node->class instanceof PhpParser\Node\Name ) {
+					return;
+				}
 				$class_name = $node->class->toString();
 				if ( 'WP_Customize_Image_Control' === $class_name ) {
 					$this->add_error(
