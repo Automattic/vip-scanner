@@ -18,13 +18,15 @@ class InAssignmentVisitor extends PhpParser\NodeVisitorAbstract {
 	protected $var;
 
 	public function enterNode( Node $node ) {
-		if ( $node instanceof Node\Expr\Assign ) {
+		if ( $node instanceof Node\Expr\Assign &&
+			$node->var instanceof Node\Expr\Variable ) {
 			$this->var = $node->var->name;
 		}
 	}
 
 	public function leaveNode( Node $node ) {
 		if ( $node instanceof Node\Expr\Assign &&
+			$node->var instanceof Node\Expr\Variable &&
 			$this->var == $node->var->name ) {
 			$this->var = null;
 		} elseif ( ! is_null( $this->var ) && (
