@@ -147,22 +147,25 @@ class URISchemeCheck extends BaseCheck
 		foreach ( $this->filter_files( $files, array( 'php', 'html' ) ) as $file_path => $file_content ) {
 			foreach ( $checks as $check => $check_info ) {
 				$this->increment_check_count();
+				$lines = array();
 				if ( preg_match_all( $check_info['expression'], $file_content, $matches ) ) {
-					$lines = array();
 					foreach ( $matches['MATCHTEXT'] as $match ) {
 						$sanitized_string = $this->sanitize_string( $match, array( 'html' ) );
 						if ( stripos( $sanitized_string, $check_info['match-text'] ) !== false ) {
-							$filename = $this->get_filename( $file_path );
 							$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
-							$this->add_error(
-								$check,
-								$check_info['note'],
-								$check_info['level'],
-								$filename,
-								$lines
-							);
 							$result = false;
 						}
+					}
+
+					if ( ! empty( $lines ) ) {
+						$filename = $this->get_filename( $file_path );
+						$this->add_error(
+							$check,
+							$check_info['note'],
+							$check_info['level'],
+							$filename,
+							$lines
+						);
 					}
 				}
 			}
