@@ -81,6 +81,37 @@ class URISchemeCheck extends BaseCheck
 				'level'      => 'Warning',
 				'note'       => 'Hardcoded URL Scheme.  To prevent "Mixed Content" security warnings, it may be better to use <a href="http://en.wikipedia.org/wiki/Uniform_resource_locator#Protocol-relative_URLs">Protocol-Relative URLs</a>',
 			),
+		);
+
+		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
+			foreach ( $checks as $check => $check_info ) {
+				$this->increment_check_count();
+				if ( preg_match_all( $check_info['expression'], $file_content, $matches ) ) {
+					$lines = array();
+					foreach ( $matches['MATCHTEXT'] as $match ) {
+						$sanitized_string = $this->sanitize_string( $match, array( 'php', 'html' ) );
+						if ( stripos( $sanitized_string, $check_info['match-text'] ) !== false ) {
+							$filename = $this->get_filename( $file_path );
+							$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
+							$this->add_error(
+								$check,
+								$check_info['note'],
+								$check_info['level'],
+								$filename,
+								$lines
+							);
+							$result = false;
+						}
+					}
+				}
+			}
+		}
+
+		/*
+		 * PHP and HTML Files
+		 */
+
+		$checks = array(
 			'html-object-tag-data-attribute-hardcoded-http-scheme' => array(
 				'expression' => '/<[\s]*?object[\s].*data[\s]*?=[\'\"]?(?<MATCHTEXT>http:\/\/[0-9a-z\.-]+?[a-z\.]{2,6}[0-9a-z$\/\-\_\.\+\!\*\'\(\)\,\?\#\&\;\=\%]+?)[\'\"]?.*>/msiU',
 				'match-text' => 'http://',
@@ -113,44 +144,7 @@ class URISchemeCheck extends BaseCheck
 			),
 		);
 
-		foreach ( $this->filter_files( $files, 'php' ) as $file_path => $file_content ) {
-			foreach ( $checks as $check => $check_info ) {
-				$this->increment_check_count();
-				if ( preg_match_all( $check_info['expression'], $file_content, $matches ) ) {
-					$lines = array();
-					foreach ( $matches['MATCHTEXT'] as $match ) {
-						$sanitized_string = $this->sanitize_string( $match, array( 'php', 'html' ) );
-						if ( stripos( $sanitized_string, $check_info['match-text'] ) !== false ) {
-							$filename = $this->get_filename( $file_path );
-							$lines = array_merge( $this->grep_content( $match, $file_content ), $lines );
-							$this->add_error(
-								$check,
-								$check_info['note'],
-								$check_info['level'],
-								$filename,
-								$lines
-							);
-							$result = false;
-						}
-					}
-				}
-			}
-		}
-
-		/*
-		 * HTML Files
-		 */
-
-		$checks = array(
-			'html-tag-attribute-hardcoded-http-scheme' => array(
-				'expression' => '/<[\s]*?[a-z]*[\s].*(?:action|data|formaction|icon|manifest|poster|src)[\s]*?=[\'\"]?(?<MATCHTEXT>http:\/\/[0-9a-z\.-]+?[a-z\.]{2,6}[0-9a-z$\/\-\_\.\+\!\*\'\(\)\,\?\#\&\;\=\%]+?)[\'\"]?.*>/msiU',
-				'match-text' => 'http://',
-				'level'      => 'Warning',
-				'note'       => 'Hardcoded URL Scheme.  To prevent "Mixed Content" security warnings, it may be better to use <a href="http://en.wikipedia.org/wiki/Uniform_resource_locator#Protocol-relative_URLs">Protocol-Relative URLs</a>',
-			),
-		);
-
-		foreach ( $this->filter_files( $files, 'html' ) as $file_path => $file_content ) {
+		foreach ( $this->filter_files( $files, array( 'php', 'html' ) ) as $file_path => $file_content ) {
 			foreach ( $checks as $check => $check_info ) {
 				$this->increment_check_count();
 				if ( preg_match_all( $check_info['expression'], $file_content, $matches ) ) {
