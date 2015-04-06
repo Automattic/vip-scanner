@@ -42,21 +42,25 @@ class URISchemeCheck extends BaseCheck
 
 		$checks = array(
 			'hardcoded-http-scheme' => array(
-				'expression' => '/(?<MATCHTEXT>http:\/\/)/msi',
+				'expression' => '/(?<MATCHTEXT>http:\/\/[0-9a-z\.-]+?[a-z\.]{2,6}[0-9a-z$\/\-\_\.\+\!\*\'\(\)\,\?\#\&\;\=\%]+?)/msiU',
 				'level'      => 'Warning',
 				'note'       => 'Hardcoded URL Scheme.  To prevent "Mixed Content" security warnings, it may be better to use <a href="http://en.wikipedia.org/wiki/Uniform_resource_locator#Protocol-relative_URLs">Protocol-Relative URLs</a>',
 			),
 		);
 
-		foreach ( $this->filter_files( $files, 'css' ) as $file_path => $file_content ) {
+		foreach ( $this->filter_files( $files, array( 'css', 'js' ) ) as $file_path => $file_content ) {
 			foreach ( $checks as $check => $check_info ) {
 				$this->increment_check_count();
-				$sanitized_string = $this->sanitize_string( $file_content, array( 'css') );
-				if ( preg_match_all( $check_info['expression'], $sanitized_string, $matches ) ) {
-					$lines = array();
+				$sanitize_file_content = $this->sanitize_string( $file_content, array( 'css', 'js' ) );
+				$lines = array();
+				if ( preg_match_all( $check_info['expression'], $sanitize_file_content, $matches ) ) {
 					foreach ( $matches['MATCHTEXT'] as $match ) {
 						$filename = $this->get_filename( $file_path );
-						$lines = array_merge( $this->grep_content( $match, $sanitized_string ), $lines );
+						$lines = array_merge( $this->grep_content( $match, $sanitize_file_content ), $lines );
+						$result = false;
+					}
+
+					if ( ! empty( $lines ) ) {
 						$this->add_error(
 							$check,
 							$check_info['note'],
@@ -64,7 +68,6 @@ class URISchemeCheck extends BaseCheck
 							$filename,
 							$lines
 						);
-						$result = false;
 					}
 				}
 			}
