@@ -168,6 +168,37 @@ class URISchemeCheck extends BaseCheck
 			}
 		}
 
+		/*
+		 * PHP and HTML Files, link tags (stylesheets)
+		 */
+
+		$this->increment_check_count();
+		foreach ( $this->filter_files( $files, array( 'php', 'html' ) ) as $file_path => $file_content ) {
+			$sanitize_file_content = $this->sanitize_string( $file_content, array( 'php', 'html' ) );
+
+			$lines = array();
+			if ( preg_match_all( '/(?<MATCHTEXT><[\s]*?link[\s]*.*>)/msiU', $sanitize_file_content, $matches ) ) {
+				foreach ( $matches['MATCHTEXT'] as $match ) {
+					if ( stripos( $match, 'stylesheet' ) !== false && stripos( $match, 'http://' ) !== false ) {
+						preg_match( '/(http:\/\/[0-9a-z\.-]+?[a-z\.]{2,6}[0-9a-z$\/\-\_\.\+\!\*\'\(\)\,\?\#\&\;\=\%]+?)/msiU', $match, $grep_url );
+						$lines = array_merge( $this->grep_content( $grep_url[0], $sanitize_file_content ), $lines );
+						$result = false;
+					}
+				}
+			}
+
+			if ( ! empty( $lines ) ) {
+				$filename = $this->get_filename( $file_path );
+				$this->add_error(
+					'html-link-stylesheet-hardcoded-http-scheme',
+					'Hardcoded URL Scheme.  To prevent "Mixed Content" security warnings, it may be better to use <a href="http://en.wikipedia.org/wiki/Uniform_resource_locator#Protocol-relative_URLs">Protocol-Relative URLs</a>',
+					'Warning',
+					$filename,
+					$lines
+				);
+			}
+		}
+
 		return $result;
 	}
 }
