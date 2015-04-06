@@ -81,8 +81,32 @@ class URISchemeCheck extends BaseCheck
 				'level'      => 'Warning',
 				'note'       => 'Hardcoded URL Scheme.  To prevent "Mixed Content" security warnings, it may be better to use <a href="http://en.wikipedia.org/wiki/Uniform_resource_locator#Protocol-relative_URLs">Protocol-Relative URLs</a>',
 			),
-			'html-tag-attribute-hardcoded-http-scheme' => array(
-				'expression' => '/<[\s]*?[a-z]*[\s].*(?:action|data|formaction|icon|manifest|poster|src)[\s]*?=[\'\"]?(?<MATCHTEXT>http:\/\/[0-9a-z\.-]+?[a-z\.]{2,6}[0-9a-z$\/\-\_\.\+\!\*\'\(\)\,\?\#\&\;\=\%]+?)[\'\"]?.*>/msiU',
+			'html-object-tag-data-attribute-hardcoded-http-scheme' => array(
+				'expression' => '/<[\s]*?object[\s].*data[\s]*?=[\'\"]?(?<MATCHTEXT>http:\/\/[0-9a-z\.-]+?[a-z\.]{2,6}[0-9a-z$\/\-\_\.\+\!\*\'\(\)\,\?\#\&\;\=\%]+?)[\'\"]?.*>/msiU',
+				'match-text' => 'http://',
+				'level'      => 'Warning',
+				'note'       => 'Hardcoded URL Scheme.  To prevent "Mixed Content" security warnings, it may be better to use <a href="http://en.wikipedia.org/wiki/Uniform_resource_locator#Protocol-relative_URLs">Protocol-Relative URLs</a>',
+			),
+			'html-menuitem-tag-icon-attribute-hardcoded-http-scheme' => array(
+				'expression' => '/<[\s]*?menuitem[\s].*icon[\s]*?=[\'\"]?(?<MATCHTEXT>http:\/\/[0-9a-z\.-]+?[a-z\.]{2,6}[0-9a-z$\/\-\_\.\+\!\*\'\(\)\,\?\#\&\;\=\%]+?)[\'\"]?.*>/msiU',
+				'match-text' => 'http://',
+				'level'      => 'Warning',
+				'note'       => 'Hardcoded URL Scheme.  To prevent "Mixed Content" security warnings, it may be better to use <a href="http://en.wikipedia.org/wiki/Uniform_resource_locator#Protocol-relative_URLs">Protocol-Relative URLs</a>',
+			),
+			'html-html-tag-manifest-attribute-hardcoded-http-scheme' => array(
+				'expression' => '/<[\s]*?html[\s].*manifest[\s]*?=[\'\"]?(?<MATCHTEXT>http:\/\/[0-9a-z\.-]+?[a-z\.]{2,6}[0-9a-z$\/\-\_\.\+\!\*\'\(\)\,\?\#\&\;\=\%]+?)[\'\"]?.*>/msiU',
+				'match-text' => 'http://',
+				'level'      => 'Warning',
+				'note'       => 'Hardcoded URL Scheme.  To prevent "Mixed Content" security warnings, it may be better to use <a href="http://en.wikipedia.org/wiki/Uniform_resource_locator#Protocol-relative_URLs">Protocol-Relative URLs</a>',
+			),
+			'html-video-tag-poster-attribute-hardcoded-http-scheme' => array(
+				'expression' => '/<[\s]*?video[\s].*poster[\s]*?=[\'\"]?(?<MATCHTEXT>http:\/\/[0-9a-z\.-]+?[a-z\.]{2,6}[0-9a-z$\/\-\_\.\+\!\*\'\(\)\,\?\#\&\;\=\%]+?)[\'\"]?.*>/msiU',
+				'match-text' => 'http://',
+				'level'      => 'Warning',
+				'note'       => 'Hardcoded URL Scheme.  To prevent "Mixed Content" security warnings, it may be better to use <a href="http://en.wikipedia.org/wiki/Uniform_resource_locator#Protocol-relative_URLs">Protocol-Relative URLs</a>',
+			),
+			'html-tag-src-attribute-hardcoded-http-scheme' => array(
+				'expression' => '/<[\s]*?(?:audio|embed|iframe|img|input|script|source|track|video)[\s].*src[\s]*?=[\'\"]?(?<MATCHTEXT>http:\/\/[0-9a-z\.-]+?[a-z\.]{2,6}[0-9a-z$\/\-\_\.\+\!\*\'\(\)\,\?\#\&\;\=\%]+?)[\'\"]?.*>/msiU',
 				'match-text' => 'http://',
 				'level'      => 'Warning',
 				'note'       => 'Hardcoded URL Scheme.  To prevent "Mixed Content" security warnings, it may be better to use <a href="http://en.wikipedia.org/wiki/Uniform_resource_locator#Protocol-relative_URLs">Protocol-Relative URLs</a>',
