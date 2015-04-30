@@ -41,7 +41,7 @@ class AdBustersCheck extends BaseCheck {
 	public function get_adbusters_array() {
 
 		if ( function_exists( 'wpcom_vip_load_plugin' ) ) {
-			wpcom_vip_load_plugin( 'Adbusters' );
+			wpcom_vip_load_plugin( 'adbusters' );
 			if ( function_exists( 'wpcom_vip_get_ad_busters_array' ) ) {
 				return wpcom_vip_get_ad_busters_array();
 			}
