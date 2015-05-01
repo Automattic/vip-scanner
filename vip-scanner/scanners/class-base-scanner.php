@@ -215,9 +215,10 @@ class BaseScanner {
 	
 	protected function analyze_php_files() {
 		if ( true === isset( $this->files['php'] ) && true === is_array( $this->files['php'] ) ) {
+			$this->analyzed_files['php'] = array();
 			foreach ( $this->files['php'] as $filepath => $filecontents ) {
 				try {
-					$this->analyzed_files[] = new AnalyzedPHPFile( $filepath, $filecontents );
+					$this->analyzed_files['php'][] = new AnalyzedPHPFile( $filepath, $filecontents );
 				} catch ( PhpParser\Error $error ) {
 					$line_no = $error->getRawLine() - 1;
 					$lines = array( BaseCheck::get_line( $line_no, $filecontents ) );
@@ -234,8 +235,9 @@ class BaseScanner {
 
 		if ( 'analyzers' === $type ) {
 			if ( true === isset( $this->files['css'] ) && true === is_array( $this->files['css'] ) ) {
+				$this->analyzed_files['css'] = array();
 				foreach ( $this->files['css'] as $filepath => $filecontents ) {
-					$this->analyzed_files[] = new AnalyzedCSSFile( $filepath, $filecontents );
+					$this->analyzed_files['css'][] = new AnalyzedCSSFile( $filepath, $filecontents );
 				}
 			}
 		}
@@ -267,7 +269,7 @@ class BaseScanner {
 			if ( 'checks' === $type && $check instanceof BaseCheck ) {
 				$check->set_scanner( $this );
 				if ( $check instanceof CodeCheck ) {
-					$pass = $pass & $check->check( $this->analyzed_files );
+					$pass = $pass & $check->check( $this->analyzed_files['php'] );
 				} else {
 					$pass = $pass & $check->check( $this->files );
 				}
@@ -280,7 +282,11 @@ class BaseScanner {
 				$this->total_checks += $results['count'];
 			} elseif ( 'analyzers' === $type && $check instanceof BaseAnalyzer ) {
 				$check->set_scanner( $this );
-				$check->analyze( $this->analyzed_files );
+				if ( $check instanceof ThemeAnalyzer ) {
+					$check->analyze( $this->analyzed_files['css'] );
+				} else {
+					$check->analyze( $this->analyzed_files['php'] );
+				}
 				$this->elements = array_merge( $check->get_elements(), $this->elements );
 				$this->stats = array_merge( $check->get_stats(), $this->stats );
 			}
