@@ -187,7 +187,7 @@ class VIP_Scanner_Async {
 		$data = array(
 			'theme'  => wp_get_theme()->display( 'Name' ),
 			'review' => $review,
-			'issues' => $this->get_cached_results_summary( $review ),
+			'issues' => $this->get_cached_results_summary( $review, $this->get_theme_path( get_stylesheet() ) ),
 		);
 
 		wp_send_json_success( $data );
@@ -281,7 +281,8 @@ class VIP_Scanner_Async {
 
 		// Do a post name query if the path is specified
 		if ( ! is_null( $path ) ) {
-			$query_args['name'] = sanitize_title_with_dashes( $this->normalize_path_str( $path ) );
+			$query_args['meta_key'] = 'vip-scanner-theme-path';
+			$query_args['meta_value'] = sanitize_title_with_dashes( $this->normalize_path_str( $path ) );
 		}
 
 		// Do the query and parse the issue counts
@@ -316,9 +317,16 @@ class VIP_Scanner_Async {
 		// Check if the post already exists and add the id to args if it does
 		$posts_query = new WP_Query( array(
 			'post_type'			  => self::SCANNER_RESULT_CPT,
-			'name'   			  => $normalized_path,
 			'fields'			  => 'ids',
-			self::REVIEW_TAXONOMY => $review_slug,
+			'meta_key'			  => 'vip-scanner-theme-path',
+			'meta_value'		  => $normalized_path,
+			'tax_query'			  => array(
+				array(
+					'taxonomy'	=> self::REVIEW_TAXONOMY,
+					'field' 	=> 'slug',
+					'terms'		=> $review_slug,
+				),
+			),
 		) );
 
 		$update = $posts_query->have_posts();
@@ -337,9 +345,11 @@ class VIP_Scanner_Async {
 		if ( $update ) {
 			update_post_meta( $id, 'vip-scanner-error-counts', $error_counts );
 			update_post_meta( $id, 'vip-scanner-results', $content );
+			update_post_meta( $id, 'vip-scanner-theme-path', $normalized_path );
 		} else {
 			add_post_meta( $id, 'vip-scanner-error-counts', $error_counts, true );
 			add_post_meta( $id, 'vip-scanner-results', $content, true );
+			add_post_meta( $id, 'vip-scanner-theme-path', $normalized_path, true );
 		}
 
 		return true;
