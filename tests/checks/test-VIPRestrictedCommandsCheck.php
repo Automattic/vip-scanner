@@ -114,8 +114,8 @@ class VIPRestrictedCommandsTest extends CodeCheckTestBase {
 			array( 'slug' => 'wp_debug_backtrace_summary', 'level' => 'Blocker', 'description' => "Unfiltered filesystem information output", 'file' => 'VIPRestrictedCommandsCheck7.inc', 'lines' => ++$line ),
 			array( 'slug' => 'debug_backtrace',            'level' => 'Blocker', 'description' => "Unfiltered filesystem information output", 'file' => 'VIPRestrictedCommandsCheck7.inc', 'lines' => ++$line ),
 			array( 'slug' => 'debug_print_backtrace',      'level' => 'Blocker', 'description' => "Unfiltered filesystem information output", 'file' => 'VIPRestrictedCommandsCheck7.inc', 'lines' => ++$line ),
-			array( 'slug' => 'trigger_error',   		   'level' => 'Blocker', 'description' => "Triggered error message not accessible",   'file' => 'VIPRestrictedCommandsCheck7.inc', 'lines' => ++$line ),
-			array( 'slug' => 'set_error_handler',		   'level' => 'Blocker', 'description' => "User-defined error handler not supported", 'file' => 'VIPRestrictedCommandsCheck7.inc', 'lines' => ++$line ),
+			array( 'slug' => 'trigger_error',              'level' => 'Blocker', 'description' => "Triggered error message not accessible",   'file' => 'VIPRestrictedCommandsCheck7.inc', 'lines' => ++$line ),
+			array( 'slug' => 'set_error_handler',          'level' => 'Blocker', 'description' => "User-defined error handler not supported", 'file' => 'VIPRestrictedCommandsCheck7.inc', 'lines' => ++$line ),
 		);
 		$actual_errors = $this->checkFile( 'VIPRestrictedCommandsCheck7.inc' );
 		$this->assertEqualErrors( $expected_errors, $actual_errors );
