@@ -274,15 +274,14 @@ class VIP_Scanner_Async {
 			'fields'    => 'ids',
 		);
 
-		// Do a taxonomy query if the review is specified
-		if ( ! is_null( $review ) ) {
-			$query_args[self::REVIEW_TAXONOMY] = sanitize_title_with_dashes( $review );
-		}
-
 		// Do a post name query if the path is specified
 		if ( ! is_null( $path ) ) {
-			$query_args['meta_key'] = 'vip-scanner-theme-path';
-			$query_args['meta_value'] = sanitize_title_with_dashes( $this->normalize_path_str( $path ) );
+			$query_args['name'] = sanitize_title_with_dashes( $this->normalize_path_str( $path ) );
+		}
+
+		// Do a post name query if the review is specified
+		if ( ! is_null( $review ) ) {
+			$query_args['name'] .= sanitize_title_with_dashes( $review );
 		}
 
 		// Do the query and parse the issue counts
@@ -307,26 +306,15 @@ class VIP_Scanner_Async {
 
 		$post_args = array(
 			'post_type'    => self::SCANNER_RESULT_CPT,
-			'post_name'    => $normalized_path,
+			'post_name'    => $normalized_path.$review_slug,
 			'post_date'    => date( 'Y-m-d H:i:s' ),
-			'tax_input'    => array(
-				self::REVIEW_TAXONOMY => $review_slug,
-			),
 		);
 
 		// Check if the post already exists and add the id to args if it does
 		$posts_query = new WP_Query( array(
 			'post_type'			  => self::SCANNER_RESULT_CPT,
+			'name'				  => $normalized_path.$review_slug,
 			'fields'			  => 'ids',
-			'meta_key'			  => 'vip-scanner-theme-path',
-			'meta_value'		  => $normalized_path,
-			'tax_query'			  => array(
-				array(
-					'taxonomy'	=> self::REVIEW_TAXONOMY,
-					'field' 	=> 'slug',
-					'terms'		=> $review_slug,
-				),
-			),
 		) );
 
 		$update = $posts_query->have_posts();
@@ -345,11 +333,9 @@ class VIP_Scanner_Async {
 		if ( $update ) {
 			update_post_meta( $id, 'vip-scanner-error-counts', $error_counts );
 			update_post_meta( $id, 'vip-scanner-results', $content );
-			update_post_meta( $id, 'vip-scanner-theme-path', $normalized_path );
 		} else {
 			add_post_meta( $id, 'vip-scanner-error-counts', $error_counts, true );
 			add_post_meta( $id, 'vip-scanner-results', $content, true );
-			add_post_meta( $id, 'vip-scanner-theme-path', $normalized_path, true );
 		}
 
 		return true;
