@@ -2,7 +2,6 @@
 
 class VIP_Scanner_Async {
 	const SCANNER_RESULT_CPT = 'scanresult';
-	const REVIEW_TAXONOMY = 'vip-scan-review';
 
 	private static $instance;
 
@@ -54,7 +53,6 @@ class VIP_Scanner_Async {
 			'label'  => self::SCANNER_RESULT_CPT,
 		) );
 
-		register_taxonomy( self::REVIEW_TAXONOMY, self::SCANNER_RESULT_CPT, array( 'public' => false ) );
 	}
 
 	function admin_init() {
@@ -171,7 +169,7 @@ class VIP_Scanner_Async {
 		$data = array(
 			'theme'  => wp_get_theme()->display( 'Name' ),
 			'review' => $review,
-			'issues' => $this->get_cached_results_summary( $review ),
+			'issues' => $this->get_cached_results_summary( $review, $this->get_theme_path( get_stylesheet() ) ),
 		);
 
 		wp_send_json_success( $data );
@@ -187,7 +185,7 @@ class VIP_Scanner_Async {
 		$data = array(
 			'theme'  => wp_get_theme()->display( 'Name' ),
 			'review' => $review,
-			'issues' => $this->get_cached_results_summary( $review ),
+			'issues' => $this->get_cached_results_summary( $review, $this->get_theme_path( get_stylesheet() ) ),
 		);
 
 		wp_send_json_success( $data );
@@ -268,21 +266,12 @@ class VIP_Scanner_Async {
 		$this->insert_cache_post( $review, $path, $results, $error_counts );
 	}
 
-	function get_cached_results_summary( $review = null, $path = null ) {
+	function get_cached_results_summary( $review, $path ) {
 		$query_args = array(
 			'post_type' => self::SCANNER_RESULT_CPT,
 			'fields'    => 'ids',
+			'name'      => $this->generate_scanresult_post_name( $review, $path )
 		);
-
-		// Do a taxonomy query if the review is specified
-		if ( ! is_null( $review ) ) {
-			$query_args[self::REVIEW_TAXONOMY] = sanitize_title_with_dashes( $review );
-		}
-
-		// Do a post name query if the path is specified
-		if ( ! is_null( $path ) ) {
-			$query_args['name'] = sanitize_title_with_dashes( $this->normalize_path_str( $path ) );
-		}
 
 		// Do the query and parse the issue counts
 		$issues = array_fill_keys( $this->report_levels, 0 );
@@ -301,24 +290,19 @@ class VIP_Scanner_Async {
 	}
 
 	private function insert_cache_post( $review, $path, $results, $error_counts ) {
-		$review_slug     = sanitize_title_with_dashes( $review );
-		$normalized_path = sanitize_title_with_dashes( $this->normalize_path_str( $path ) );
+		$post_name_slug = $this->generate_scanresult_post_name( $review, $path );
 
 		$post_args = array(
 			'post_type'    => self::SCANNER_RESULT_CPT,
-			'post_name'    => $normalized_path,
+			'post_name'    => $post_name_slug,
 			'post_date'    => date( 'Y-m-d H:i:s' ),
-			'tax_input'    => array(
-				self::REVIEW_TAXONOMY => $review_slug,
-			),
 		);
 
 		// Check if the post already exists and add the id to args if it does
 		$posts_query = new WP_Query( array(
 			'post_type'			  => self::SCANNER_RESULT_CPT,
-			'name'   			  => $normalized_path,
+			'name'				  => $post_name_slug,
 			'fields'			  => 'ids',
-			self::REVIEW_TAXONOMY => $review_slug,
 		) );
 
 		$update = $posts_query->have_posts();
@@ -356,6 +340,12 @@ class VIP_Scanner_Async {
 
 	private function get_theme_path( $theme ) {
 		return $this->normalize_path_str( sprintf( '%s/%s', get_theme_root(), $theme ) );
+	}
+
+	private function generate_scanresult_post_name( $review, $path ) {
+		$normalized_path = sanitize_title_with_dashes( $this->normalize_path_str( $path ) );
+		$review_slug     = sanitize_title_with_dashes( $review );
+		return $normalized_path.'-'.$review_slug;
 	}
 }
 
