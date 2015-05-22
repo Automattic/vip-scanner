@@ -77,6 +77,8 @@ class VIPRestrictedCommandsCheck extends CodeCheck
 			"wp_debug_backtrace_summary" => array( "level" => "Blocker", "note" => "Unfiltered filesystem information output" ),
 			"debug_backtrace" => array( "level" => "Blocker", "note" => "Unfiltered filesystem information output" ),
 			"debug_print_backtrace" => array( "level" => "Blocker", "note" => "Unfiltered filesystem information output" ),
+			"trigger_error"	=> array( "level" => "Blocker", "note" => "Triggered error message not accessible" ),
+			"set_error_handler"	=> array( "level" => "Blocker", "note" => "User-defined error handler not supported" ),
 
 
 			// other
