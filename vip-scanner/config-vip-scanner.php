@@ -11,7 +11,7 @@ VIP_Scanner::get_instance()->register_review( 'Undefined Function Check', array(
 
 VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 	'AtPackageCheck',
-	'BatCacheVariantCheck',
+	'BatcacheVariantCheck',
 	'BodyClassCheck',
 	'CDNCheck',
 	'CheckedSelectedDisabledCheck',
@@ -55,7 +55,7 @@ VIP_Scanner::get_instance()->register_review( 'WP.com Theme Review', array(
 ) );
 
 VIP_Scanner::get_instance()->register_review( 'VIP Theme Review', array(
-	'BatCacheVariantCheck',
+	'BatcacheVariantCheck',
 	'CheckedSelectedDisabledCheck',
 	'DeprecatedConstantsCheck',
 	'DeprecatedFunctionsCheck',
