@@ -25,7 +25,7 @@ class BatcacheVariantCheck extends CodeCheck {
 						if ( !preg_match('/\$_/', $function_string) ) {
 							$this->add_error(
 								'batcache-variant-error',
-								'Variant determiner should refer to at least one $_ superglobals.',
+								'Variant determiner should refer to at least one $_ superglobal.',
 								BaseScanner::LEVEL_BLOCKER
 							);
 						}
