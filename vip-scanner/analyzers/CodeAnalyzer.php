@@ -3,11 +3,11 @@
 class CodeAnalyzer extends BaseAnalyzer {
 	function __construct() {
 		$this->elements = array(
-			'files'      => new ElementGroup( __( 'Files', 'theme-check' ), __( 'File', 'theme-check' ) ),
-			'namespaces' => new ElementGroup( __( 'Namespaces', 'theme-check' ), __( 'Namespace', 'theme-check' ) ),
-			'classes'    => new ElementGroup( __( 'Classes', 'theme-check' ), __( 'Class', 'theme-check' ) ),
-			'functions'  => new ElementGroup( __( 'Functions', 'theme-check' ), __( 'Function', 'theme-check' ) ),
-			'totals'     => new ElementGroup( __( 'Totals', 'theme-check' ), __( 'Total', 'theme-check' ) ),
+			'files'      => new ElementGroup( __( 'Files', 'vip-scanner' ), __( 'File', 'vip-scanner' ) ),
+			'namespaces' => new ElementGroup( __( 'Namespaces', 'vip-scanner' ), __( 'Namespace', 'vip-scanner' ) ),
+			'classes'    => new ElementGroup( __( 'Classes', 'vip-scanner' ), __( 'Class', 'vip-scanner' ) ),
+			'functions'  => new ElementGroup( __( 'Functions', 'vip-scanner' ), __( 'Function', 'vip-scanner' ) ),
+			'totals'     => new ElementGroup( __( 'Totals', 'vip-scanner' ), __( 'Total', 'vip-scanner' ) ),
 		);
 	}
 

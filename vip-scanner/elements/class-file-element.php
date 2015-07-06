@@ -22,7 +22,7 @@ class FileElement extends BaseElement {
 	function get_header() {
 		$header_items = array();
 
-		$header_items[] = __( 'File:', 'theme-check' );
+		$header_items[] = __( 'File:', 'vip-scanner' );
 		$header_items[] = array( 'content' => esc_html( $this->name() ), 'style' => array( 'bold' => true, 'classes' => array( 'renderer-file-name' ) ) );
 
 		return $header_items;
