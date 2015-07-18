@@ -51,6 +51,10 @@ class VIPParametersCheck extends CodeCheck {
 	function __construct() {
 		parent::__construct( array(
 			'PhpParser\Node\Expr\FuncCall' => function( $node ) {
+				if ( ! $node->name instanceof PhpParser\Node\Name ) {
+					return;
+				}
+
 				$name = $node->name->toString();
 				if ( ! array_key_exists( $name, self::$parameters ) ) {
 					return;

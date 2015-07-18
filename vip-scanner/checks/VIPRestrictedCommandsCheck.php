@@ -406,6 +406,10 @@ class VIPRestrictedCommandsCheck extends CodeCheck
 				$this->add_error( 'eval', 'Meta programming', 'Blocker' );
 			},
 			'PhpParser\Node\Expr\FuncCall' => function( $node ) {
+				if ( ! $node->name instanceof PhpParser\Node\Name ) {
+					return;
+				}
+
 				$name = $node->name->toString();
 				if ( in_array( $name, array_keys( self::$functions ) ) ) {
 					$error = self::$functions[ $name ];
