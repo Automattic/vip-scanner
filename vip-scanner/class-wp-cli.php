@@ -12,7 +12,12 @@ WP_CLI::add_command( 'vip-scanner', 'VIPScanner_Command' );
 class VIPScanner_Command extends WP_CLI_Command {
 
 	/**
-	 * Perform checks on a theme
+	 * Perform checks on a theme.
+	 *
+	 * ## DESCRIPTION
+	 *
+	 * Exits with code 2 if there are blockers, code 1 if warnings, and 0
+	 * otherwise (if only notes).
 	 *
 	 * [--theme=<theme>]
 	 * : Theme to scan. Defaults to current.
@@ -43,10 +48,23 @@ class VIPScanner_Command extends WP_CLI_Command {
 			WP_CLI::error( sprintf( 'Scanning of %s failed', $args['theme'] ) );
 
 		self::scan_dir( $scanner, $args );
+
+		if ( count( $scanner->get_errors( array( 'blocker' ) ) ) > 0 ) {
+			exit( 2 );
+		} else if ( count( $scanner->get_errors( array( 'warning' ) ) ) > 0 ) {
+			exit( 1 );
+		} else {
+			exit( 0 );
+		}
 	}
 
 	/**
-	 * Perform checks on a directory
+	 * Perform checks on a directory.
+	 *
+	 * ## DESCRIPTION
+	 *
+	 * Exits with code 2 if there are blockers, code 1 if warnings, and 0
+	 * otherwise (if only notes).
 	 *
 	 * [<dir>]
 	 * : Directory to scan. Defaults to current.
@@ -87,6 +105,14 @@ class VIPScanner_Command extends WP_CLI_Command {
 			WP_CLI::error( sprintf( 'Scanning of %s failed', $dir ) );
 
 		self::scan_dir( $scanner, $args );
+
+		if ( count( $scanner->get_errors( array( 'blocker' ) ) ) > 0 ) {
+			exit( 2 );
+		} else if ( count( $scanner->get_errors( array( 'warning' ) ) ) > 0 ) {
+			exit( 1 );
+		} else {
+			exit( 0 );
+		}
 	}
 
 	private static function scan_dir( &$scanner, $args ) {
