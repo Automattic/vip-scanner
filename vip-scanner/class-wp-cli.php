@@ -98,12 +98,12 @@ class VIPScanner_Command extends WP_CLI_Command {
 		}
 	}
 
+
 	/**
-	 * Runs the analyzers for the given review on the theme.
+	 * Runs the analyzers for the given review on a folder.
 	 *
 	 * [<dir>]
 	 * : Directory to scan. Defaults to current.
-	 *
 	 *
 	 * [--scan_type=<scan_type>]
 	 * : Type of scan to perform. Defaults to "VIP Theme Review"
@@ -112,22 +112,30 @@ class VIPScanner_Command extends WP_CLI_Command {
 	 * : Number of levels of hierarchy to output. 0 outputs everything.
 	 * Defaults to 1.
 	 * 
-	 * @subcommand analyze-theme
+	 * @subcommand analyze
 	 */
-	public function analyze_theme( $args, $assoc_args ) {
+	public function analyze( $args, $assoc_args ) {
+
+		if ( empty( $args[0] ) )
+			$dir = getcwd();
+		else
+			$dir = realpath( $args[0] );
+
 		$defaults = array(
-			'theme'	    => get_option( 'stylesheet' ),
 			'scan_type' => 'VIP Theme Review',
 			'depth'	    => 1,
 		);
 
 		$args = wp_parse_args( $assoc_args, $defaults );
 
-		$scanner = VIP_Scanner::get_instance()->run_theme_review( $args['theme'], $args['scan_type'], array( 'analyzers' ) );
+		$scanner = VIP_Scanner::get_instance()->get_review( $args['scan_type'], array( 'analyzers' ) );
 
 		if ( ! $scanner ) {
 			WP_CLI::error( sprintf( 'Scanning of %s failed', $args['theme'] ) );
 		}
+
+		$scanner = new DirectoryScanner( $dir, $scanner );
+		$scanner->scan( array( 'analyzers' ) );
 	
 		$errors = $scanner->get_errors();
 		if ( ! empty( $errors ) ) {
@@ -160,12 +168,14 @@ class VIPScanner_Command extends WP_CLI_Command {
 			$r->display( true, $display_args );
 		}
 	}
-	
+
+
 	/**
-	 * Runs the analyzers for the given review on a folder.
+	 * Runs the analyzers for the given review on the theme.
 	 *
-	 * [--theme=<theme>]
-	 * : Theme to scan. Defaults to current.
+	 * [<dir>]
+	 * : Directory to scan. Defaults to current.
+	 *
 	 *
 	 * [--scan_type=<scan_type>]
 	 * : Type of scan to perform. Defaults to "VIP Theme Review"
@@ -176,28 +186,20 @@ class VIPScanner_Command extends WP_CLI_Command {
 	 * 
 	 * @subcommand analyze-theme
 	 */
-	public function analyze( $args, $assoc_args ) {
-
-		if ( empty( $args[0] ) )
-			$dir = getcwd();
-		else
-			$dir = realpath( $args[0] );
-
+	public function analyze_theme( $args, $assoc_args ) {
 		$defaults = array(
+			'theme'	    => get_option( 'stylesheet' ),
 			'scan_type' => 'VIP Theme Review',
 			'depth'	    => 1,
 		);
 
 		$args = wp_parse_args( $assoc_args, $defaults );
 
-		$scanner = VIP_Scanner::get_instance()->get_review( $args['scan_type'], array( 'analyzers' ) );
+		$scanner = VIP_Scanner::get_instance()->run_theme_review( $args['theme'], $args['scan_type'], array( 'analyzers' ) );
 
 		if ( ! $scanner ) {
 			WP_CLI::error( sprintf( 'Scanning of %s failed', $args['theme'] ) );
 		}
-
-		$scanner = new DirectoryScanner( $dir, $scanner );
-		$scanner->scan( array( 'analyzers' ) );
 	
 		$errors = $scanner->get_errors();
 		if ( ! empty( $errors ) ) {
