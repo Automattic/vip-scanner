@@ -3,8 +3,8 @@
  * Checks whether the theme implements a friendly message to the user when
  * the blog has no posts.
  *
- * See https://github.com/Automattic/_s/blob/master/content-none.php for
- * an implementation of such a prompt.
+ * See https://github.com/Automattic/_s/blob/master/template-parts/content-none.php
+ * for an implementation of such a prompt.
  */
 
 class FirstPostPromptCheck extends BaseCheck {
@@ -28,7 +28,7 @@ class FirstPostPromptCheck extends BaseCheck {
 		if ( $has_prompt ) {
 			$this->add_error(
 				'firstpostprompt',
-				"It's recommended to include a prompt to write a post to the user if the blog has no posts. See <a href='https://github.com/Automattic/_s/blob/master/content-none.php'><code>content-none</code></a> in _s.",
+				"It's recommended to include a prompt to write a post to the user if the blog has no posts. See <a href='https://github.com/Automattic/_s/blob/master/template-parts/content-none.php'><code>content-none</code></a> in _s.",
 				Basescanner::LEVEL_NOTE
 			);
 			$result = false;
