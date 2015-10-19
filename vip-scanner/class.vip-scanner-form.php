@@ -133,9 +133,8 @@ class VIP_Scanner_Form {
 	}
 
 	private static function is_review_type( $type ) {
-		global $vip_scanner;
 		$review_types = VIP_Scanner::get_instance()->get_review_types();
-		$cur = isset( $_REQUEST['vip-scanner-review-type'] ) ? $_REQUEST['vip-scanner-review-type'] : $review_types[$vip_scanner->default_review];
+		$cur = isset( $_REQUEST['vip-scanner-review-type'] ) ? $_REQUEST['vip-scanner-review-type'] : $review_types[ VIP_Scanner_UI::get_instance()->default_review ];
 		return $cur == $type;
 	}
 
