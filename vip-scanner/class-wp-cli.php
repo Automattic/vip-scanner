@@ -46,6 +46,82 @@ class VIPScanner_Command extends WP_CLI_Command {
 	}
 
 	/**
+	 * Perform checks on a diff
+	 *
+	 * [<diff>]
+	 * : The diff contents. If ommited, the value is read from STDIN.
+	 *
+	 * [--scan_type]
+	 * : Type of scan to perform. Defaults to "VIP Theme Review"
+	 *
+	 * [--summary]
+	 * : Summarize the results.
+	 *
+	 * [--format]
+	 * : Output results to a given format: table, JSON, CSV. Defaults to table.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     # Reading from a file
+	 *     wp vip-scanner scan-diff < patch.diff
+	 * @subcommand scan-diff
+	 */
+	public function scan_diff( $args, $assoc_args ) {
+	    $defaults = array(
+	        'scan_type'     => 'VIP Theme Review',
+	        'format'        => 'table'
+	    );
+
+	    $diff = null;
+
+	    // NOTE - Should be updated to use WP_CLI::get_value_from_arg_or_stdin() - this is more backwards compatible for now
+	    if ( isset( $args[ 0 ] ) ) {
+	        $diff = $args[ 0 ];
+	    } else {
+	        // We don't use file_get_contents() here because it doesn't handle
+	        // Ctrl-D properly, when typing in the value interactively.
+	        $diff = '';
+	        while ( ( $line = fgets( STDIN ) ) !== false ) {
+	            $diff .= $line;
+	        }
+	    }
+
+	    $args = wp_parse_args( $assoc_args, $defaults );
+
+	    $review = VIP_Scanner::get_instance()->get_review( $args['scan_type'] );
+
+	    if ( ! $review ) {
+	        WP_CLI::error( 'Invalid review type specified' );
+	    }
+
+	    $checks    = $review['checks'];
+	    $analyzers = $review['analyzers'];
+
+	    // Remove checks that don't make sense with diffs
+	    $checks = array_diff( $checks, array(
+	        'VIPInitCheck',
+	        'VIPWhitelistCheck',
+	    ));
+
+	    $scanner = new DiffScanner( $diff, array(
+	        'checks'    => $checks,
+	        'analyzers' => $analyzers,
+	    ));
+
+	    if ( ! $scanner ) {
+	        WP_CLI::error( 'Scanning of the diff failed' );
+	    }
+
+	    $scanner->scan();
+
+	    if ( isset( $args['summary'] ) ) {
+	        self::display_summary( $scanner, $args['format'] );
+	    } else {
+	        self::display_errors( $scanner, $args['format'] );
+	    }
+	}
+
+	/**
 	 * Perform checks on a directory
 	 *
 	 * [<dir>]
