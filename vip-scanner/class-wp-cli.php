@@ -186,7 +186,7 @@ class VIPScanner_Command extends WP_CLI_Command {
 	 * [--depth=<depth>]
 	 * : Number of levels of hierarchy to output. 0 outputs everything.
 	 * Defaults to 1.
-	 * 
+	 *
 	 * @subcommand analyze-theme
 	 */
 	public function analyze_theme( $args, $assoc_args ) {
@@ -203,7 +203,7 @@ class VIPScanner_Command extends WP_CLI_Command {
 		if ( ! $scanner ) {
 			WP_CLI::error( sprintf( 'Scanning of %s failed', $args['theme'] ) );
 		}
-	
+
 		$errors = $scanner->get_errors();
 		if ( ! empty( $errors ) ) {
 			self::display_errors( $scanner, 'table' );
