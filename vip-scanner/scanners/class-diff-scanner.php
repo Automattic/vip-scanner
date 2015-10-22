@@ -9,6 +9,7 @@ class DiffScanner extends BaseScanner
 	function __construct( $diff, $checks ) {
 
 		$diff_lines = explode( "\n", $diff );
+		$diff_split = array();
 		$file_name = NULL;
 
 		// Parse diff format into a nice array with line numbers
