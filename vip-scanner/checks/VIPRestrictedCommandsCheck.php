@@ -12,7 +12,6 @@ class VIPRestrictedCommandsCheck extends CodeCheck
 			"delete_option" => array( "level" => "Note", "note" => "Deleting Option" ),
 
 			"wp_remote_get" => array( "level" => "Warning", "note" => "Uncached Remote operation, please use one of these functions: http://vip.wordpress.com/documentation/best-practices/fetching-remote-data/" ),
-			"fetch_feed" 	=> array( "level" => "Warning", "note" => "Remote feed operation" ),
 
 			"wp_schedule_event" 		=> array( "level" => "Warning", "note" => "WP Cron usage" ),
 			"wp_schedule_single_event" 	=> array( "level" => "Warning", "note" => "WP Cron usage" ),
