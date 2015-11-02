@@ -15,7 +15,6 @@ class VIPRestrictedCommandsTest extends CodeCheckTestBase {
 			array( 'slug' => 'delete_option', 'level' => 'Note', 'description' => 'Deleting Option', 'file' => 'VIPRestrictedCommandsCheck1.inc', 'lines' => ++$line ),
 
 			array( 'slug' => 'wp_remote_get', 'level' => 'Warning', 'description' => 'Uncached Remote operation, please use one of these functions: http://vip.wordpress.com/documentation/best-practices/fetching-remote-data/', 'file' => 'VIPRestrictedCommandsCheck1.inc', 'lines' => ++$line ),
-			array( 'slug' => 'fetch_feed',    'level' => 'Warning', 'description' => 'Remote feed operation', 'file' => 'VIPRestrictedCommandsCheck1.inc', 'lines' => ++$line ),
 
 			array( 'slug' => 'wp_schedule_event',        'level' => 'Warning', 'description' => 'WP Cron usage', 'file' => 'VIPRestrictedCommandsCheck1.inc', 'lines' => ++$line ),
 			array( 'slug' => 'wp_schedule_single_event', 'level' => 'Warning', 'description' => 'WP Cron usage', 'file' => 'VIPRestrictedCommandsCheck1.inc', 'lines' => ++$line ),
