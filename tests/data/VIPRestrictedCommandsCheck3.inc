@@ -13,6 +13,7 @@ wp_get_object_terms();
 wp_get_post_terms();
 get_posts();
 wp_get_recent_posts();
+get_pages();
 
 // Object cache bypass
 wpcom_uncached_get_post_meta();

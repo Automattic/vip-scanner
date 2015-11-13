@@ -43,6 +43,7 @@ class VIPRestrictedCommandsCheck extends CodeCheck
 			'wp_get_post_terms' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to get_the_terms() along with wp_list_pluck() see: http://vip.wordpress.com/documentation/uncached-functions/' ),
 			'get_posts' 			=> array( 'level' => 'Warning', 'note' => 'Uncached function. Use WP_Query or ensure suppress_filters is false' ),
 			'wp_get_recent_posts' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Use WP_Query or ensure suppress_filters is false' ),
+			'get_pages' 			=> array( 'level' => 'Warning', 'note' => 'Uncached function. Use WP_Query' ),
 
 			//Batcache manipulation
 			'batcache_post'			=> array( 'level' => 'Blocker', 'note' => 'Clearing batcache.  This can cause cache stampedes.' ),
