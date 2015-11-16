@@ -32,17 +32,18 @@ class VIPRestrictedCommandsCheck extends CodeCheck
 			
 			// Uncached functions
 			'count_user_posts'       => array( 'level' => BaseScanner::LEVEL_WARNING, 'note' => 'Uncached Function. Use wpcom_vip_count_user_posts() instead.' ),
-			'get_category_by_slug' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to wpcom_vip_get_category_by_slug()' ),
+			'get_category_by_slug'   => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to wpcom_vip_get_category_by_slug()' ),
 			'wp_get_post_categories' => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to get_the_terms() along with wp_list_pluck() see: http://vip.wordpress.com/documentation/uncached-functions/' ),
-			'wp_get_post_tags' 		=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to get_the_terms() along with wp_list_pluck() see: http://vip.wordpress.com/documentation/uncached-functions/' ),
-			'get_cat_ID' 			=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to wpcom_vip_get_term_by()' ),
-			'get_term_by' 			=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to wpcom_vip_get_term_by()' ),
-			'get_page_by_title' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
-			'get_page_by_path' 		=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to wpcom_vip_get_page_by_title()' ),
-			'wp_get_object_terms' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
-			'wp_get_post_terms' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to get_the_terms() along with wp_list_pluck() see: http://vip.wordpress.com/documentation/uncached-functions/' ),
-			'get_posts' 			=> array( 'level' => 'Warning', 'note' => 'Uncached function. Use WP_Query or ensure suppress_filters is false' ),
-			'wp_get_recent_posts' 	=> array( 'level' => 'Warning', 'note' => 'Uncached function. Use WP_Query or ensure suppress_filters is false' ),
+			'wp_get_post_tags'       => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to get_the_terms() along with wp_list_pluck() see: http://vip.wordpress.com/documentation/uncached-functions/' ),
+			'get_cat_ID'             => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to wpcom_vip_get_term_by()' ),
+			'get_term_by'            => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to wpcom_vip_get_term_by()' ),
+			'get_page_by_title'      => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
+			'get_page_by_path'       => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to wpcom_vip_get_page_by_title()' ),
+			'wp_get_object_terms'    => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or cached' ),
+			'wp_get_post_terms'      => array( 'level' => 'Warning', 'note' => 'Uncached function. Should be used on a limited basis or changed to get_the_terms() along with wp_list_pluck() see: http://vip.wordpress.com/documentation/uncached-functions/' ),
+			'get_posts'              => array( 'level' => 'Warning', 'note' => 'Uncached function. Use WP_Query or ensure suppress_filters is false' ),
+			'wp_get_recent_posts'    => array( 'level' => 'Warning', 'note' => 'Uncached function. Use WP_Query or ensure suppress_filters is false' ),
+			'get_pages'              => array( 'level' => 'Warning', 'note' => 'Uncached function. Use WP_Query' ),
 
 			//Batcache manipulation
 			'batcache_post'			=> array( 'level' => 'Blocker', 'note' => 'Clearing batcache.  This can cause cache stampedes.' ),
