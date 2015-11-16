@@ -59,7 +59,7 @@ class VIPRestrictedCommandsTest extends CodeCheckTestBase {
 			array( 'slug' => 'wp_get_post_terms',       'level' => 'Warning', 'description' => 'Uncached function. Should be used on a limited basis or changed to get_the_terms() along with wp_list_pluck() see: http://vip.wordpress.com/documentation/uncached-functions/', 'file' => 'VIPRestrictedCommandsCheck3.inc', 'lines' => ++$line ),
 			array( 'slug' => 'get_posts',               'level' => 'Warning', 'description' => 'Uncached function. Use WP_Query or ensure suppress_filters is false', 'file' => 'VIPRestrictedCommandsCheck3.inc', 'lines' => ++$line ),
 			array( 'slug' => 'wp_get_recent_posts',     'level' => 'Warning', 'description' => 'Uncached function. Use WP_Query or ensure suppress_filters is false', 'file' => 'VIPRestrictedCommandsCheck3.inc', 'lines' => ++$line ),
-			array( 'slug' => 'get_pages',     			'level' => 'Warning', 'description' => 'Uncached function. Use WP_Query', 'file' => 'VIPRestrictedCommandsCheck3.inc', 'lines' => ++$line ),
+			array( 'slug' => 'get_pages',               'level' => 'Warning', 'description' => 'Uncached function. Use WP_Query', 'file' => 'VIPRestrictedCommandsCheck3.inc', 'lines' => ++$line ),
 		);
 		$line += 2; // Skip two lines.
 		$expected_errors = array_merge( $expected_errors, array(
