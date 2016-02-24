@@ -15,7 +15,6 @@ class VIPRestrictedCommandsTest extends CodeCheckTestBase {
 			array( 'slug' => 'delete_option', 'level' => 'Note', 'description' => 'Deleting Option', 'file' => 'VIPRestrictedCommandsCheck1.inc', 'lines' => ++$line ),
 
 			array( 'slug' => 'wp_remote_get', 'level' => 'Warning', 'description' => 'Uncached Remote operation, please use one of these functions: http://vip.wordpress.com/documentation/best-practices/fetching-remote-data/', 'file' => 'VIPRestrictedCommandsCheck1.inc', 'lines' => ++$line ),
-			array( 'slug' => 'fetch_feed',    'level' => 'Warning', 'description' => 'Remote feed operation', 'file' => 'VIPRestrictedCommandsCheck1.inc', 'lines' => ++$line ),
 
 			array( 'slug' => 'wp_schedule_event',        'level' => 'Warning', 'description' => 'WP Cron usage', 'file' => 'VIPRestrictedCommandsCheck1.inc', 'lines' => ++$line ),
 			array( 'slug' => 'wp_schedule_single_event', 'level' => 'Warning', 'description' => 'WP Cron usage', 'file' => 'VIPRestrictedCommandsCheck1.inc', 'lines' => ++$line ),
@@ -114,6 +113,8 @@ class VIPRestrictedCommandsTest extends CodeCheckTestBase {
 			array( 'slug' => 'wp_debug_backtrace_summary', 'level' => 'Blocker', 'description' => "Unfiltered filesystem information output", 'file' => 'VIPRestrictedCommandsCheck7.inc', 'lines' => ++$line ),
 			array( 'slug' => 'debug_backtrace',            'level' => 'Blocker', 'description' => "Unfiltered filesystem information output", 'file' => 'VIPRestrictedCommandsCheck7.inc', 'lines' => ++$line ),
 			array( 'slug' => 'debug_print_backtrace',      'level' => 'Blocker', 'description' => "Unfiltered filesystem information output", 'file' => 'VIPRestrictedCommandsCheck7.inc', 'lines' => ++$line ),
+			array( 'slug' => 'trigger_error',              'level' => 'Blocker', 'description' => "Triggered error message not accessible",   'file' => 'VIPRestrictedCommandsCheck7.inc', 'lines' => ++$line ),
+			array( 'slug' => 'set_error_handler',          'level' => 'Blocker', 'description' => "User-defined error handler not supported", 'file' => 'VIPRestrictedCommandsCheck7.inc', 'lines' => ++$line ),
 		);
 		$actual_errors = $this->checkFile( 'VIPRestrictedCommandsCheck7.inc' );
 		$this->assertEqualErrors( $expected_errors, $actual_errors );

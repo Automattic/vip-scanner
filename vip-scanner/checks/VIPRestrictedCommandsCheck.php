@@ -12,7 +12,6 @@ class VIPRestrictedCommandsCheck extends CodeCheck
 			"delete_option" => array( "level" => "Note", "note" => "Deleting Option" ),
 
 			"wp_remote_get" => array( "level" => "Warning", "note" => "Uncached Remote operation, please use one of these functions: http://vip.wordpress.com/documentation/best-practices/fetching-remote-data/" ),
-			"fetch_feed" 	=> array( "level" => "Warning", "note" => "Remote feed operation" ),
 
 			"wp_schedule_event" 		=> array( "level" => "Warning", "note" => "WP Cron usage" ),
 			"wp_schedule_single_event" 	=> array( "level" => "Warning", "note" => "WP Cron usage" ),
@@ -77,6 +76,8 @@ class VIPRestrictedCommandsCheck extends CodeCheck
 			"wp_debug_backtrace_summary" => array( "level" => "Blocker", "note" => "Unfiltered filesystem information output" ),
 			"debug_backtrace" => array( "level" => "Blocker", "note" => "Unfiltered filesystem information output" ),
 			"debug_print_backtrace" => array( "level" => "Blocker", "note" => "Unfiltered filesystem information output" ),
+			"trigger_error"	=> array( "level" => "Blocker", "note" => "Triggered error message not accessible" ),
+			"set_error_handler"	=> array( "level" => "Blocker", "note" => "User-defined error handler not supported" ),
 
 
 			// other
@@ -404,6 +405,10 @@ class VIPRestrictedCommandsCheck extends CodeCheck
 				$this->add_error( 'eval', 'Meta programming', 'Blocker' );
 			},
 			'PhpParser\Node\Expr\FuncCall' => function( $node ) {
+				if ( ! $node->name instanceof PhpParser\Node\Name ) {
+					return;
+				}
+
 				$name = $node->name->toString();
 				if ( in_array( $name, array_keys( self::$functions ) ) ) {
 					$error = self::$functions[ $name ];

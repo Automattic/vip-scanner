@@ -52,7 +52,7 @@ class VIP_Scanner_Form {
 				<label>
 					<?php
 
-						$required = sprintf( '<small class="description require-label">%s</small>',  __( '(required)', 'theme-check' ) );
+						$required = sprintf( '<small class="description require-label">%s</small>',  __( '(required)', 'vip-scanner' ) );
 						$maybe_required = in_array( $name, self::$required ) ? $required : '';
 
 						switch ( $type ) {
@@ -115,7 +115,7 @@ class VIP_Scanner_Form {
 			return;
 	    ?>
 	    <div class="error">
-	        <p><strong><?php _e( 'Warning! Fill the required fields before submitting the form.', 'theme-check' ); ?></strong></p>
+	        <p><strong><?php _e( 'Warning! Fill the required fields before submitting the form.', 'vip-scanner' ); ?></strong></p>
 	    </div>
 	    <?php
 	}

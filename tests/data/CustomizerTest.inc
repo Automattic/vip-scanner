@@ -39,3 +39,10 @@ $control = new WP_Customize_Image_Control;
 
 // Warning: Class extends WP_Customize_Control
 class SubclassedControl extends WP_Customize_Control {}
+
+// No error: Verify that semicolons in text don't cause issues. See #250.
+$wp_customize->add_setting( 'showcase_title_projects', array(
+	'default' => __( 'Recent Projects &rsaquo;', 'showcase' ),
+	'capability' => 'edit_theme_options',
+	'sanitize_callback' => 'esc_html',
+) );

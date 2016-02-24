@@ -25,6 +25,10 @@ class ForbiddenFunctionsCheck extends CodeCheck {
 	function __construct() {
 		parent::__construct( array(
 			'PhpParser\Node\Expr\FuncCall' => function( $node ) {
+				if ( ! $node->name instanceof PhpParser\Node\Name ) {
+					return;
+				}
+
 				$name = $node->name->toString();
 				if ( in_array( $name, self::$forbidden_functions ) ) {
 					$this->add_error(

@@ -31,6 +31,10 @@ class ForbiddenPHPFunctionsCheck extends CodeCheck {
 				);
 			},
 			'PhpParser\Node\Expr\FuncCall' => function( $node ) {
+				if ( ! $node->name instanceof PhpParser\Node\Name ) {
+					return;
+				}
+
 				$name = $node->name->toString();
 				if ( in_array( $name, self::$forbidden_php_functions ) ) {
 					$this->add_error(
