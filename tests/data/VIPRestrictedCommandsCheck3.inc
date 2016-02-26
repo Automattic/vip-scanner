@@ -28,7 +28,6 @@ previous_post_link();
 next_post_link();
 attachment_url_to_postid();
 
-
 // Object cache bypass
 wpcom_uncached_get_post_meta();
 wpcom_uncached_get_post_by_meta();
