@@ -106,7 +106,7 @@ class VIPRestrictedCommandsCheck extends CodeCheck
 			"show_admin_bar"            => array( "level" => "Blocker", "note" => "The WordPress.com admin bar cannot be removed as it’s integral to the user experience on WordPress.com" ),
 			"serialize"                 => array( "level" => "Blocker", "note" => "Serialized data has <a href='https://www.owasp.org/index.php/PHP_Object_Injection'>known vulnerability problems</a> with Object Injection. JSON is generally a better approach for serializing data." ),
 			"unserialize"               => array( "level" => "Blocker", "note" => "Serialized data has <a href='https://www.owasp.org/index.php/PHP_Object_Injection'>known vulnerability problems</a> with Object Injection. JSON is generally a better approach for serializing data." ),
-			"get_intermediate_image_sizes" => array( "level" => "Blocker", "note" => "Intermediate images do not exist on VIP." ),
+			"get_intermediate_image_sizes" => array( "level" => "Blocker", "note" => "Intermediate images do not exist on the VIP platform, and thus get_intermediate_image_sizes() returns an empty array() on the platform. This behavior is intentional, so to prevent WordPress on the platform to generate multiple thumbnails when images are uploaded." ),
 
 			// Restricted widgets
 			"WP_Widget_Tag_Cloud" => array( "level" => "Warning", "note" => "Using WP_Widget_Tag_Cloud, use WPCOM_Tag_Cloud_Widget instead" ),
