@@ -13,3 +13,4 @@ wp_is_mobile();
 show_admin_bar();
 serialize();
 unserialize();
+get_intermediate_image_sizes();
