@@ -165,7 +165,7 @@ class VIPScanner_Command extends WP_CLI_Command {
 		self::scan_dir( $scanner, $args );
 	}
 
-	private static function scan_dir( &$scanner, $args ) {
+	private function scan_dir( &$scanner, $args ) {
 
 		if ( isset( $args['summary'] ) ) {
 			self::display_summary( $scanner, $args['format'] );
