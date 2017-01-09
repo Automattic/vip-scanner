@@ -174,11 +174,84 @@ class VIPScanner_Command extends WP_CLI_Command {
 		}
 	}
 
+
+	/**
+	 * Runs the analyzers for the given review on a folder.
+	 *
+	 * [<dir>]
+	 * : Directory to scan. Defaults to current.
+	 *
+	 * [--scan_type=<scan_type>]
+	 * : Type of scan to perform. Defaults to "VIP Theme Review"
+	 *
+	 * [--depth=<depth>]
+	 * : Number of levels of hierarchy to output. 0 outputs everything.
+	 * Defaults to 1.
+	 * 
+	 * @subcommand analyze
+	 */
+	public function analyze( $args, $assoc_args ) {
+
+		if ( empty( $args[0] ) )
+			$dir = getcwd();
+		else
+			$dir = realpath( $args[0] );
+
+		$defaults = array(
+			'scan_type' => 'VIP Theme Review',
+			'depth'	    => 1,
+		);
+
+		$args = wp_parse_args( $assoc_args, $defaults );
+
+		$scanner = VIP_Scanner::get_instance()->get_review( $args['scan_type'], array( 'analyzers' ) );
+
+		if ( ! $scanner ) {
+			WP_CLI::error( sprintf( 'Scanning of %s failed', $args['theme'] ) );
+		}
+
+		$scanner = new DirectoryScanner( $dir, $scanner );
+		$scanner->scan( array( 'analyzers' ) );
+	
+		$errors = $scanner->get_errors();
+		if ( ! empty( $errors ) ) {
+			self::display_errors( $scanner, 'table' );
+		}
+
+		$empty = array();
+		$display_args = array(
+			'bare'  => true,
+			'depth' => intval( $args['depth'] ),
+		);
+
+		foreach ( $scanner->elements as $element ) {
+			// Display empty elements after the others
+			if ( $element->is_empty() ) {
+				$empty[] = $element;
+				continue;
+			}
+
+			if ( $element->name() !== 'Files' ) {
+				$element->analyze_prefixes();
+			}
+
+			$r = new ElementRenderer( $element );
+			WP_CLI::line( $r->display( false, $display_args ) );
+		}
+
+		foreach ( $empty as $element ) {
+			$r = new ElementRenderer( $element );
+			$r->display( true, $display_args );
+		}
+	}
+
+
 	/**
 	 * Runs the analyzers for the given review on the theme.
 	 *
-	 * [--theme=<theme>]
-	 * : Theme to scan. Defaults to current.
+	 * [<dir>]
+	 * : Directory to scan. Defaults to current.
+	 *
 	 *
 	 * [--scan_type=<scan_type>]
 	 * : Type of scan to perform. Defaults to "VIP Theme Review"
