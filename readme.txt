@@ -2,7 +2,7 @@
 Contributors: batmoo, automattic, tott, mfields, keoshi, betzster, mobius5150, nickdaugherty
 Tags: scanner, scan, files, security, theme check
 Requires at least: 3.4
-Tested up to: 4.0
+Tested up to: 4.8
 Stable tag: 0.7
 
 Scan all sorts of themes and files and things.
@@ -114,7 +114,7 @@ To come...
 * Exports
 * Auto scan
 
-= 0.3 = 
+= 0.3 =
 
 * Various bug fixes, including preventing the annoying upgrade nag between the main VIP Scanner plugin and WP.com Rules.
 
