@@ -1,5 +1,7 @@
 # VIP Scanner [![Build Status](https://travis-ci.org/Automattic/vip-scanner.png?branch=master)](https://travis-ci.org/Automattic/vip-scanner)
 
+**DEPRECATED: This plugin is no longer used by VIP, instead, [use PHP Code Sniffer with the VIP Coding standards available here](https://github.com/Automattic/VIP-Coding-Standards)**
+
 A WordPress plugin that enables you to scan all sorts of themes and files and things.
 
 Contributors: [Mohammad Jangda](http://profiles.wordpress.org/batmoo/), [Automattic](http://profiles.wordpress.org/automattic/), [Thorsten Ott](http://profiles.wordpress.org/tott/), [Michael Fields](http://profiles.wordpress.org/mfields/), [Filipe Varela](http://profiles.wordpress.org/keoshi/), [Josh Betz](http://profiles.wordpress.org/betzster/), [Mike Blouin](https://github.com/Mobius5150), [Nick Daugherty](http://profiles.wordpress.org/nickdaugherty/) and [Fränk Klein](https://profiles.wordpress.org/frank-klein/).
