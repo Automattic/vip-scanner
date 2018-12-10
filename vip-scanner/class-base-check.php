@@ -55,11 +55,23 @@ abstract class BaseCheck
 
 	protected function filter_files( $files, $type = '' ) {
 		$files = (array) $files;
-		if( $type ) {
-			if( isset( $files[$type] ) )
-				return $files[$type];
-			else
-				return array();
+		if ( $type ) {
+			if ( is_array( $type ) ) {
+				$files_of_multiple_types = array();
+				foreach ( $type as $single_type ) {
+					if ( isset( $files[ $single_type ] ) ) {
+						$files_of_multiple_types = array_merge( $files_of_multiple_types, $files[ $single_type ] );
+					}
+				}
+				return $files_of_multiple_types;
+			} else {
+				if ( isset( $files[ $type ] ) ) {
+					return $files[ $type ];
+				}
+				else {
+					return array();
+				}
+			}
 		}
 		return $files;
 	}

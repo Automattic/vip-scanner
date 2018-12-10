@@ -13,7 +13,11 @@ abstract class CheckTestBase extends WP_UnitTestCase {
 	}
 
 	public function runCheck( $file_contents ) {
-		$input = array( 'php' => array( 'test.php' => $file_contents ) );
+		$input = array(
+			'php' => array('test.php' => $file_contents ),
+			'css' => array('test.css' => $file_contents ),
+			'js' => array('test.js' => $file_contents ),
+		);
 
 		$result = $this->check->check( $input );
 
