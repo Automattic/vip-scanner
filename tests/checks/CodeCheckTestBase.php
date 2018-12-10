@@ -15,7 +15,7 @@ abstract class CodeCheckTestBase extends CheckTestBase {
 			$file = array( new AnalyzedPhpFile( $filename, $file['php'][0] ) );
 		}
 
-		$this->assertFalse( $this->check->check( $file ) );
+		$this->check->check( $file );
 		return $this->check->get_errors();
 	}
 
